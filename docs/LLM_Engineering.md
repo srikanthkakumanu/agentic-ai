@@ -7,6 +7,7 @@ A hands-on tutorial on how Large Language Models (LLMs) work under the hood: the
 - How a Transformer Encoder turns text into contextual vectors, step by step
 - Core vocabulary — tokens, context windows, temperature, top-p, top-k — and how they interact
 - Why LLMs hallucinate, and what that implies for how you use them
+- Where today's major models — GPT-5.x, Claude, Gemini, and the open-weight Llama/Mistral/Qwen families — fit into that picture
 - How system/user prompts and API message structures fit together
 
 The Transformer architecture, introduced in the 2017 paper **"Attention Is All You Need,"** is the foundation for most modern LLMs. The full architecture has an Encoder and a Decoder; many popular models use only one half — BERT uses only the Encoder, while GPT-style models use only the Decoder. This tutorial focuses on the Encoder, since it's the more approachable half to build intuition on.
@@ -100,6 +101,49 @@ LLM hallucination is the model generating text that sounds plausible and confide
 - Sampling parameters (temperature, top-p, top-k) trade off consistency for diversity — pick based on whether you need reliability (low temperature) or creativity (higher temperature).
 - Hallucination isn't a bug you can fully "turn off" with parameters — it's a consequence of how these models are trained. Lowering temperature reduces *randomness*, but doesn't guarantee *correctness*; grounding techniques like retrieval-augmented generation (RAG) and citation-checking address hallucination more directly than sampling settings do.
 
+## 2026 LLM Model Landscape
+
+The concepts above (Transformer layers, tokens, temperature, top-p/top-k) apply to every model below — this section is a snapshot of who's building on top of them as of **July 2026**. This space moves in weeks, not years, so treat the specifics here as a point-in-time reference and check each provider's own release notes for anything newer.
+
+Two broad categories matter for how you'll actually use a model:
+
+- **Closed-weight / API-only**: you call a hosted endpoint; you never get the model's parameters. Usually the most capable, always the most current, billed per token.
+- **Open-weight**: the trained parameters are downloadable, so you can self-host, fine-tune, and run offline. "Open-weight" is not the same as "open source" — the weights are public, but the license attached to them (e.g., Meta's Llama Community License) may still restrict how you can use them; Apache 2.0-licensed releases (Mistral, most of Qwen) are the exception, and are open source in the fuller sense.
+
+### Frontier closed-weight models
+
+**OpenAI — GPT-5.x**: GPT-5 launched in mid-2025 and has since shipped as a rapid sequence of point releases rather than infrequent major versions — GPT-5.1 (Nov 2025, adjustable personality), GPT-5.2 (Dec 2025, split into Instant/Thinking/Pro modes), GPT-5.3-Codex (Feb 2026), GPT-5.4 (Mar 2026), GPT-5.5 (Apr 2026), and GPT-5.6 (Jul 2026 — the current model as of this writing). GPT-5.6 ships in three sizes (Sol/Terra/Luna, trading capability for cost), a ~1.05M-token context window, and an explicit `reasoning_effort` control (`none` → `max`) — the same temperature/top-p/top-k sampling you learned above still governs token selection *within* whichever reasoning mode is active.
+
+**Anthropic — Claude Opus 4.8 and Sonnet 4.6**: Anthropic splits its lineup by tier rather than by version number, and updates each tier independently. **Opus 4.8** (May 2026) is the flagship, general-access model, scoring 69.2% on SWE-bench Pro (up from 64.3% for Opus 4.7) and emphasizing agentic reliability — in one honesty eval, it glossed over injected coding failures only 3.7% of the time. **Sonnet 4.6** (Feb 2026) is the mid-tier workhorse: cheaper than Opus ($3/$15 per million tokens), with a 1M-token context window in beta, aimed at everyday coding, computer-use, and agent workloads. Anthropic has since shipped **Sonnet 5** (Jun 2026) as Sonnet 4.6's successor, priced even lower to make long agentic sessions more affordable — a reminder that "the latest Sonnet" and "the latest Opus" don't share a version number, since each tier ships on its own cadence.
+
+**Google DeepMind — Gemini 2.5 and 3**: Gemini 2.5 (Pro and Flash, 2025) introduced "thinking" models with a configurable thinking budget — you trade token spend for reasoning depth explicitly, rather than only via temperature. Gemini 3 (Nov 2025) followed with Pro and DeepThink variants and a 1M-token context window, natively handling text, image, audio, video, and full code repositories in one context. It's since iterated into Gemini 3.1 Pro (Feb 2026, roughly 2x the reasoning benchmark score of Gemini 3 Pro) and Gemini 3.5 Flash (May 2026) for latency-sensitive use.
+
+### Open-weight models
+
+**Meta — Llama 4**: The Llama 4 "herd" (Apr 2025) introduced Meta's first natively multimodal, Mixture-of-Experts Llama models: **Scout** (17B active / 109B total parameters across 16 experts) with an industry-leading 10M-token context window via a new positional scheme (iRoPE), and **Maverick** (17B active across 128 experts) with a 1M-token window. Retrieval accuracy at Scout's full 10M-token limit drops to around 89% (from ~95% at 8M), a useful reminder that a model's *advertised* context window and its *effective* one aren't always the same thing. Released under Meta's own Llama Community License, not a standard open-source license.
+
+**Mistral AI — Mistral Large 3**: A 675B-parameter sparse Mixture-of-Experts model (41B active per token) released Dec 2025 under a genuine Apache 2.0 license — 256K-token context, text and image input, and competitive benchmark scores (~73% MMLU-Pro, ~93.6% MATH-500) for a model you can fully self-host.
+
+**Alibaba — Qwen 3**: Qwen3 (Apr 2025) shipped as a full size range — from a 0.6B dense model up to the 235B-parameter (22B active) Qwen3-235B-A22B MoE flagship — all under Apache 2.0, all with a toggleable "thinking" mode you can switch on for harder reasoning tasks and off for fast, cheap responses, and native context of 128K tokens (extendable further). Through 2026 the family split in two directions: point releases like Qwen3.5 and Qwen3.6 have stayed open-weight under Apache 2.0, while the newest flagships (Qwen3.7-Max, Qwen3.8) moved to closed, API-only access — mirroring the same "open workhorse / closed frontier" split Mistral and Meta haven't made, at least not yet.
+
+| Model | Maker | Weights | Context window | Notable strength |
+| --- | --- | --- | --- | --- |
+| GPT-5.6 | OpenAI | Closed (API only) | ~1.05M tokens | Configurable reasoning effort, agentic coding |
+| Claude Opus 4.8 | Anthropic | Closed (API only) | 200K+ tokens | Hardest agentic/software-engineering tasks |
+| Claude Sonnet 4.6 / 5 | Anthropic | Closed (API only) | up to 1M tokens (beta) | Cost-efficient default for coding & agents |
+| Gemini 3 / 3.1 | Google DeepMind | Closed (API only) | 1M tokens | Native multimodality, configurable "thinking" |
+| Llama 4 (Scout / Maverick) | Meta | Open-weight (custom license) | 10M / 1M tokens | Longest context window, self-hosting |
+| Mistral Large 3 | Mistral AI | Open-weight (Apache 2.0) | 256K tokens | Self-hosted frontier-class reasoning |
+| Qwen 3 family | Alibaba | Mostly open-weight (Apache 2.0)* | 128K tokens (extendable) | Widest size range, hybrid thinking mode |
+
+\* Newest Qwen flagships (3.7-Max, 3.8) are closed-weight; smaller/point releases remain open.
+
+**Key takeaways:**
+
+- The closed-vs-open split isn't just philosophical — it determines whether you can self-host, fine-tune, or audit a model at all, independent of how capable it is.
+- "Context window" numbers are marketing ceilings; effective usable context (retrieval accuracy at the edge of that window) is usually smaller, as Llama 4 Scout's own benchmarks show.
+- Every model in this table still ultimately runs a Transformer forward pass and samples its next token with some form of temperature/top-p/top-k — the concepts in this tutorial transfer directly, regardless of which vendor you pick.
+
 ## Prompting Types
 
 Now that you know how the model processes text internally and how sampling parameters shape its output, here's how you actually talk to it.
@@ -141,6 +185,7 @@ The OpenAI API expects messages in a particular structure, and many other provid
 - Tokens are the model's unit of text; the context window is how many of them it can hold in view at once.
 - Temperature, top-p, and top-k all shape how the next token is sampled — they can be combined, but changing more than one at a time makes behavior harder to reason about.
 - Hallucination is structural, not incidental: these models are trained to produce plausible text, not verified facts.
+- As of July 2026, the frontier is split between closed-weight API models (GPT-5.x, Claude, Gemini) and open-weight families (Llama 4, Mistral, Qwen) — the choice affects self-hosting and fine-tuning rights, not whether the underlying Transformer math applies.
 - A prompt to an LLM API is just a list of role-tagged messages (`system`, `user`, and the model's own `assistant`/`response` turns).
 
 **Where to go next:** this tutorial covered the Encoder half of the Transformer. GPT-style models are Decoder-only and use *causal* (masked) self-attention, so each token can only attend to tokens before it — that's the architecture worth exploring next if you want to understand how text-generation models like GPT actually produce output one token at a time.
