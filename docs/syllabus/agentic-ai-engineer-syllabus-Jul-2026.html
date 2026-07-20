@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentic AI Engineer — Phased Syllabus (July 2026)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0E1A; --bg2:#0E1426; --card:#131B34; --card2:#161F3C;
+  --line:rgba(150,168,255,.14); --line2:rgba(150,168,255,.25);
+  --text:#E9EDFB; --muted:#9AA5CC; --dim:#6C77A3;
+  --p1:#4FD8E8; --p2:#58C0FF; --p3:#7FA4FF; --p4:#9D8CFF;
+  --p5:#C77FF2; --p6:#F27FBE; --p7:#FF8F70; --p8:#FFB454;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --disp:'Chakra Petch',sans-serif;
+  --body:'Instrument Sans',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.62;
+  background-image:radial-gradient(1100px 520px at 78% -140px,rgba(79,216,232,.09),transparent 60%),
+                   radial-gradient(900px 560px at 8% 12%,rgba(157,140,255,.07),transparent 60%);}
+.wrap{max-width:1060px;margin:0 auto;padding:0 28px}
+a{color:inherit}
+::selection{background:rgba(157,140,255,.35)}
+
+/* ---------- HERO ---------- */
+header{padding:76px 0 30px;position:relative}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--p1);display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:34px;height:1px;background:linear-gradient(90deg,var(--p1),transparent)}
+h1{font-family:var(--disp);font-weight:700;font-size:clamp(38px,6vw,66px);line-height:1.04;margin:18px 0 8px;letter-spacing:-.01em}
+h1 .grad{background:linear-gradient(92deg,var(--p1) 0%,var(--p4) 45%,var(--p8) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{max-width:640px;color:var(--muted);font-size:17.5px;margin-top:14px}
+.sub strong{color:var(--text);font-weight:600}
+.meta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.meta-chip{font-family:var(--mono);font-size:12.5px;color:var(--muted);border:1px solid var(--line2);border-radius:999px;padding:7px 14px;background:rgba(19,27,52,.55)}
+.meta-chip b{color:var(--text);font-weight:600}
+
+/* graph nav */
+.graphnav{margin:44px 0 8px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(19,27,52,.75),rgba(14,20,38,.75));padding:26px 22px 18px;overflow-x:auto}
+.graphnav-label{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-bottom:14px}
+.gsvg{display:block;min-width:880px;width:100%;height:auto}
+.gnode{cursor:pointer}
+.gnode circle{fill:var(--bg);stroke-width:2;transition:filter .25s}
+.gnode:hover circle{filter:drop-shadow(0 0 8px currentColor)}
+.gnode text{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+.gnode .num{font-family:var(--disp);font-size:14px;font-weight:700;fill:var(--text)}
+.gedge{fill:none;stroke-width:1.6;opacity:.85}
+.gflow{fill:none;stroke-width:1.6;stroke-dasharray:3 9;animation:flow 2.6s linear infinite;opacity:.9}
+@keyframes flow{to{stroke-dashoffset:-48}}
+.gterm{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;fill:var(--dim)}
+
+/* ---------- MARKET ---------- */
+.market{margin:46px 0 10px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat{border:1px solid var(--line);border-radius:14px;padding:20px 18px;background:rgba(19,27,52,.5)}
+.stat .n{font-family:var(--disp);font-weight:700;font-size:30px;line-height:1}
+.stat .l{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.45}
+.stat:nth-child(1) .n{color:var(--p1)}.stat:nth-child(2) .n{color:var(--p3)}
+.stat:nth-child(3) .n{color:var(--p5)}.stat:nth-child(4) .n{color:var(--p8)}
+.market-note{margin:18px 0 0;color:var(--muted);font-size:15px;max-width:820px}
+.market-note em{color:var(--text);font-style:normal;font-weight:600}
+
+/* ---------- PHASES ---------- */
+.phases{margin-top:64px}
+.phase{display:grid;grid-template-columns:72px 1fr;column-gap:26px;position:relative;padding-bottom:58px}
+.rail{position:relative}
+.rail::before{content:"";position:absolute;left:50%;top:54px;bottom:-6px;width:2px;transform:translateX(-50%);
+  background:linear-gradient(180deg,var(--hue),var(--hue-next,var(--hue)));opacity:.55}
+.phase:last-of-type .rail::before{background:linear-gradient(180deg,var(--hue),transparent)}
+.node{position:sticky;top:26px;width:54px;height:54px;border-radius:50%;margin:0 auto;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--bg);border:2px solid var(--hue);
+  font-family:var(--disp);font-weight:700;font-size:19px;color:var(--hue);
+  box-shadow:0 0 0 6px var(--bg),0 0 22px -4px var(--hue)}
+.pcard{border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,var(--card),var(--bg2));overflow:hidden;
+  opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+.pcard.vis{opacity:1;transform:none}
+.phead{padding:26px 30px 20px;border-bottom:1px solid var(--line);position:relative}
+.phead::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--hue)}
+.ptag{font-family:var(--mono);font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--hue)}
+.phead h2{font-family:var(--disp);font-weight:600;font-size:clamp(21px,2.6vw,27px);margin-top:6px;line-height:1.25}
+.pdur{font-family:var(--mono);font-size:12px;color:var(--dim);margin-top:6px}
+.pbody{padding:24px 30px 28px}
+.tgroup{margin-bottom:22px}
+.tgroup:last-of-type{margin-bottom:0}
+.tgroup h3{font-size:14px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:9px}
+.tgroup h3::before{content:"";width:7px;height:7px;border-radius:2px;background:var(--hue);transform:rotate(45deg)}
+.tgroup ul{list-style:none}
+.tgroup li{color:var(--muted);padding:4px 0 4px 20px;position:relative;font-size:15.2px}
+.tgroup li::before{content:"›";position:absolute;left:4px;color:var(--hue);font-weight:600}
+.tgroup li strong{color:var(--text);font-weight:600}
+.v{font-family:var(--mono);font-size:12.5px;color:var(--hue);background:color-mix(in srgb,var(--hue) 12%,transparent);
+  border:1px solid color-mix(in srgb,var(--hue) 35%,transparent);border-radius:6px;padding:1px 7px;white-space:nowrap}
+
+/* assignment */
+.assign{margin:26px 30px 30px;border:1px solid color-mix(in srgb,var(--hue) 40%,transparent);border-radius:14px;
+  background:color-mix(in srgb,var(--hue) 6%,var(--bg2));overflow:hidden}
+.assign-bar{display:flex;align-items:center;gap:10px;padding:12px 20px;border-bottom:1px solid color-mix(in srgb,var(--hue) 30%,transparent);
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--hue)}
+.assign-bar::before{content:"▸";font-size:13px}
+.assign-body{padding:16px 20px 18px;font-size:15px;color:var(--muted)}
+.assign-body b{color:var(--text);font-weight:600}
+.assign-title{font-family:var(--disp);font-weight:600;font-size:17px;color:var(--text);margin-bottom:8px}
+.covers{margin-top:12px;font-family:var(--mono);font-size:12px;color:var(--dim);line-height:1.7}
+.covers span{color:color-mix(in srgb,var(--hue) 80%,white)}
+
+/* ---------- CHECKLIST ---------- */
+.section-h{margin:26px 0 8px}
+.section-h .eyebrow{color:var(--p8)}
+.section-h .eyebrow::before{background:linear-gradient(90deg,var(--p8),transparent)}
+.section-h h2{font-family:var(--disp);font-weight:700;font-size:clamp(26px,4vw,38px);margin-top:14px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin:18px 0 26px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:7px;vertical-align:-1px}
+.toolgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.tcard{border:1px solid var(--line);border-radius:14px;background:rgba(19,27,52,.5);padding:18px 18px 16px}
+.tcard h4{font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+.pill{display:inline-block;font-family:var(--mono);font-size:12.3px;border-radius:8px;padding:3.5px 10px;margin:0 6px 8px 0;border:1px solid}
+.d-deep{color:#0A0E1A;background:var(--pc);border-color:var(--pc);font-weight:600}
+.d-work{color:var(--pc);background:color-mix(in srgb,var(--pc) 10%,transparent);border-color:color-mix(in srgb,var(--pc) 55%,transparent)}
+.d-aware{color:var(--muted);background:transparent;border-style:dashed;border-color:var(--line2)}
+
+/* ---------- FOOTER ---------- */
+.rule-card{margin:44px 0 0;border:1px solid var(--line);border-radius:18px;padding:34px 36px;text-align:center;
+  background:linear-gradient(120deg,rgba(79,216,232,.07),rgba(157,140,255,.07) 50%,rgba(255,180,84,.08));position:relative;overflow:hidden}
+.rule-card::before{content:"";position:absolute;inset:0 0 auto 0;height:2px;background:linear-gradient(90deg,var(--p1),var(--p4),var(--p8))}
+.rule-card p{font-family:var(--disp);font-size:clamp(17px,2.4vw,22px);font-weight:500;max-width:760px;margin:0 auto;line-height:1.5}
+.rule-card p b{background:linear-gradient(92deg,var(--p1),var(--p8));-webkit-background-clip:text;background-clip:text;color:transparent}
+footer{padding:38px 0 56px;text-align:center;font-family:var(--mono);font-size:12px;color:var(--dim)}
+
+/* ---------- RESPONSIVE / MOTION ---------- */
+@media(max-width:880px){
+  .market{grid-template-columns:repeat(2,1fr)}
+  .toolgrid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:680px){
+  .phase{grid-template-columns:1fr;column-gap:0}
+  .rail{display:none}
+  .phead,.pbody{padding-left:22px;padding-right:22px}
+  .assign{margin:22px 22px 26px}
+  .toolgrid{grid-template-columns:1fr}
+  header{padding-top:54px}
+}
+@media(prefers-reduced-motion:reduce){
+  .gflow{animation:none}
+  .pcard{opacity:1;transform:none;transition:none}
+  html{scroll-behavior:auto}
+}
+.gnode:focus-visible circle{outline:2px solid #fff;outline-offset:3px}
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <div class="eyebrow">Course Syllabus · July 2026 Edition</div>
+  <h1>Agentic AI <span class="grad">Engineer</span></h1>
+  <p class="sub">An eight-phase transition roadmap for a <strong>senior Java architect</strong> — from LLM fundamentals to production multi-agent systems on AWS, built the way the 2026 job market actually hires: <strong>orchestration, evals, guardrails, and shipped systems</strong>.</p>
+  <div class="meta-row">
+    <span class="meta-chip"><b>18–20 wks</b> part-time</span>
+    <span class="meta-chip"><b>10–12 wks</b> intensive</span>
+    <span class="meta-chip">8 phases · 8 shipped builds</span>
+    <span class="meta-chip">Python-first · Java track included</span>
+  </div>
+
+  <nav class="graphnav" aria-label="Phase navigation">
+    <div class="graphnav-label">StateGraph — click a node to jump</div>
+    <svg class="gsvg" viewBox="0 0 980 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Eight-phase learning graph from start to shipped portfolio">
+      <defs>
+        <linearGradient id="edgeG" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#4FD8E8"/><stop offset=".33" stop-color="#7FA4FF"/>
+          <stop offset=".66" stop-color="#C77FF2"/><stop offset="1" stop-color="#FFB454"/>
+        </linearGradient>
+      </defs>
+      <text class="gterm" x="14" y="80">__START__</text>
+      <path class="gedge" d="M92 76 H140" stroke="#4FD8E8"/>
+      <path class="gflow" d="M92 76 H140" stroke="#4FD8E8"/>
+      <!-- main spine -->
+      <path class="gedge" d="M168 76 H900" stroke="url(#edgeG)"/>
+      <path class="gflow" d="M168 76 H900" stroke="url(#edgeG)"/>
+      <!-- reflexion loop between 2 and 4 -->
+      <path class="gedge" d="M260 62 C 300 12, 440 12, 480 62" stroke="#9D8CFF" stroke-dasharray="4 5" opacity=".5"/>
+      <text class="gterm" x="322" y="26" fill="#9D8CFF" opacity=".8">reflect / retry</text>
+      <!-- eval loop between 6 and 7 -->
+      <path class="gedge" d="M700 90 C 730 138, 800 138, 830 90" stroke="#FF8F70" stroke-dasharray="4 5" opacity=".5"/>
+      <text class="gterm" x="726" y="142" fill="#FF8F70" opacity=".85">eval gate</text>
+      <text class="gterm" x="912" y="80">__END__</text>
+      <!-- nodes -->
+      <g class="gnode" data-t="#p1" style="color:#4FD8E8" tabindex="0"><circle cx="154" cy="76" r="15" stroke="#4FD8E8"/><text class="num" x="154" y="81" text-anchor="middle">1</text><text x="154" y="112" text-anchor="middle">Python·LLM</text></g>
+      <g class="gnode" data-t="#p2" style="color:#58C0FF" tabindex="0"><circle cx="260" cy="76" r="15" stroke="#58C0FF"/><text class="num" x="260" y="81" text-anchor="middle">2</text><text x="260" y="112" text-anchor="middle">ReAct·CoT</text></g>
+      <g class="gnode" data-t="#p3" style="color:#7FA4FF" tabindex="0"><circle cx="370" cy="76" r="15" stroke="#7FA4FF"/><text class="num" x="370" y="81" text-anchor="middle">3</text><text x="370" y="112" text-anchor="middle">RAG ×4</text></g>
+      <g class="gnode" data-t="#p4" style="color:#9D8CFF" tabindex="0"><circle cx="480" cy="76" r="15" stroke="#9D8CFF"/><text class="num" x="480" y="81" text-anchor="middle">4</text><text x="480" y="112" text-anchor="middle">LangGraph</text></g>
+      <g class="gnode" data-t="#p5" style="color:#C77FF2" tabindex="0"><circle cx="590" cy="76" r="15" stroke="#C77FF2"/><text class="num" x="590" y="81" text-anchor="middle">5</text><text x="590" y="112" text-anchor="middle">MCP·A2A</text></g>
+      <g class="gnode" data-t="#p6" style="color:#F27FBE" tabindex="0"><circle cx="700" cy="76" r="15" stroke="#F27FBE"/><text class="num" x="700" y="81" text-anchor="middle">6</text><text x="700" y="112" text-anchor="middle">Cloud</text></g>
+      <g class="gnode" data-t="#p7" style="color:#FF8F70" tabindex="0"><circle cx="810" cy="76" r="15" stroke="#FF8F70"/><text class="num" x="810" y="81" text-anchor="middle">7</text><text x="810" y="112" text-anchor="middle">AgentOps</text></g>
+      <g class="gnode" data-t="#p8" style="color:#FFB454" tabindex="0"><circle cx="880" cy="76" r="15" stroke="#FFB454"/><text class="num" x="880" y="81" text-anchor="middle">8</text><text x="880" y="112" text-anchor="middle">Capstone</text></g>
+    </svg>
+  </nav>
+</header>
+
+<section class="wrap">
+  <div class="market">
+    <div class="stat"><div class="n">+280%</div><div class="l">YoY growth in agentic-AI skill mentions — Stanford AI Index 2026</div></div>
+    <div class="stat"><div class="n">#1</div><div class="l">"AI Engineer" — LinkedIn's fastest-growing US job title, 2026</div></div>
+    <div class="stat"><div class="n">~90K</div><div class="l">US job postings citing agentic-AI skills</div></div>
+    <div class="stat"><div class="n">52%</div><div class="l">of enterprises deploying autonomous agents by end of 2026 (Korn Ferry)</div></div>
+  </div>
+  <p class="market-note">The market rewards <em>production-grade skills, not demos</em>. Hiring screens now test orchestration, evaluation, guardrails, and reliability — and ~70% of an agentic system is the distributed-systems engineering you already know. This syllabus front-loads only what is genuinely new.</p>
+</section>
+
+<main class="phases wrap">
+
+  <!-- PHASE 1 -->
+  <section class="phase" id="p1" style="--hue:var(--p1);--hue-next:var(--p2)">
+    <div class="rail"><div class="node">1</div></div>
+    <article class="pcard">
+      <div class="phead"><div class="ptag">Phase 01 · Foundations</div><h2>Python + LLM Fundamentals</h2><div class="pdur">2–3 weeks</div></div>
+      <div class="pbody">
+        <div class="tgroup"><h3>Python for senior Java engineers</h3><ul>
+          <li>Python 3.12/3.13 fast-track — type hints, dataclasses, <strong>async/await</strong>, decorators, mapped to Java equivalents</li>
+          <li>Modern tooling: <span class="v">uv</span> package manager, <span class="v">ruff</span>, <span class="v">pytest</span></li>
+          <li><strong>Pydantic v2</strong> — validation & schemas, the backbone of structured LLM outputs</li>
+          <li><strong>FastAPI</strong> <span class="v">0.11x</span> — async REST services to wrap every agent you build</li>
+        </ul></div>
+        <div class="tgroup"><h3>LLM fundamentals</h3><ul>
+          <li>Transformer intuition: tokens, context windows, temperature, why LLMs hallucinate</li>
+          <li>2026 model landscape: GPT-5.x, Claude Opus 4.8 / Sonnet 4.6, Gemini 2.5/3, open-weight Llama 4 / Mistral / Qwen 3</li>
+          <li>Direct API calls with <span class="v">OpenAI SDK</span> + <span class="v">Anthropic SDK</span> — streaming, retries, token & cost accounting</li>
+          <li><strong>Structured outputs</strong> — JSON mode + Pydantic schemas, the single most important production skill</li>
+          <li>Embeddings & cosine similarity; local experimentation with <span class="v">Ollama</span></li>
+        </ul></div>
+      </div>
+      <div class="assign"><div class="assign-bar">Phase Assignment</div><div class="assign-body">
+        <div class="assign-title">Smart Ticket Classifier API</div>
+        A <b>FastAPI</b> service that turns free-text support tickets into <b>Pydantic-validated JSON</b> (category, priority, sentiment, team) via the Anthropic/OpenAI SDK — with streaming, exponential-backoff retries, per-request cost logging, and a <b>Docker</b> image.
+        <div class="covers">covers → <span>Python · FastAPI · Pydantic · LLM APIs · structured outputs · production hygiene</span></div>
+      </div></div>
+    </article>
+  </section>
+
+  <!-- PHASE 2 -->
+  <section class="phase" id="p2" style="--hue:var(--p2);--hue-next:var(--p3)">
+    <div class="rail"><div class="node">2</div></div>
+    <article class="pcard">
+      <div class="phead"><div class="ptag">Phase 02 · Reasoning</div><h2>Prompting & Agentic Reasoning Patterns</h2><div class="pdur">2 weeks</div></div>
+      <div class="pbody">
+        <div class="tgroup"><h3>Production prompt engineering</h3><ul>
+          <li>System vs. user prompts, few-shot examples, XML delimiters, output constraints</li>
+          <li>Prompts as versioned, tested code — stored in git</li>
+          <li><strong>Context engineering</strong> — the 2026 evolution: what enters the window, what gets retrieved, what gets summarized</li>
+        </ul></div>
+        <div class="tgroup"><h3>Reasoning patterns — know when to use each</h3><ul>
+          <li><strong>CoT</strong> — step-by-step reasoning, and how native "thinking" models absorbed it</li>
+          <li><strong>ReAct</strong> — the foundational loop: thought → action → observation → repeat</li>
+          <li><strong>ToT</strong> — branching exploration; when it justifies the cost</li>
+          <li><strong>Reflexion</strong> / self-critique, <strong>Plan-and-Execute</strong>, self-consistency voting</li>
+          <li><strong>Tool / function calling</strong> — schemas, parallel calls; the bridge from chatbot to agent</li>
+        </ul></div>
+        <div class="tgroup"><h3>What an agent actually is</h3><ul>
+          <li>Agent = LLM + tools + memory + loop + goal; Anthropic's workflow taxonomy (chaining, routing, orchestrator-workers, evaluator-optimizer)</li>
+          <li>When <strong>not</strong> to build an agent — a deterministic workflow is often correct (a strong interview answer)</li>
+        </ul></div>
+      </div>
+      <div class="assign"><div class="assign-bar">Phase Assignment</div><div class="assign-body">
+        <div class="assign-title">ReAct Research Agent — from scratch, no framework</div>
+        A pure-Python ReAct loop over the raw <b>OpenAI/Anthropic SDK</b> with three tools (calculator, Tavily web search, file writer), a max-iteration guard, and a <b>Reflexion</b> pass that critiques and retries once. Framework-free is the best interview prep there is.
+        <div class="covers">covers → <span>ReAct · CoT · Reflexion · tool calling · agent-loop internals</span></div>
+      </div></div>
+    </article>
+  </section>
+
+  <!-- PHASE 3 -->
+  <section class="phase" id="p3" style="--hue:var(--p3);--hue-next:var(--p4)">
+    <div class="rail"><div class="node">3</div></div>
+    <article class="pcard">
+      <div class="phead"><div class="ptag">Phase 03 · Retrieval</div><h2>RAG — Basic → Advanced → Graph → Agentic</h2><div class="pdur">3 weeks</div></div>
+      <div class="pbody">
+        <div class="tgroup"><h3>Basic RAG</h3><ul>
+          <li>Load → chunk → embed → store → retrieve → generate; chunking strategies</li>
+          <li>Vector DBs: <span class="v">pgvector 0.8</span> on PostgreSQL (the enterprise default), <span class="v">Qdrant 1.x</span>, <span class="v">Chroma</span>, Pinecone</li>
+          <li>Build with <strong>LangChain</strong> <span class="v">1.x</span> first; know when <strong>LlamaIndex</strong> <span class="v">0.14.x</span> wins (complex ingestion)</li>
+        </ul></div>
+        <div class="tgroup"><h3>Advanced RAG</h3><ul>
+          <li>Hybrid search — dense vectors + <strong>BM25</strong>, Reciprocal Rank Fusion</li>
+          <li>Re-ranking with <span class="v">Cohere Rerank 3.5</span> or open-source BGE-reranker</li>
+          <li>Query transformation: <strong>HyDE</strong>, multi-query expansion, routing; contextual retrieval</li>
+          <li>Access-control-aware retrieval — critical in fintech, your niche</li>
+          <li><strong>RAG evaluation with RAGAS</strong> <span class="v">0.3.x</span> — faithfulness, relevancy, context precision/recall</li>
+        </ul></div>
+        <div class="tgroup"><h3>Graph RAG</h3><ul>
+          <li>Where vector RAG fails: multi-hop, relationships, "global" questions</li>
+          <li>Build with <span class="v">Neo4j 5.x</span> + <span class="v">neo4j-graphrag</span> for enterprise knowledge graphs; <span class="v">Microsoft GraphRAG 2.x</span> for corpus-wide summarization</li>
+        </ul></div>
+        <div class="tgroup"><h3>Agentic RAG</h3><ul>
+          <li>Retrieval becomes an agent: decide, retrieve, grade, rewrite, loop until confident</li>
+          <li>Patterns: <strong>Corrective RAG</strong>, <strong>Self-RAG</strong>, router-based multi-index — built on <span class="v">LangGraph 1.2.x</span>, the standard stack in postings</li>
+        </ul></div>
+      </div>
+      <div class="assign"><div class="assign-bar">Phase Assignment</div><div class="assign-body">
+        <div class="assign-title">Regulatory Knowledge Assistant (Agentic RAG)</div>
+        Ingest PSD2/PCI-DSS PDFs into <b>LangChain + pgvector</b> with hybrid BM25 search and <b>Cohere re-ranking</b>, then wrap it in a <b>LangGraph</b> loop that grades chunks, rewrites weak queries, and falls back to web search. Add a small <b>Neo4j</b> entity graph for multi-hop questions and report <b>RAGAS</b> faithfulness before/after re-ranking.
+        <div class="covers">covers → <span>basic · hybrid · re-ranking · Graph RAG · Agentic RAG · RAG evals</span></div>
+      </div></div>
+    </article>
+  </section>
+
+  <!-- PHASE 4 -->
+  <section class="phase" id="p4" style="--hue:var(--p4);--hue-next:var(--p5)">
+    <div class="rail"><div class="node">4</div></div>
+    <article class="pcard">
+      <div class="phead"><div class="ptag">Phase 04 · Orchestration</div><h2>Agent Frameworks & Multi-Agent Systems</h2><div class="pdur">3 weeks</div></div>
+      <div class="pbody">
+        <div class="tgroup"><h3>LangGraph 1.2.x — the primary framework</h3><ul>
+          <li>StateGraph: typed state, nodes, conditional edges, cycles; <span class="v">create_agent()</span> + middleware</li>
+          <li><strong>Durable execution</strong> — Postgres/SQLite checkpointers; maps to your saga experience</li>
+          <li><strong>Human-in-the-loop</strong> — interrupts, approval gates, time-travel replay</li>
+          <li>Memory: thread state vs. long-term store; multi-agent shapes — <strong>supervisor</strong>, hierarchical teams, swarm/handoffs</li>
+        </ul></div>
+        <div class="tgroup"><h3>Vendor agent SDKs — know three, go deep on one</h3><ul>
+          <li><strong>OpenAI Agents SDK</strong> <span class="v">0.1x</span> — agents, handoffs, three-tier guardrails, sandboxed execution, built-in tracing</li>
+          <li><strong>Claude Agent SDK</strong> <span class="v">0.1.x</span> — "give the agent a computer": subagents, hooks, deepest MCP integration</li>
+          <li><strong>Google ADK</strong> <span class="v">2.0</span> — multi-language (Python/<strong>Java</strong>/Go/TS), graph workflows, native A2A — its Java support is your differentiator</li>
+          <li><span class="v">CrewAI 1.x</span> role-based crews (conceptual); <span class="v">Pydantic AI 1.x</span> (awareness)</li>
+        </ul></div>
+        <div class="tgroup"><h3>Cross-framework design patterns</h3><ul>
+          <li>Orchestrator-workers, evaluator-optimizer, router, fan-out/fan-in</li>
+          <li>Saga-style compensation for side-effecting agent actions; context isolation for sub-agents</li>
+        </ul></div>
+      </div>
+      <div class="assign"><div class="assign-bar">Phase Assignment</div><div class="assign-body">
+        <div class="assign-title">Multi-Agent Fraud Triage System</div>
+        A <b>LangGraph supervisor</b> over three specialists — transaction analysis, customer-history RAG (Phase 3 stack), and report writer — with a <b>human-in-the-loop interrupt</b> before any account block and <b>Postgres checkpointing</b> so the flow survives restarts. Rebuild a 2-agent version in the <b>OpenAI Agents SDK</b> and write a one-page framework comparison.
+        <div class="covers">covers → <span>LangGraph state/HITL/durability · supervisor pattern · vendor SDK · trade-off reasoning</span></div>
+      </div></div>
+    </article>
+  </section>
+
+  <!-- PHASE 5 -->
+  <section class="phase" id="p5" style="--hue:var(--p5);--hue-next:var(--p6)">
+    <div class="rail"><div class="node">5</div></div>
+    <article class="pcard">
+      <div class="phead"><div class="ptag">Phase 05 · Protocols</div><h2>MCP & A2A — The Agent Protocol Layer</h2><div class="pdur">2 weeks</div></div>
+      <div class="pbody">
+        <div class="tgroup"><h3>Model Context Protocol <span class="v">spec 2025-11-25</span></h3><ul>
+          <li>Hosts, clients, servers; primitives — <strong>tools, resources, prompts</strong>; sampling & elicitation</li>
+          <li>Transports: stdio vs. <strong>Streamable HTTP</strong>; stateless vs. stateful sessions; <strong>OAuth 2.1</strong> for remote servers</li>
+          <li>Build in Python with <span class="v">MCP SDK 1.x</span> / <span class="v">FastMCP 2.x</span>; in Java with <strong>Spring AI MCP</strong> <span class="v">Spring AI 1.1.x</span> — your Java superpower applies directly</li>
+          <li>Consume MCP from Claude Agent SDK (native), LangGraph via <span class="v">langchain-mcp-adapters</span>, OpenAI Agents SDK</li>
+          <li>MCP security: tool poisoning, prompt injection via descriptions, confused-deputy, allowlisting</li>
+        </ul></div>
+        <div class="tgroup"><h3>Agent-to-Agent Protocol (Linux Foundation)</h3><ul>
+          <li>Agent Cards, tasks, artifacts, long-running lifecycle; ACP merged into A2A in 2026</li>
+          <li>MCP = agent↔tool; A2A = agent↔agent. Build with <span class="v">a2a-python</span>, native in Google ADK & CrewAI</li>
+        </ul></div>
+      </div>
+      <div class="assign"><div class="assign-bar">Phase Assignment</div><div class="assign-body">
+        <div class="assign-title">Enterprise MCP Gateway</div>
+        Two MCP servers: a <b>FastMCP</b> Python server exposing your Phase 3 RAG as tools, and a <b>Spring AI MCP</b> Java server wrapping a mock core-banking API over OAuth-protected Streamable HTTP. Connect both to Claude Code and to the LangGraph agent. Bonus: publish the fraud-triage supervisor as an <b>A2A agent</b> with an Agent Card.
+        <div class="covers">covers → <span>MCP in Python & Java · transports · OAuth · multi-framework clients · A2A</span></div>
+      </div></div>
+    </article>
+  </section>
+
+  <!-- PHASE 6 -->
+  <section class="phase" id="p6" style="--hue:var(--p6);--hue-next:var(--p7)">
+    <div class="rail"><div class="node">6</div></div>
+    <article class="pcard">
+      <div class="phead"><div class="ptag">Phase 06 · Cloud</div><h2>Cloud-Based Agentic AI Platforms</h2><div class="pdur">3 weeks</div></div>
+      <div class="pbody">
+        <div class="tgroup"><h3>AWS — primary (matches your SA-Pro)</h3><ul>
+          <li><strong>Amazon Bedrock</strong>: Converse API, Knowledge Bases (managed RAG), <strong>Bedrock Guardrails</strong></li>
+          <li><strong>Bedrock AgentCore</strong> (GA): <strong>Runtime</strong> (session-isolated microVMs), <strong>Gateway</strong> (APIs → MCP tools), <strong>Memory</strong>, <strong>Identity</strong>, Code Interpreter, Browser, <strong>Observability</strong></li>
+          <li>Framework-agnostic hosting — deploy LangGraph, CrewAI, or Strands agents; host MCP servers</li>
+          <li><strong>Strands Agents SDK</strong> <span class="v">1.x</span> — AWS's open-source model-driven framework, the idiomatic AgentCore pairing</li>
+          <li>Senior-level depth: VPC/private connectivity, IAM for agents, cost controls</li>
+        </ul></div>
+        <div class="tgroup"><h3>Azure / Microsoft — highest enterprise demand in Europe</h3><ul>
+          <li><strong>Microsoft Foundry</strong> + <strong>Foundry Agent Service</strong> — managed agents, Azure AI Search, MCP endpoints, Foundry Toolbox</li>
+          <li><strong>Microsoft Agent Framework</strong> <span class="v">1.0 GA</span> — the AutoGen + Semantic Kernel merger; Python & .NET, OTel built in</li>
+          <li>Agent 365 / Entra Agent ID governance — a Director-level talking point</li>
+        </ul></div>
+        <div class="tgroup"><h3>Google Cloud — awareness</h3><ul>
+          <li>Vertex AI Agent Engine + <span class="v">ADK 2.0</span> deployment; one conceptual walkthrough</li>
+        </ul></div>
+      </div>
+      <div class="assign"><div class="assign-bar">Phase Assignment</div><div class="assign-body">
+        <div class="assign-title">Deploy the Fraud Triage System to AgentCore</div>
+        Move the Phase 4 system onto <b>AgentCore Runtime</b>: banking API → MCP tools via <b>Gateway</b>, memory → <b>AgentCore Memory</b>, OAuth via <b>Identity</b>, PII masking + injection filtering via <b>Bedrock Guardrails</b>, tracing → CloudWatch. Rebuild one specialist in <b>Strands</b> and write an architecture doc with cost model and scaling assumptions.
+        <div class="covers">covers → <span>AgentCore end-to-end · Strands · managed guardrails · cloud-native agent architecture</span></div>
+      </div></div>
+    </article>
+  </section>
+
+  <!-- PHASE 7 -->
+  <section class="phase" id="p7" style="--hue:var(--p7);--hue-next:var(--p8)">
+    <div class="rail"><div class="node">7</div></div>
+    <article class="pcard">
+      <div class="phead"><div class="ptag">Phase 07 · AgentOps</div><h2>Evaluation, Observability, Security & Production</h2><div class="pdur">2–3 weeks</div></div>
+      <div class="pbody">
+        <div class="tgroup"><h3>Evaluation — the #1 skill gap employers cite</h3><ul>
+          <li>Prompt unit tests, LLM-as-judge, regression suites, A/B testing</li>
+          <li>Agent-specific: <strong>trajectory evaluation</strong> (right tools, right order?), task-completion rate, cost/latency budgets</li>
+          <li>Tools: <span class="v">LangSmith</span>, <span class="v">RAGAS 0.3.x</span>, <span class="v">DeepEval</span> / <span class="v">promptfoo</span>; eval-gated deployment in GitHub Actions</li>
+        </ul></div>
+        <div class="tgroup"><h3>Observability</h3><ul>
+          <li>Spans for LLM calls, tools, retrievals; token & cost attribution per session</li>
+          <li><strong>OpenTelemetry GenAI semantic conventions</strong> + <span class="v">LangSmith</span> or <span class="v">Langfuse 3.x</span> (self-hostable, popular in EU/regulated firms) or Arize Phoenix</li>
+        </ul></div>
+        <div class="tgroup"><h3>Security & guardrails</h3><ul>
+          <li><strong>OWASP LLM Top 10</strong>: prompt injection, insecure output handling, excessive agency, exfiltration</li>
+          <li>Defense-in-depth: <span class="v">NeMo Guardrails</span>, <span class="v">Guardrails AI</span>, Bedrock/OpenAI guardrails; least-privilege tools; HITL for irreversible actions</li>
+          <li>EU AI Act awareness — relevant to your Amsterdam/London/Berlin targets</li>
+        </ul></div>
+        <div class="tgroup"><h3>Production engineering for agents</h3><ul>
+          <li>Kubernetes or serverless deployment; SSE/WebSocket streaming</li>
+          <li>Timeouts, circuit breakers, idempotent tools, saga compensation, semantic caching</li>
+          <li>Versioned prompts, models, and eval datasets; canary rollouts of model upgrades</li>
+        </ul></div>
+      </div>
+      <div class="assign"><div class="assign-bar">Phase Assignment</div><div class="assign-body">
+        <div class="assign-title">Harden and Ship</div>
+        A <b>LangSmith</b> dataset of 30 cases — including 5 prompt-injection attacks and 5 tool failures — with <b>trajectory evals gating GitHub Actions</b>, <b>OTel GenAI</b> traces into <b>Langfuse</b>, <b>NeMo Guardrails</b> input rails, and a dashboard for cost-per-triage, p95 latency, and eval trend. Publish "what broke, what I measured, what I fixed."
+        <div class="covers">covers → <span>evals · LLM-as-judge · CI/CD gating · OTel tracing · guardrails · security testing</span></div>
+      </div></div>
+    </article>
+  </section>
+
+  <!-- PHASE 8 -->
+  <section class="phase" id="p8" style="--hue:var(--p8)">
+    <div class="rail"><div class="node">8</div></div>
+    <article class="pcard">
+      <div class="phead"><div class="ptag">Phase 08 · Capstone</div><h2>Java-Native Track + Portfolio</h2><div class="pdur">2–3 weeks · parallel-friendly</div></div>
+      <div class="pbody">
+        <div class="tgroup"><h3>Java/Spring agentic stack — your differentiator</h3><ul>
+          <li><strong>Spring AI</strong> <span class="v">1.1.x</span> — ChatClient, tool calling, RAG advisors, MCP client & server starters</li>
+          <li><strong>LangChain4j</strong> <span class="v">1.x</span> — AiServices, tools, RAG; framework-agnostic Java</li>
+          <li><strong>LangGraph4j</strong> <span class="v">1.8.x</span> — LangGraph's graph model in Java</li>
+          <li>The pitch: <strong>"agentic AI into an existing Java/Spring estate without a Python rewrite"</strong> — rare and valuable for banks and payment companies</li>
+        </ul></div>
+        <div class="tgroup"><h3>Capstone — pick one, build deep, publish with a demo video</h3><ul>
+          <li><strong>A · Agentic Payment-Operations Copilot</strong> — LangGraph multi-agent failed-payment investigator: Spring AI MCP data server, Agentic RAG for regulations, human-approved refunds, AgentCore deployment, fully eval-gated</li>
+          <li><strong>B · Engineering-Intelligence Agent</strong> — ingests repos/CI via GitHub MCP + a custom DORA-metrics MCP server, answers "why did deployment frequency drop?" — plays to your leadership narrative</li>
+        </ul></div>
+        <div class="tgroup"><h3>Interview & positioning prep</h3><ul>
+          <li>System-design drills: "design a support-agent platform for 10M users" — retrieval, orchestration, evals, guardrails, cost</li>
+          <li>Trade-off narratives: LangGraph vs. vendor SDKs · workflow vs. agent · vector vs. graph · build vs. AgentCore-managed</li>
+          <li>Portfolio: 3 pinned repos (Phases 3, 5/6, capstone), each with architecture diagram, eval results, 3-minute demo</li>
+        </ul></div>
+      </div>
+      <div class="assign"><div class="assign-bar">Capstone Deliverable</div><div class="assign-body">
+        <div class="assign-title">One production-grade system, publicly shipped</div>
+        The eight assignments compound into a single portfolio system: RAG stack → multi-agent supervisor → MCP-wrapped → cloud-deployed → eval-gated. Finish with <b>one substantial system</b>, not eight toy projects.
+        <div class="covers">covers → <span>full stack synthesis · Java track · portfolio · interview narratives</span></div>
+      </div></div>
+    </article>
+  </section>
+</main>
+
+<!-- CHECKLIST -->
+<section class="wrap section-h" id="tools">
+  <div class="eyebrow">Outcome</div>
+  <h2>Everything you will have learned</h2>
+  <div class="legend">
+    <span><i style="background:var(--p4)"></i>Deep — build & defend in interviews</span>
+    <span><i style="background:color-mix(in srgb,var(--p4) 15%,transparent);border:1px solid var(--p4)"></i>Working — built at least once</span>
+    <span><i style="border:1px dashed var(--line2)"></i>Aware — can compare & discuss</span>
+  </div>
+  <div class="toolgrid">
+    <div class="tcard" style="--pc:var(--p1)"><h4>Language & LLM Core</h4>
+      <span class="pill d-deep">Python 3.13</span><span class="pill d-deep">Pydantic v2</span><span class="pill d-deep">FastAPI</span><span class="pill d-deep">uv</span><span class="pill d-deep">OpenAI SDK</span><span class="pill d-deep">Anthropic SDK</span><span class="pill d-work">Ollama</span></div>
+    <div class="tcard" style="--pc:var(--p2)"><h4>Reasoning Patterns</h4>
+      <span class="pill d-deep">ReAct</span><span class="pill d-deep">CoT</span><span class="pill d-deep">Tool calling</span><span class="pill d-work">ToT</span><span class="pill d-work">Reflexion</span><span class="pill d-work">Plan-and-Execute</span></div>
+    <div class="tcard" style="--pc:var(--p3)"><h4>RAG</h4>
+      <span class="pill d-deep">LangChain 1.x</span><span class="pill d-deep">pgvector 0.8</span><span class="pill d-deep">RAGAS 0.3</span><span class="pill d-deep">Hybrid + Rerank</span><span class="pill d-work">Qdrant 1.x</span><span class="pill d-work">LlamaIndex 0.14</span><span class="pill d-work">Neo4j GraphRAG</span><span class="pill d-work">MS GraphRAG 2.x</span></div>
+    <div class="tcard" style="--pc:var(--p4)"><h4>Orchestration & SDKs</h4>
+      <span class="pill d-deep">LangGraph 1.2</span><span class="pill d-deep">OpenAI Agents SDK</span><span class="pill d-deep">Claude Agent SDK</span><span class="pill d-work">Google ADK 2.0</span><span class="pill d-work">CrewAI 1.x</span><span class="pill d-aware">Pydantic AI 1.x</span></div>
+    <div class="tcard" style="--pc:var(--p5)"><h4>Protocols</h4>
+      <span class="pill d-deep">MCP 2025-11-25</span><span class="pill d-deep">FastMCP 2.x</span><span class="pill d-deep">Spring AI MCP</span><span class="pill d-work">A2A / a2a-python</span></div>
+    <div class="tcard" style="--pc:var(--p6)"><h4>Cloud Platforms</h4>
+      <span class="pill d-deep">Bedrock AgentCore</span><span class="pill d-deep">Strands 1.x</span><span class="pill d-deep">Bedrock Guardrails</span><span class="pill d-work">MS Foundry</span><span class="pill d-work">Agent Framework 1.0</span><span class="pill d-aware">Vertex Agent Engine</span></div>
+    <div class="tcard" style="--pc:var(--p7)"><h4>AgentOps</h4>
+      <span class="pill d-deep">LangSmith</span><span class="pill d-deep">Eval-gated CI/CD</span><span class="pill d-work">Langfuse 3.x</span><span class="pill d-work">OTel GenAI</span><span class="pill d-work">NeMo Guardrails</span><span class="pill d-work">OWASP LLM Top 10</span></div>
+    <div class="tcard" style="--pc:var(--p8)"><h4>Java Track</h4>
+      <span class="pill d-deep">Spring AI 1.1</span><span class="pill d-work">LangChain4j 1.x</span><span class="pill d-work">LangGraph4j 1.8</span></div>
+    <div class="tcard" style="--pc:var(--p8)"><h4>Delivery — already expert</h4>
+      <span class="pill d-deep">Docker</span><span class="pill d-deep">Kubernetes</span><span class="pill d-deep">GitHub Actions</span></div>
+  </div>
+
+  <div class="rule-card">
+    <p>Never skip the assignment. In the 2026 market, <b>one shipped, evaluated, instrumented agent on GitHub</b> outweighs every certificate.</p>
+  </div>
+</section>
+
+<footer>agentic-ai-engineer-syllabus · july 2026 · researched against the current job market</footer>
+
+<script>
+// graph-nav click/keyboard navigation
+document.querySelectorAll('.gnode').forEach(n=>{
+  const go=()=>{const t=document.querySelector(n.dataset.t);if(t)t.scrollIntoView({behavior:'smooth',block:'start'})};
+  n.addEventListener('click',go);
+  n.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});
+});
+// scroll reveal
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');io.unobserve(e.target)}}),{threshold:.08});
+document.querySelectorAll('.pcard').forEach(c=>io.observe(c));
+if(matchMedia('(prefers-reduced-motion: reduce)').matches){document.querySelectorAll('.pcard').forEach(c=>c.classList.add('vis'))}
+</script>
+</body>
+</html>

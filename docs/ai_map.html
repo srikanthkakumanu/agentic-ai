@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Concepts Relationship Map</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        :root {
+            --bg-1: #07111f;
+            --bg-2: #0b1729;
+            --bg-3: #0f2238;
+            --surface: rgba(9, 18, 33, 0.58);
+            --surface-strong: rgba(12, 23, 40, 0.82);
+            --border: rgba(166, 192, 255, 0.16);
+            --text: #eef4ff;
+            --muted: #9fb2d9;
+            --accent: #67e8f9;
+            --shadow: 0 30px 80px rgba(0, 0, 0, 0.42);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            font-family: "Avenir Next", "Segoe UI", sans-serif;
+            margin: 0;
+            color: var(--text);
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(15, 118, 110, 0.34), transparent 28%),
+                radial-gradient(circle at 78% 14%, rgba(59, 130, 246, 0.26), transparent 24%),
+                radial-gradient(circle at 82% 80%, rgba(249, 115, 22, 0.18), transparent 22%),
+                linear-gradient(135deg, var(--bg-1), var(--bg-2) 48%, var(--bg-3));
+        }
+
+        body::before,
+        body::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        body::before {
+            background-image:
+                linear-gradient(rgba(173, 216, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(173, 216, 255, 0.05) 1px, transparent 1px);
+            background-size: 48px 48px;
+            mask-image: radial-gradient(circle at center, black 45%, transparent 88%);
+            opacity: 0.4;
+        }
+
+        body::after {
+            background:
+                radial-gradient(circle at center, transparent 38%, rgba(3, 7, 18, 0.55) 100%);
+        }
+
+        .app-shell {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            isolation: isolate;
+        }
+
+        .ambient {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .ambient span {
+            position: absolute;
+            border-radius: 999px;
+            filter: blur(10px);
+            opacity: 0.55;
+        }
+
+        .ambient .orb-a {
+            width: 22rem;
+            height: 22rem;
+            top: 10%;
+            left: -4rem;
+            background: radial-gradient(circle, rgba(34, 211, 238, 0.36), transparent 70%);
+        }
+
+        .ambient .orb-b {
+            width: 28rem;
+            height: 28rem;
+            right: -8rem;
+            top: -3rem;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.34), transparent 68%);
+        }
+
+        .ambient .orb-c {
+            width: 24rem;
+            height: 24rem;
+            right: 8%;
+            bottom: -7rem;
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.24), transparent 70%);
+        }
+
+        .hero {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            z-index: 2;
+            max-width: min(36rem, calc(100vw - 48px));
+            padding: 18px 20px;
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            background: linear-gradient(180deg, rgba(14, 25, 44, 0.82), rgba(7, 15, 29, 0.52));
+            backdrop-filter: blur(18px) saturate(135%);
+            box-shadow: var(--shadow);
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            border: 1px solid rgba(103, 232, 249, 0.2);
+            border-radius: 999px;
+            background: rgba(103, 232, 249, 0.08);
+            color: #b9f6ff;
+            font-size: 0.72rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            margin: 14px 0 8px;
+            font-size: clamp(1.8rem, 2.5vw, 2.8rem);
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+        }
+
+        .hero p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.98rem;
+            line-height: 1.55;
+            max-width: 32rem;
+        }
+
+        .legend {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            z-index: 2;
+            padding: 14px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: rgba(8, 18, 34, 0.58);
+            backdrop-filter: blur(16px) saturate(130%);
+            box-shadow: var(--shadow);
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .legend strong {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .legend p {
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        svg {
+            position: relative;
+            z-index: 1;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .link {
+            fill: none;
+            stroke: url(#link-gradient);
+            stroke-width: 1.8px;
+            opacity: 0.72;
+        }
+
+        .link-glow {
+            fill: none;
+            stroke: rgba(103, 232, 249, 0.12);
+            stroke-width: 8px;
+            opacity: 0.35;
+            filter: url(#soft-blur);
+        }
+
+        .link-label {
+            fill: #d8e5ff;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-anchor: middle;
+            paint-order: stroke;
+            stroke: rgba(7, 14, 27, 0.8);
+            stroke-width: 5px;
+            stroke-linejoin: round;
+            pointer-events: none;
+        }
+
+        .node {
+            cursor: grab;
+        }
+
+        .node:active {
+            cursor: grabbing;
+        }
+
+        .node .halo {
+            opacity: 0.42;
+            filter: url(#soft-blur);
+            transition: opacity 180ms ease;
+        }
+
+        .node .core {
+            stroke: rgba(236, 246, 255, 0.82);
+            stroke-width: 1.6px;
+            transition: transform 180ms ease, stroke-width 180ms ease, filter 180ms ease;
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.28));
+        }
+
+        .node .inner-ring {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.26);
+            stroke-width: 1px;
+            opacity: 0.9;
+            pointer-events: none;
+        }
+
+        .node:hover .halo,
+        .node.is-active .halo {
+            opacity: 0.72;
+        }
+
+        .node:hover .core,
+        .node.is-active .core {
+            stroke-width: 2.4px;
+            filter: drop-shadow(0 0 22px rgba(255, 255, 255, 0.18));
+        }
+
+        .node-label {
+            fill: #f7fbff;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            text-anchor: middle;
+            pointer-events: none;
+            paint-order: stroke;
+            stroke: rgba(4, 10, 20, 0.85);
+            stroke-width: 6px;
+            stroke-linejoin: round;
+        }
+
+        #info-panel {
+            position: absolute;
+            left: 24px;
+            bottom: 24px;
+            z-index: 3;
+            width: min(26rem, calc(100vw - 48px));
+            padding: 18px 18px 16px;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(10, 21, 39, 0.9), rgba(8, 17, 31, 0.72));
+            backdrop-filter: blur(18px) saturate(140%);
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        #info-panel.visible {
+            display: block;
+        }
+
+        .panel-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        #info-title {
+            margin: 0;
+            font-size: 1.25rem;
+            letter-spacing: -0.03em;
+        }
+
+        #close-panel {
+            width: 34px;
+            height: 34px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.04);
+            color: #d6e3ff;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        #close-panel:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        #info-desc {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.55;
+            font-size: 0.96rem;
+        }
+
+        @media (max-width: 900px) {
+            .hero {
+                right: 24px;
+                max-width: none;
+            }
+
+            .legend {
+                top: auto;
+                right: 24px;
+                bottom: 24px;
+                left: auto;
+                width: min(18rem, calc(100vw - 48px));
+            }
+
+            #info-panel {
+                left: 24px;
+                right: 24px;
+                width: auto;
+                bottom: 120px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .hero {
+                top: 16px;
+                left: 16px;
+                right: 16px;
+                padding: 16px;
+                border-radius: 18px;
+            }
+
+            .hero p {
+                font-size: 0.92rem;
+            }
+
+            .legend {
+                display: none;
+            }
+
+            #info-panel {
+                left: 16px;
+                right: 16px;
+                bottom: 16px;
+                border-radius: 18px;
+            }
+
+            .node-label {
+                font-size: 12px;
+            }
+
+            .link-label {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-shell">
+        <div class="ambient" aria-hidden="true">
+            <span class="orb-a"></span>
+            <span class="orb-b"></span>
+            <span class="orb-c"></span>
+        </div>
+
+        <section class="hero">
+            <div class="eyebrow">AI Knowledge Graph</div>
+            <h1>How Core AI Concepts Connect</h1>
+            <p>Explore the ecosystem as an interactive relationship map. Drag nodes to reshape the network and click any concept to see how it fits into the larger AI landscape.</p>
+        </section>
+
+        <aside class="legend">
+            <strong>Interaction</strong>
+            <p>Drag nodes to reorganize the graph. Click a concept to focus it and open its explanation.</p>
+        </aside>
+
+        <div id="info-panel" aria-live="polite">
+            <div class="panel-top">
+                <h2 id="info-title"></h2>
+                <button id="close-panel" type="button" aria-label="Close details">×</button>
+            </div>
+            <p id="info-desc"></p>
+        </div>
+
+        <svg aria-label="AI concepts relationship map"></svg>
+    </div>
+
+    <script>
+        const nodes = [
+            { id: "AI", group: 1, radius: 46, color: "#38bdf8", desc: "Artificial Intelligence is the broad umbrella for systems designed to simulate human-like intelligence, reasoning, and decision-making." },
+            { id: "ML", group: 2, radius: 36, color: "#8b5cf6", desc: "Machine Learning is a subset of AI that learns patterns from data instead of relying only on hand-written rules." },
+            { id: "DL", group: 3, radius: 36, color: "#ec4899", desc: "Deep Learning is a branch of machine learning that uses many neural network layers to model complex signals like text, speech, and images." },
+            { id: "NN", group: 4, radius: 31, color: "#f43f5e", desc: "Neural Networks are the core architecture behind deep learning, inspired by interconnected neurons passing signals through layers." },
+            { id: "LLMs", group: 5, radius: 42, color: "#fb7185", desc: "Large Language Models are large-scale deep learning systems trained on text to understand and generate language." },
+            { id: "Generative AI", group: 6, radius: 42, color: "#f97316", desc: "Generative AI creates new outputs such as text, code, images, audio, or video from learned patterns in training data." },
+            { id: "NLP", group: 7, radius: 36, color: "#facc15", desc: "Natural Language Processing focuses on understanding, analyzing, and generating human language." },
+            { id: "Supervised", group: 2, radius: 25, color: "#a78bfa", desc: "Supervised Learning trains on labeled examples so the model can predict known targets or classes." },
+            { id: "Unsupervised", group: 2, radius: 25, color: "#c084fc", desc: "Unsupervised Learning looks for structure and patterns in data without labeled outcomes." },
+            { id: "Reinforcement", group: 2, radius: 25, color: "#7c3aed", desc: "Reinforcement Learning improves behavior by learning from rewards, penalties, and repeated feedback." },
+            { id: "Transformers", group: 4, radius: 29, color: "#f9a8d4", desc: "Transformers are a neural network architecture that made modern language models dramatically more capable." },
+            { id: "GANs", group: 6, radius: 28, color: "#fdba74", desc: "GANs are generative models that learn by pitting a generator and discriminator against each other, often for image creation." }
+        ];
+
+        const links = [
+            { source: "AI", target: "ML", label: "Subset of" },
+            { source: "AI", target: "NLP", label: "Subset of" },
+            { source: "ML", target: "Supervised", label: "Type" },
+            { source: "ML", target: "Unsupervised", label: "Type" },
+            { source: "ML", target: "Reinforcement", label: "Type" },
+            { source: "ML", target: "DL", label: "Subset of" },
+            { source: "DL", target: "NN", label: "Uses" },
+            { source: "NN", target: "Transformers", label: "Architecture" },
+            { source: "Transformers", target: "LLMs", label: "Powers" },
+            { source: "DL", target: "LLMs", label: "Foundation for" },
+            { source: "LLMs", target: "Generative AI", label: "Powers" },
+            { source: "GANs", target: "Generative AI", label: "Powers" },
+            { source: "LLMs", target: "NLP", label: "Modern Core" },
+            { source: "Generative AI", target: "AI", label: "Subset of" }
+        ];
+
+        const svg = d3.select("svg");
+        const infoPanel = document.getElementById("info-panel");
+        const infoTitle = document.getElementById("info-title");
+        const infoDesc = document.getElementById("info-desc");
+        const closePanel = document.getElementById("close-panel");
+        let activeNodeId = null;
+
+        const defs = svg.append("defs");
+
+        defs.append("filter")
+            .attr("id", "soft-blur")
+            .append("feGaussianBlur")
+            .attr("stdDeviation", 8);
+
+        const linkGradient = defs.append("linearGradient")
+            .attr("id", "link-gradient")
+            .attr("gradientUnits", "userSpaceOnUse")
+            .attr("x1", "0%")
+            .attr("y1", "0%")
+            .attr("x2", "100%")
+            .attr("y2", "0%");
+
+        linkGradient.append("stop")
+            .attr("offset", "0%")
+            .attr("stop-color", "rgba(103, 232, 249, 0.2)");
+
+        linkGradient.append("stop")
+            .attr("offset", "45%")
+            .attr("stop-color", "rgba(168, 85, 247, 0.9)");
+
+        linkGradient.append("stop")
+            .attr("offset", "100%")
+            .attr("stop-color", "rgba(251, 146, 60, 0.5)");
+
+        defs.append("marker")
+            .attr("id", "arrow")
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 22)
+            .attr("refY", 0)
+            .attr("markerWidth", 7)
+            .attr("markerHeight", 7)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("fill", "#94a3ff")
+            .attr("d", "M0,-5L10,0L0,5");
+
+        nodes.forEach((node) => {
+            const gradient = defs.append("radialGradient")
+                .attr("id", `grad-${slugify(node.id)}`)
+                .attr("cx", "35%")
+                .attr("cy", "30%");
+
+            gradient.append("stop")
+                .attr("offset", "0%")
+                .attr("stop-color", lighten(node.color, 0.4));
+
+            gradient.append("stop")
+                .attr("offset", "55%")
+                .attr("stop-color", node.color);
+
+            gradient.append("stop")
+                .attr("offset", "100%")
+                .attr("stop-color", darken(node.color, 0.24));
+        });
+
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id((d) => d.id).distance((d) => {
+                const targetId = typeof d.target === "string" ? d.target : d.target.id;
+                return targetId === "Generative AI" ? 178 : 160;
+            }))
+            .force("charge", d3.forceManyBody().strength(-980))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("collision", d3.forceCollide().radius((d) => d.radius + 26))
+            .force("x", d3.forceX(width / 2).strength(0.03))
+            .force("y", d3.forceY(height / 2).strength(0.03));
+
+        const linkGroup = svg.append("g").attr("class", "links");
+        const nodeGroup = svg.append("g").attr("class", "nodes");
+
+        const link = linkGroup.selectAll("g")
+            .data(links)
+            .enter()
+            .append("g");
+
+        const linkGlow = link.append("path")
+            .attr("class", "link-glow");
+
+        const linkPath = link.append("path")
+            .attr("class", "link")
+            .attr("marker-end", "url(#arrow)");
+
+        const linkText = link.append("text")
+            .attr("class", "link-label")
+            .text((d) => d.label)
+            .attr("dy", -10);
+
+        const node = nodeGroup.selectAll("g")
+            .data(nodes)
+            .enter()
+            .append("g")
+            .attr("class", "node")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended))
+            .on("click", (event, d) => {
+                event.stopPropagation();
+                showInfo(d);
+            });
+
+        node.append("circle")
+            .attr("class", "halo")
+            .attr("r", (d) => d.radius + 16)
+            .attr("fill", (d) => d.color);
+
+        node.append("circle")
+            .attr("class", "core")
+            .attr("r", (d) => d.radius)
+            .attr("fill", (d) => `url(#grad-${slugify(d.id)})`);
+
+        node.append("circle")
+            .attr("class", "inner-ring")
+            .attr("r", (d) => d.radius - 6);
+
+        node.append("text")
+            .attr("class", "node-label")
+            .attr("dy", 4)
+            .text((d) => d.id);
+
+        simulation.on("tick", () => {
+            linkGlow.attr("d", (d) => buildCurve(d.source, d.target, 0.16));
+            linkPath.attr("d", (d) => buildCurve(d.source, d.target, 0.16));
+
+            linkText
+                .attr("x", (d) => midpoint(d.source, d.target).x)
+                .attr("y", (d) => midpoint(d.source, d.target).y);
+
+            node.attr("transform", (d) => `translate(${d.x},${d.y})`);
+        });
+
+        svg.on("click", () => hideInfo());
+        closePanel.addEventListener("click", (event) => {
+            event.stopPropagation();
+            hideInfo();
+        });
+
+        window.addEventListener("resize", () => {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            simulation.force("center", d3.forceCenter(width / 2, height / 2));
+            simulation.force("x", d3.forceX(width / 2).strength(0.03));
+            simulation.force("y", d3.forceY(height / 2).strength(0.03));
+            simulation.alpha(0.35).restart();
+        });
+
+        showInfo(nodes[0]);
+
+        function buildCurve(source, target, curveStrength) {
+            const start = edgePoint(source, target, source.radius + 2);
+            const end = edgePoint(target, source, target.radius + 10);
+            const dx = end.x - start.x;
+            const dy = end.y - start.y;
+            const mx = (start.x + end.x) / 2;
+            const my = (start.y + end.y) / 2;
+            const nx = -dy * curveStrength;
+            const ny = dx * curveStrength;
+            return `M ${start.x} ${start.y} Q ${mx + nx} ${my + ny} ${end.x} ${end.y}`;
+        }
+
+        function edgePoint(from, to, distance) {
+            const dx = to.x - from.x;
+            const dy = to.y - from.y;
+            const length = Math.hypot(dx, dy) || 1;
+            return {
+                x: from.x + (dx / length) * distance,
+                y: from.y + (dy / length) * distance
+            };
+        }
+
+        function midpoint(source, target) {
+            return {
+                x: (source.x + target.x) / 2,
+                y: (source.y + target.y) / 2
+            };
+        }
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        function showInfo(d) {
+            activeNodeId = d.id;
+            node.classed("is-active", (nodeDatum) => nodeDatum.id === activeNodeId);
+            infoTitle.textContent = d.id;
+            infoDesc.textContent = d.desc;
+            infoPanel.classList.add("visible");
+        }
+
+        function hideInfo() {
+            activeNodeId = null;
+            node.classed("is-active", false);
+            infoPanel.classList.remove("visible");
+        }
+
+        function slugify(value) {
+            return value.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+        }
+
+        function lighten(hex, amount) {
+            return mix(hex, "#ffffff", amount);
+        }
+
+        function darken(hex, amount) {
+            return mix(hex, "#08111f", amount);
+        }
+
+        function mix(colorA, colorB, amount) {
+            const a = hexToRgb(colorA);
+            const b = hexToRgb(colorB);
+            const mixChannel = (channelA, channelB) =>
+                Math.round(channelA + (channelB - channelA) * amount);
+
+            return `rgb(${mixChannel(a.r, b.r)}, ${mixChannel(a.g, b.g)}, ${mixChannel(a.b, b.b)})`;
+        }
+
+        function hexToRgb(hex) {
+            const normalized = hex.replace("#", "");
+            const value = normalized.length === 3
+                ? normalized.split("").map((char) => char + char).join("")
+                : normalized;
+
+            return {
+                r: parseInt(value.slice(0, 2), 16),
+                g: parseInt(value.slice(2, 4), 16),
+                b: parseInt(value.slice(4, 6), 16)
+            };
+        }
+    </script>
+</body>
+</html>
