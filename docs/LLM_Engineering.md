@@ -1,8 +1,110 @@
-# LLM Engineering
+# LLM Fundamentals
+
+A hands-on tutorial on how Large Language Models (LLMs) work under the hood: the Transformer architecture, the vocabulary that shows up in every provider's API (context window, temperature, top-p, top-k), and why even a well-trained model still makes things up.
+
+**What you'll learn:**
+
+- How a Transformer Encoder turns text into contextual vectors, step by step
+- Core vocabulary — tokens, context windows, temperature, top-p, top-k — and how they interact
+- Why LLMs hallucinate, and what that implies for how you use them
+- How system/user prompts and API message structures fit together
+
+The Transformer architecture, introduced in the 2017 paper **"Attention Is All You Need,"** is the foundation for most modern LLMs. The full architecture has an Encoder and a Decoder; many popular models use only one half — BERT uses only the Encoder, while GPT-style models use only the Decoder. This tutorial focuses on the Encoder, since it's the more approachable half to build intuition on.
+
+## Transformer-Encoder Architecture
+
+The Encoder's job is to take an input sequence (like a sentence) and turn it into a rich, contextualized numerical representation: a vector for every token that encodes not just what the token is, but how it relates to every other token around it. An Encoder is a stack of identical layers (the original paper used N=6; depth varies by model — BERT-base uses 12). Each layer has two main sub-components: a Multi-Head Self-Attention mechanism and a Position-wise Feed-Forward Network.
+
+![Animated diagram of a Transformer Encoder block, showing data flowing through input embeddings, positional encoding, multi-head self-attention, add & norm, the feed-forward network, and out to the encoder output, with residual connections highlighted](images/transformer_encoder.gif)
+
+Static version, for renderers that don't display GIFs/Mermaid:
+
+```mermaid
+flowchart TD
+    A["Input Tokens"] --> B["Input Embeddings"]
+    B --> C["+ Positional Encoding"]
+    C --> D["Multi-Head Self-Attention"]
+    D --> E["Add & Norm<br/>(residual + LayerNorm)"]
+    C -. residual .-> E
+    E --> F["Feed-Forward Network"]
+    F --> G["Add & Norm<br/>(residual + LayerNorm)"]
+    E -. residual .-> G
+    G --> H["Encoder Output<br/>(contextual token vectors)"]
+    G -. "repeat x N layers" .-> D
+```
+
+A single Encoder layer processes its input in five steps:
+
+1. **Input & Positional Encoding**: The input text is first tokenized and converted into numerical vectors (embeddings). Since the model processes all tokens at once and has no inherent sense of order, **Positional Encodings** are added to these embeddings to give the model information about the position of each token in the sequence.
+2. **Multi-Head Self-Attention**: This is the core of the Transformer. It allows each token in the input to "look at" and weigh the importance of all other tokens in the sequence, calculating a new representation for each token as a weighted sum of all other tokens' representations. "Multi-head" means it does this multiple times in parallel with different learned weights, letting the model focus on different aspects of the relationships between tokens at once.
+3. **Add & Norm (Residual Connection & Layer Normalization)**: The output of the self-attention layer is added back to its original input (a residual connection), which helps gradients flow during training. This is followed by Layer Normalization to stabilize the network.
+4. **Feed-Forward Network**: The normalized output passes through a simple, fully connected feed-forward network, applied to each token's representation independently and identically. It adds further non-linear transformation.
+5. **Add & Norm**: Another residual connection and layer normalization are applied to the output of the feed-forward network.
+
+> **Note:** The original paper adds sinusoidal positional encodings directly to the token embeddings, as shown above. Many modern LLMs (e.g., Llama, Mistral) instead use Rotary Position Embeddings (RoPE), applied inside the attention calculation itself — a different mechanism, but the same goal: give the model a sense of token order.
+
+The final output of the top Encoder layer is a sequence of vectors, one per input token, each a rich contextual representation of its token given everything else in the sequence.
+
+## Transformer Intuition
+
+Before using an LLM API effectively, a handful of concepts are worth internalizing — they show up as literal parameter names in every provider's SDK.
+
+### Tokens
+
+LLMs don't see words or characters directly. They process text broken into smaller units called **tokens**. A token can be a whole word, part of a word (subword), or a single character — for example, "tokenization" might be split into "token" and "ization". Exactly how text is split depends on the specific model's tokenizer.
+
+### Context Window
+
+The context window is the maximum number of tokens a model can process at once, including both the input prompt and its generated output — the model's "working memory." If a conversation or document exceeds this limit, older content has to be dropped or summarized to make room.
+
+### Temperature
+
+This parameter controls the randomness of the model's output.
+
+- A **low temperature** (e.g., 0.2) makes the model more deterministic and confident, almost always choosing the highest-probability token — focused, consistent answers.
+- A **high temperature** (e.g., 1.0 or higher) increases randomness by flattening the probability distribution, making less-likely tokens more probable. This encourages more diverse or creative output, but also increases the risk of errors.
+
+### Top-p (Nucleus Sampling)
+
+Top-p controls diversity by setting a cumulative probability threshold. The model considers only the smallest set of tokens whose cumulative probability exceeds the `top-p` value. For example, with `top-p=0.9`, the model samples only from the most likely tokens that together make up the top 90% of the probability mass. This is adaptive: if the model is very confident, the candidate set is small; if it's uncertain, the set grows.
+
+### Top-k
+
+Top-k is a simpler way to control diversity: it limits the sampling pool to a fixed number (`k`) of the most likely next tokens. For example, with `k=5`, the model only chooses among the top 5 most probable tokens at each step, ignoring everything else.
+
+**Try it yourself:** send the same prompt twice at `temperature=0` — the outputs should come back nearly identical. Then send it twice at `temperature=1.0` — you should see noticeably different phrasing each time.
+
+### Can We Use Top-p With Temperature and Top-k?
+
+Technically yes — most inference stacks (e.g., Hugging Face's `generate()`, Anthropic's and OpenAI's APIs) accept `temperature`, `top_k`, and `top_p` in the same request, and applying all three is common in practice, not an error. The typical order of operations is:
+
+1. **Temperature** rescales the raw logits, sharpening (low temperature) or flattening (high temperature) the probability distribution.
+2. **Top-k** truncates the distribution to the `k` most probable tokens, discarding the rest.
+3. **Top-p** then applies nucleus sampling on top of what remains, keeping the smallest set of tokens whose cumulative probability exceeds `p`.
+4. The model samples the next token from this final, filtered set.
+
+That said, provider guidance (e.g., OpenAI, Anthropic) generally recommends **adjusting only one of temperature or top-p at a time**, leaving the other at its default — changing both simultaneously makes it hard to reason about why the output changed. Top-k is typically left alone unless you have a specific, advanced use case (e.g., hard-capping the candidate pool for latency or safety reasons); stacking it with top-p is usually redundant rather than harmful.
+
+### Why LLMs Hallucinate
+
+LLM hallucination is the model generating text that sounds plausible and confident but is factually incorrect, nonsensical, or disconnected from the provided context. This happens for several core reasons:
+
+- **They're next-token predictors, not truth-seekers**: An LLM's training objective is to predict the next most statistically probable token, based on patterns learned from a massive dataset. The goal is linguistically coherent text, not verified factual accuracy.
+- **No internal "truth" model**: LLMs don't have a database of facts to check against. They don't "know" things the way humans do — they only encode statistical relationships between tokens.
+- **Training data imperfections**: Training data can contain biases, inaccuracies, or outdated information, which the model learns and can reproduce.
+- **Lossy compression**: Training compresses a vast amount of text into a fixed set of parameters. At generation time the model isn't retrieving stored text verbatim — it's regenerating a statistical approximation, which can blend or drop details, similar to how a person might misremember specifics of something they read long ago.
+- **Incentivized guessing**: Standard training procedures often reward a plausible-sounding answer over an honest "I don't know," reinforcing the tendency to guess confidently rather than express uncertainty.
+
+**Key takeaways:**
+
+- Sampling parameters (temperature, top-p, top-k) trade off consistency for diversity — pick based on whether you need reliability (low temperature) or creativity (higher temperature).
+- Hallucination isn't a bug you can fully "turn off" with parameters — it's a consequence of how these models are trained. Lowering temperature reduces *randomness*, but doesn't guarantee *correctness*; grounding techniques like retrieval-augmented generation (RAG) and citation-checking address hallucination more directly than sampling settings do.
 
 ## Prompting Types
 
-**System Prompt**: A system prompt is a set of instructions that guide the behavior of an LLM. It is used to provide context and instructions for the LLM to understand and respond to the user's input. It tells the LLM what task they are performing and what tone they should use.
+Now that you know how the model processes text internally and how sampling parameters shape its output, here's how you actually talk to it.
+
+**System Prompt**: A system prompt is a set of instructions that guide the behavior of an LLM. It provides context and instructions for how the LLM should understand and respond to the user's input — what task it's performing and what tone it should use.
 
 ```python
 system_prompt = """
@@ -12,19 +114,19 @@ Respond in markdown.
 """
 ```
 
-**User Prompt**: A user prompt is a question or request that the LLM is asked to answer. It is the input that the LLM is given to generate a response. It is a conversation starter that they should reply to.
+**User Prompt**: A user prompt is the question or request the LLM is asked to answer — the input the LLM is given to generate a response, like a conversation starter it should reply to.
 
 ```python
 user_prompt = """
 Here are the contents of a website.
 Provide a short summary of this website in markdown.
-It it includes news or announcements, then summarize these too.
+If it includes news or announcements, then summarize these too.
 """
 ```
 
-**Response**: The response is the output generated by the LLM based on the system prompt and user prompt. It is the answer to the user's question or request.
+**Response**: The response is the output the LLM generates based on the system prompt and user prompt — the answer to the user's question or request.
 
-The API from OpenAI expects to receive messages in a particular structure. Many of the other APIs share this structure:
+The OpenAI API expects messages in a particular structure, and many other providers' APIs share this structure:
 
 ```python
 [ # List of dictionaries with "role" and "content" keys
@@ -32,3 +134,13 @@ The API from OpenAI expects to receive messages in a particular structure. Many 
     {"role": "user", "content": "user message goes here"}
 ]
 ```
+
+## Summary
+
+- A Transformer Encoder layer: embed → add position info → self-attend → add & norm → feed-forward → add & norm, repeated across N layers.
+- Tokens are the model's unit of text; the context window is how many of them it can hold in view at once.
+- Temperature, top-p, and top-k all shape how the next token is sampled — they can be combined, but changing more than one at a time makes behavior harder to reason about.
+- Hallucination is structural, not incidental: these models are trained to produce plausible text, not verified facts.
+- A prompt to an LLM API is just a list of role-tagged messages (`system`, `user`, and the model's own `assistant`/`response` turns).
+
+**Where to go next:** this tutorial covered the Encoder half of the Transformer. GPT-style models are Decoder-only and use *causal* (masked) self-attention, so each token can only attend to tokens before it — that's the architecture worth exploring next if you want to understand how text-generation models like GPT actually produce output one token at a time.
