@@ -17,23 +17,9 @@
 - `RunnableParallel` — run multiple runnables concurrently, merge results.
 - `RunnableBranch` — conditional routing between runnables.
 
-## Example
-
-```python
-from langchain_core.output_parsers import StrOutputParser
-
-chain = prompt | llm | StrOutputParser()
-result = chain.invoke({"topic": "bears"})
-```
-
 ## Composition Patterns
 
-- Basic sequential chains (`prompt | model | parser`)
-- Parallel/branching chains (`RunnableParallel`, `RunnableBranch`)
-- Custom steps with `RunnableLambda`
-- Passing extra context through with `RunnablePassthrough`
-- Streaming and batching the same chain
-- Structured output parsing
+The primitives above combine into a handful of recurring patterns — from a plain linear chain up to streaming, batching, and structured output.
 
 **Basic sequential chain** — runs each step one after another, passing the output of one step into the next. Use it for simple linear flows like prompt, model, then parser.
 
@@ -99,7 +85,7 @@ result = chain.invoke({"topic": "bears"})
   ])
   ```
 
-**Structured output chain** — parses model output into a predictable format, such as plain text, JSON, or a Pydantic object. Use it when later code needs reliable fields instead of free-form text.
+**Structured output chain** — parses model output into a predictable format, such as plain text, JSON, or a Pydantic object. Use it when later code needs reliable fields instead of free-form text. See [Parsers.md](Parsers.md) for the full set of available parsers.
 
   ```python
   from langchain_core.output_parsers import JsonOutputParser
@@ -107,3 +93,5 @@ result = chain.invoke({"topic": "bears"})
   chain = prompt | model | JsonOutputParser()
   result = chain.invoke({"topic": "LCEL"})
   ```
+
+**Where to go next:** every reasoning pattern in [Patterns.md](Patterns.md) — ReAct, Chain-of-Thought, Tree-of-Thought, and the rest — is built from these same LCEL chains, just arranged differently.

@@ -5,12 +5,13 @@ A hands-on tutorial on how Large Language Models (LLMs) work under the hood: the
 **What you'll learn:**
 
 - How a Transformer Encoder turns text into contextual vectors, step by step
+- How the Decoder-only variant that GPT-style models use generates text one token at a time
 - Core vocabulary — tokens, context windows, temperature, top-p, top-k — and how they interact
 - Why LLMs hallucinate, and what that implies for how you use them
 - Where today's major models — GPT-5.x, Claude, Gemini, and the open-weight Llama/Mistral/Qwen families — fit into that picture
 - How system/user prompts and API message structures fit together
 
-The Transformer architecture, introduced in the 2017 paper **"Attention Is All You Need,"** is the foundation for most modern LLMs. The full architecture has an Encoder and a Decoder; many popular models use only one half — BERT uses only the Encoder, while GPT-style models use only the Decoder. This tutorial focuses on the Encoder, since it's the more approachable half to build intuition on.
+The Transformer architecture, introduced in the 2017 paper **"Attention Is All You Need,"** is the foundation for most modern LLMs. The full architecture has an Encoder and a Decoder; many popular models use only one half — BERT uses only the Encoder, while GPT-style models use only the Decoder. This tutorial builds intuition on the Encoder first, since it's the more approachable half, then covers the Decoder-only variant that GPT-style models actually use to generate text.
 
 ## Transformer-Encoder Architecture
 
@@ -45,6 +46,42 @@ A single Encoder layer processes its input in five steps:
 > **Note:** The original paper adds sinusoidal positional encodings directly to the token embeddings, as shown above. Many modern LLMs (e.g., Llama, Mistral) instead use Rotary Position Embeddings (RoPE), applied inside the attention calculation itself — a different mechanism, but the same goal: give the model a sense of token order.
 
 The final output of the top Encoder layer is a sequence of vectors, one per input token, each a rich contextual representation of its token given everything else in the sequence.
+
+## Decoder-Only Transformer Architecture (GPT-Style)
+
+GPT, Llama, Mistral, Qwen, and most other text-generation models are **Decoder-only**: they don't use the Encoder at all. Instead of producing one contextual vector per input token in a single pass, a decoder-only model generates text **autoregressively** — one token at a time, feeding each new token back in as input for producing the next one.
+
+![Animated diagram of a Decoder-only Transformer, showing one autoregressive generation step: input embeddings, positional encoding, masked causal self-attention (with a causal-mask grid icon), add & norm, feed-forward network, the LM head projecting to a probability distribution over the vocabulary, sampling the next token, and looping the longer sequence back to the start](images/transformer_decoder.gif)
+
+Static version, for renderers that don't display GIFs/Mermaid:
+
+```mermaid
+flowchart TD
+    A["Tokens so far<br/>(prompt + generated text)"] --> B["Input Embeddings"]
+    B --> C["+ Positional Encoding"]
+    C --> D["Masked (Causal) Self-Attention<br/>each token attends only to itself + earlier tokens"]
+    D --> E["Add & Norm"]
+    C -. residual .-> E
+    E --> F["Feed-Forward Network"]
+    F --> G["Add & Norm"]
+    E -. residual .-> G
+    G -. "repeat x N layers" .-> D
+    G --> H["Linear + Softmax<br/>(LM head over the vocabulary)"]
+    H --> I["Sample next token<br/>(temperature / top-p / top-k)"]
+    I --> J["Append token to the sequence"]
+    J -.->|"feed the longer sequence back in"| A
+```
+
+A decoder-only layer looks almost identical to the Encoder layer covered above — embeddings, positional info, self-attention, add & norm, feed-forward, add & norm — with two key differences:
+
+1. **Masked (Causal) Self-Attention**: Before the softmax step in self-attention, every position beyond the current token has its attention score forced to (effectively) zero. A token can look at itself and everything before it, but never at anything after it. This isn't just a training-time nicety — at inference time, future tokens don't exist yet, since the model is generating them one at a time.
+2. **No cross-attention sub-layer**: The original paper's Decoder (designed for translation) had a third sub-layer that attended over a separate Encoder's output. A GPT-style decoder-only model has no separate Encoder to attend to, so that sub-layer is simply dropped — self-attention, feed-forward, that's it, repeated across N layers (GPT-3 used 96).
+
+After the final decoder layer, a linear projection plus softmax (the "LM head") turns the last token's vector into a probability distribution over the entire vocabulary — this is exactly the distribution that temperature, top-p, and top-k (covered next) reshape and sample from to pick the actual next token. That sampled token gets appended to the sequence, the whole (now one-token-longer) sequence is fed back through the model, and the loop repeats until an end-of-sequence token or a length limit is hit.
+
+> **Note:** This autoregressive loop is why generation time scales with output length — producing a longer response takes proportionally longer, unlike the Encoder's single forward pass over a whole input. In practice, inference engines avoid recomputing every previous token's attention from scratch at each step via **KV-caching**: the key/value vectors for already-processed tokens are cached and reused, so each new step only does the work needed for the one new token.
+>
+> The causal mask also explains why *training* can still be fast and parallel despite generation being sequential: during training the full target sequence is already known, so the model processes every position in one parallel forward pass — the mask just ensures position *i*'s prediction can't cheat by looking at position *i*'s own answer or anything after it.
 
 ## Transformer Intuition
 
@@ -181,11 +218,12 @@ The OpenAI API expects messages in a particular structure, and many other provid
 
 ## Summary
 
-- A Transformer Encoder layer: embed → add position info → self-attend → add & norm → feed-forward → add & norm, repeated across N layers.
+- A Transformer Encoder layer: embed → add position info → self-attend → add & norm → feed-forward → add & norm, repeated across N layers — producing one contextual vector per input token in a single forward pass.
+- A Decoder-only (GPT-style) layer looks almost the same, except self-attention is *masked* (causal): each token can only attend to itself and earlier tokens, never later ones. An "LM head" then turns the last token's vector into a probability distribution over the vocabulary, a token gets sampled from it, and the whole longer sequence is fed back in — repeating one token at a time until an end-of-sequence token or length limit is hit.
 - Tokens are the model's unit of text; the context window is how many of them it can hold in view at once.
-- Temperature, top-p, and top-k all shape how the next token is sampled — they can be combined, but changing more than one at a time makes behavior harder to reason about.
+- Temperature, top-p, and top-k all shape how the next token is sampled — they can be combined, but changing more than one at a time makes behavior harder to reason about. They're exactly what reshapes the probability distribution coming out of a decoder's LM head.
 - Hallucination is structural, not incidental: these models are trained to produce plausible text, not verified facts.
-- As of July 2026, the frontier is split between closed-weight API models (GPT-5.x, Claude, Gemini) and open-weight families (Llama 4, Mistral, Qwen) — the choice affects self-hosting and fine-tuning rights, not whether the underlying Transformer math applies.
+- As of July 2026, the frontier is split between closed-weight API models (GPT-5.x, Claude, Gemini) and open-weight families (Llama 4, Mistral, Qwen) — the choice affects self-hosting and fine-tuning rights, not whether the underlying Transformer math applies. Every one of them is a decoder-only model at inference time.
 - A prompt to an LLM API is just a list of role-tagged messages (`system`, `user`, and the model's own `assistant`/`response` turns).
 
-**Where to go next:** this tutorial covered the Encoder half of the Transformer. GPT-style models are Decoder-only and use *causal* (masked) self-attention, so each token can only attend to tokens before it — that's the architecture worth exploring next if you want to understand how text-generation models like GPT actually produce output one token at a time.
+**Where to go next:** this tutorial covered both Transformer halves — the Encoder (bidirectional, one pass) and the Decoder-only variant GPT-style models use (causal, autoregressive). A natural next step is **Mixture-of-Experts (MoE)**, the architecture behind several models named in the 2026 landscape section above (Llama 4 Scout/Maverick, Mistral Large 3, Qwen3-235B-A22B): instead of running every token through one dense feed-forward network, an MoE layer routes each token to a small subset of specialized "expert" sub-networks, letting a model have a huge total parameter count while only "activating" a fraction of it per token — which is exactly why you'll see model cards list both a total and an "active" parameter count.

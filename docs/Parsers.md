@@ -1,6 +1,6 @@
 # LangChain Output Parsers
 
-Output parsers turn raw model output into a shape that application code can use. In LCEL, they usually sit at the end of a chain:
+Output parsers turn raw model output into a shape that application code can use. In [LCEL](LCEL.md), they usually sit at the end of a chain:
 
 ```python
 chain = prompt | model | parser
@@ -11,18 +11,18 @@ Use a parser when the model does not provide native structured output, or when y
 
 ## Common Parser Types
 
-| Parser                             | Output                             | Use when                                                     |
-| ---------------------------------- | ---------------------------------- | ------------------------------------------------------------ |
-| `StrOutputParser`                | `str`                            | You want plain text from a chat/model response.              |
-| `JsonOutputParser`               | `dict` / `list`                | You want valid JSON, optionally with streaming partial JSON. |
-| `SimpleJsonOutputParser`         | `dict` / `list`                | You want the simple JSON parser name used by some examples.  |
+| Parser                           | Output                             | Use when                                                     |
+| -------------------------------- | ---------------------------------- | ------------------------------------------------------------ |
+| `StrOutputParser`                | `str`                              | You want plain text from a chat/model response.              |
+| `JsonOutputParser`               | `dict` / `list`                    | You want valid JSON, optionally with streaming partial JSON. |
+| `SimpleJsonOutputParser`         | `dict` / `list`                    | You want the simple JSON parser name used by some examples.  |
 | `PydanticOutputParser`           | Pydantic model                     | You want typed, validated structured data.                   |
-| `CommaSeparatedListOutputParser` | `list[str]`                      | You want a simple comma-separated list.                      |
-| `MarkdownListOutputParser`       | `list[str]`                      | You ask the model for a Markdown bullet list.                |
-| `NumberedListOutputParser`       | `list[str]`                      | You ask the model for a numbered list.                       |
-| `XMLOutputParser`                | nested`dict`                     | You want XML-like structured output.                         |
-| Tool call parsers                  | tool call data or Pydantic objects | You are parsing model tool/function-call outputs.            |
-| Base parser classes                | custom output                      | You need to build your own parser.                           |
+| `CommaSeparatedListOutputParser` | `list[str]`                        | You want a simple comma-separated list.                      |
+| `MarkdownListOutputParser`       | `list[str]`                        | You ask the model for a Markdown bullet list.                |
+| `NumberedListOutputParser`       | `list[str]`                        | You ask the model for a numbered list.                       |
+| `XMLOutputParser`                | nested `dict`                      | You want XML-like structured output.                         |
+| Tool call parsers                | tool call data or Pydantic objects | You are parsing model tool/function-call outputs.            |
+| Base parser classes              | custom output                      | You need to build your own parser.                           |
 
 ## `StrOutputParser`
 

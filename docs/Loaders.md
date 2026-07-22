@@ -1,6 +1,6 @@
 # LangChain Document Loaders
 
-Document loaders read data from a source (a file, a directory, a web page, a PDF, ...) and convert it into LangChain `Document` objects — the common unit that prompts, splitters, and vector stores all understand.
+Document loaders read data from a source (a file, a directory, a web page, a PDF, ...) and convert it into LangChain `Document` objects — the common unit that prompts, [splitters](Splitters.md), and vector stores all understand.
 
 ```python
 loader = TextLoader(path)
@@ -14,13 +14,13 @@ Every loader exposes the same two entry points:
 
 ## Common Loader Types
 
-| Loader           | Reads                        | Output                                                | Use when                                                  |
-| ---------------- | ----------------------------- | ------------------------------------------------------ | ---------------------------------------------------------- |
-| `TextLoader`      | A single local text file      | One `Document`                                        | You have plain text/markdown on disk.                     |
-| `WebBaseLoader`   | One or more URLs               | One `Document` per URL                                | You need the text content of a web page.                  |
-| `DirectoryLoader`  | A folder of files              | One `Document` per matching file                      | You want to load many files with the same loader class.   |
-| `PyPDFLoader`     | A local PDF file                | One `Document` per page                               | You need per-page text and metadata from a PDF.            |
-| `Document`         | (not a loader) in-memory data | A single `Document`                                    | You are constructing documents manually, e.g. in tests.    |
+| Loader            | Reads                         | Output                           | Use when                                                |
+| ----------------- | ----------------------------- | -------------------------------- | ------------------------------------------------------- |
+| `TextLoader`      | A single local text file      | One `Document`                   | You have plain text/markdown on disk.                   |
+| `WebBaseLoader`   | One or more URLs              | One `Document` per URL           | You need the text content of a web page.                |
+| `DirectoryLoader` | A folder of files             | One `Document` per matching file | You want to load many files with the same loader class. |
+| `PyPDFLoader`     | A local PDF file              | One `Document` per page          | You need per-page text and metadata from a PDF.         |
+| `Document`        | (not a loader) in-memory data | A single `Document`              | You are constructing documents manually, e.g. in tests. |
 
 ## `TextLoader`
 

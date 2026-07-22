@@ -93,7 +93,7 @@ chunks = splitter.split_text(source_code)
 
 ## Splitting PDFs and other `Document`s
 
-`PyPDFLoader` returns one `Document` per page. Passing those documents through `split_documents()` (instead of `split_text()`) chunks the text while carrying each source document's `metadata` (page number, source path, ...) forward onto every chunk derived from it.
+[`PyPDFLoader`](Loaders.md) returns one `Document` per page. Passing those documents through `split_documents()` (instead of `split_text()`) chunks the text while carrying each source document's `metadata` (page number, source path, ...) forward onto every chunk derived from it.
 
 ```python
 documents = PyPDFLoader(pdf_path).load()
@@ -113,7 +113,7 @@ no_overlap = RecursiveCharacterTextSplitter(chunk_size=120, chunk_overlap=0)
 with_overlap = RecursiveCharacterTextSplitter(chunk_size=120, chunk_overlap=40)
 ```
 
-As a rule of thumb, `chunk_overlap` is usually set to 10-20% of `chunk_size` — enough to preserve continuity without duplicating so much text that retrieval becomes redundant or expensive.
+As a rule of thumb, `chunk_overlap` is usually set to 10-20% of `chunk_size` — enough to preserve continuity without duplicating so much text that retrieval becomes redundant or expensive. See [Chunking.md](Chunking.md) for a side-by-side comparison of how these settings actually change the resulting chunks.
 
 ## Choosing a Splitter
 
