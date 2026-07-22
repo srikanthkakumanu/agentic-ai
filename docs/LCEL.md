@@ -94,4 +94,4 @@ The primitives above combine into a handful of recurring patterns — from a pla
   result = chain.invoke({"topic": "LCEL"})
   ```
 
-**Where to go next:** every reasoning pattern in [Patterns.md](Patterns.md) — ReAct, Chain-of-Thought, Tree-of-Thought, and the rest — is built from these same LCEL chains, just arranged differently.
+**Where to go next:** every reasoning pattern in [Prompt_Engineering.md](Prompt_Engineering.md) — ReAct, Chain-of-Thought, Tree-of-Thought, and the rest — is built from these same LCEL chains, just arranged differently.

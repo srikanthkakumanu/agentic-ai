@@ -9,7 +9,6 @@ A hands-on tutorial on how Large Language Models (LLMs) work under the hood: the
 - Core vocabulary — tokens, context windows, temperature, top-p, top-k — and how they interact
 - Why LLMs hallucinate, and what that implies for how you use them
 - Where today's major models — GPT-5.x, Claude, Gemini, and the open-weight Llama/Mistral/Qwen families — fit into that picture
-- How system/user prompts and API message structures fit together
 
 The Transformer architecture, introduced in the 2017 paper **"Attention Is All You Need,"** is the foundation for most modern LLMs. The full architecture has an Encoder and a Decoder; many popular models use only one half — BERT uses only the Encoder, while GPT-style models use only the Decoder. This tutorial builds intuition on the Encoder first, since it's the more approachable half, then covers the Decoder-only variant that GPT-style models actually use to generate text.
 
@@ -181,41 +180,6 @@ Two broad categories matter for how you'll actually use a model:
 - "Context window" numbers are marketing ceilings; effective usable context (retrieval accuracy at the edge of that window) is usually smaller, as Llama 4 Scout's own benchmarks show.
 - Every model in this table still ultimately runs a Transformer forward pass and samples its next token with some form of temperature/top-p/top-k — the concepts in this tutorial transfer directly, regardless of which vendor you pick.
 
-## Prompting Types
-
-Now that you know how the model processes text internally and how sampling parameters shape its output, here's how you actually talk to it.
-
-**System Prompt**: A system prompt is a set of instructions that guide the behavior of an LLM. It provides context and instructions for how the LLM should understand and respond to the user's input — what task it's performing and what tone it should use.
-
-```python
-system_prompt = """
-You are an assistant that analyzes the contents of a website,
-and provides a short summary, ignoring text that might be navigation related.
-Respond in markdown.
-"""
-```
-
-**User Prompt**: A user prompt is the question or request the LLM is asked to answer — the input the LLM is given to generate a response, like a conversation starter it should reply to.
-
-```python
-user_prompt = """
-Here are the contents of a website.
-Provide a short summary of this website in markdown.
-If it includes news or announcements, then summarize these too.
-"""
-```
-
-**Response**: The response is the output the LLM generates based on the system prompt and user prompt — the answer to the user's question or request.
-
-The OpenAI API expects messages in a particular structure, and many other providers' APIs share this structure:
-
-```python
-[ # List of dictionaries with "role" and "content" keys
-    {"role": "system", "content": "system message goes here"},
-    {"role": "user", "content": "user message goes here"}
-]
-```
-
 ## Summary
 
 - A Transformer Encoder layer: embed → add position info → self-attend → add & norm → feed-forward → add & norm, repeated across N layers — producing one contextual vector per input token in a single forward pass.
@@ -224,6 +188,5 @@ The OpenAI API expects messages in a particular structure, and many other provid
 - Temperature, top-p, and top-k all shape how the next token is sampled — they can be combined, but changing more than one at a time makes behavior harder to reason about. They're exactly what reshapes the probability distribution coming out of a decoder's LM head.
 - Hallucination is structural, not incidental: these models are trained to produce plausible text, not verified facts.
 - As of July 2026, the frontier is split between closed-weight API models (GPT-5.x, Claude, Gemini) and open-weight families (Llama 4, Mistral, Qwen) — the choice affects self-hosting and fine-tuning rights, not whether the underlying Transformer math applies. Every one of them is a decoder-only model at inference time.
-- A prompt to an LLM API is just a list of role-tagged messages (`system`, `user`, and the model's own `assistant`/`response` turns).
 
-**Where to go next:** this tutorial covered both Transformer halves — the Encoder (bidirectional, one pass) and the Decoder-only variant GPT-style models use (causal, autoregressive). A natural next step is **Mixture-of-Experts (MoE)**, the architecture behind several models named in the 2026 landscape section above (Llama 4 Scout/Maverick, Mistral Large 3, Qwen3-235B-A22B): instead of running every token through one dense feed-forward network, an MoE layer routes each token to a small subset of specialized "expert" sub-networks, letting a model have a huge total parameter count while only "activating" a fraction of it per token — which is exactly why you'll see model cards list both a total and an "active" parameter count.
+**Where to go next:** this tutorial covered both Transformer halves — the Encoder (bidirectional, one pass) and the Decoder-only variant GPT-style models use (causal, autoregressive). Two natural next steps: **Mixture-of-Experts (MoE)**, the architecture behind several models named in the 2026 landscape section above (Llama 4 Scout/Maverick, Mistral Large 3, Qwen3-235B-A22B) — instead of running every token through one dense feed-forward network, an MoE layer routes each token to a small subset of specialized "expert" sub-networks, letting a model have a huge total parameter count while only "activating" a fraction of it per token, which is exactly why you'll see model cards list both a total and an "active" parameter count — and **[`Prompt_Engineering.md`](Prompt_Engineering.md)**, which covers how to actually structure system/user prompts and message-list API calls to get reliable output from the models described here.
