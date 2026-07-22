@@ -1,0 +1,21 @@
+# Set default behavior for all files.
+# Auto-detect text files and ensure they have LF line endings in the repository.
+* text=auto eol=lf
+
+# Explicitly mark markdown files as text.
+*.md text
+
+# Treat common binary file types as binary.
+# Git will not try to diff or convert line endings for these files.
+*.class binary
+*.jar binary
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+
+# Use the 'jupyter' diff driver for notebooks to produce clean, readable diffs.
+# Note: Team members will need to configure this driver on their local machine:
+# git config --global diff.jupyter.textconv "nbdime diff -s"
+*.ipynb diff=jupyter
