@@ -85,7 +85,7 @@ The primitives above combine into a handful of recurring patterns — from a pla
   ])
   ```
 
-**Structured output chain** — parses model output into a predictable format, such as plain text, JSON, or a Pydantic object. Use it when later code needs reliable fields instead of free-form text. See [Parsers.md](Parsers.md) for the full set of available parsers.
+**Structured output chain** — parses model output into a predictable format, such as plain text, JSON, or a Pydantic object. Use it when later code needs reliable fields instead of free-form text. See [Structured Output & Parsing](Prompt_Engineering.md#12-structured-output--parsing) for the full set of available parsers.
 
   ```python
   from langchain_core.output_parsers import JsonOutputParser

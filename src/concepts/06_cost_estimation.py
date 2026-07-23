@@ -39,7 +39,9 @@ ASSUMED_MAX_OUTPUT = 150
 
 def estimate_cost(model: str, input_tokens: int, output_tokens: int) -> float:
     input_rate, output_rate = PRICING[model]
-    return (input_tokens / 1_000_000) * input_rate + (output_tokens / 1_000_000) * output_rate
+    return (input_tokens / 1_000_000) * input_rate + (
+        output_tokens / 1_000_000
+    ) * output_rate
 
 
 def openai_cost_walkthrough() -> None:
@@ -61,8 +63,10 @@ def openai_cost_walkthrough() -> None:
         response.usage.prompt_tokens,
         response.usage.completion_tokens,
     )
-    print(f"actual cost: ${actual:.6f} "
-          f"({response.usage.prompt_tokens} in / {response.usage.completion_tokens} out)")
+    print(
+        f"actual cost: ${actual:.6f} "
+        f"({response.usage.prompt_tokens} in / {response.usage.completion_tokens} out)"
+    )
 
 
 def anthropic_cost_walkthrough() -> None:
@@ -86,8 +90,10 @@ def anthropic_cost_walkthrough() -> None:
         response.usage.input_tokens,
         response.usage.output_tokens,
     )
-    print(f"actual cost: ${actual:.6f} "
-          f"({response.usage.input_tokens} in / {response.usage.output_tokens} out)")
+    print(
+        f"actual cost: ${actual:.6f} "
+        f"({response.usage.input_tokens} in / {response.usage.output_tokens} out)"
+    )
 
 
 def groq_cost_walkthrough() -> None:
@@ -108,8 +114,10 @@ def groq_cost_walkthrough() -> None:
         response.usage.prompt_tokens,
         response.usage.completion_tokens,
     )
-    print(f"actual cost: ${actual:.6f} "
-          f"({response.usage.prompt_tokens} in / {response.usage.completion_tokens} out, free tier)")
+    print(
+        f"actual cost: ${actual:.6f} "
+        f"({response.usage.prompt_tokens} in / {response.usage.completion_tokens} out, free tier)"
+    )
 
 
 def gemini_cost_walkthrough() -> None:
@@ -126,13 +134,17 @@ def gemini_cost_walkthrough() -> None:
         config=genai_types.GenerateContentConfig(max_output_tokens=ASSUMED_MAX_OUTPUT),
     )
     usage = response.usage_metadata
-    actual = estimate_cost(GEMINI_MODEL, usage.prompt_token_count, usage.candidates_token_count)
-    print(f"actual cost: ${actual:.6f} "
-          f"({usage.prompt_token_count} in / {usage.candidates_token_count} out, free tier)")
+    actual = estimate_cost(
+        GEMINI_MODEL, usage.prompt_token_count, usage.candidates_token_count
+    )
+    print(
+        f"actual cost: ${actual:.6f} "
+        f"({usage.prompt_token_count} in / {usage.candidates_token_count} out, free tier)"
+    )
 
 
 if __name__ == "__main__":
     openai_cost_walkthrough()
-    anthropic_cost_walkthrough()
+    # anthropic_cost_walkthrough()
     groq_cost_walkthrough()
     gemini_cost_walkthrough()
