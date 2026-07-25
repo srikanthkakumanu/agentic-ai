@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code, Properly — Step-by-Step Field Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#14161c;
+    --panel:#1b1e27;
+    --panel-2:#21242f;
+    --code-bg:#0f1116;
+    --ink:#edeae0;
+    --ink-dim:#9a9fb0;
+    --ink-faint:#6b7082;
+    --line:#2c3040;
+    --amber:#f0a648;
+    --amber-soft:rgba(240,166,72,0.12);
+    --teal:#5fc7b8;
+    --blue:#6c8eef;
+    --coral:#e2694f;
+    --purple:#a435f0;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'JetBrains Mono',ui-monospace,monospace;}
+
+  /* ---------- topbar ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:1rem; padding:0.75rem 1.25rem;
+    background:var(--panel); border-bottom:1px solid var(--line);
+  }
+  .topbar-left{display:flex; align-items:center; gap:.6rem; min-width:0;}
+  .cursor{
+    display:inline-block; width:8px; height:16px; background:var(--amber);
+    animation:blink 1.1s steps(1) infinite;
+  }
+  @media (prefers-reduced-motion: reduce){ .cursor{animation:none;} }
+  @keyframes blink{0%,49%{opacity:1;}50%,100%{opacity:0;}}
+  .brand{font-size:.85rem; color:var(--ink-dim); white-space:nowrap;}
+  .brand b{color:var(--ink); font-weight:600;}
+  .topbar-right{display:flex; align-items:center; gap:.9rem;}
+  .progress-track{width:160px; height:4px; background:var(--line); border-radius:4px; overflow:hidden;}
+  .progress-fill{height:100%; width:0%; background:linear-gradient(90deg,var(--amber),var(--teal)); transition:width .4s ease;}
+  .step-counter{font-size:.75rem; color:var(--ink-dim); white-space:nowrap; min-width:76px; text-align:right;}
+
+  /* ---------- layout ---------- */
+  .layout{display:flex; align-items:flex-start;}
+  .sidebar{
+    width:270px; flex-shrink:0; background:var(--panel);
+    border-right:1px solid var(--line);
+    position:sticky; top:53px; height:calc(100vh - 53px);
+    overflow-y:auto; padding:1.1rem .75rem 2rem;
+  }
+  .sidebar::-webkit-scrollbar{width:8px;}
+  .sidebar::-webkit-scrollbar-thumb{background:var(--line); border-radius:4px;}
+  .grp-label{
+    font-size:.68rem; letter-spacing:.12em; color:var(--ink-faint);
+    text-transform:uppercase; margin:1.1rem .5rem .35rem; font-weight:600;
+  }
+  .grp-label:first-child{margin-top:.25rem;}
+  .tree-item{
+    display:flex; align-items:center; gap:.5rem; width:100%;
+    background:none; border:none; text-align:left; cursor:pointer;
+    color:var(--ink-dim); font-size:.82rem; padding:.42rem .55rem;
+    border-radius:6px; border-left:2px solid transparent;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .tree-item .dot{width:6px; height:6px; border-radius:50%; background:var(--ink-faint); flex-shrink:0;}
+  .tree-item.depth-1{padding-left:1.3rem;}
+  .tree-item.depth-2{padding-left:2.1rem;}
+  .tree-item:hover{background:var(--panel-2); color:var(--ink);}
+  .tree-item.active{
+    background:var(--amber-soft); color:var(--amber); border-left-color:var(--amber);
+  }
+  .tree-item.active .dot{background:var(--amber);}
+  .tree-item.read .dot{background:var(--teal);}
+  .tree-static{
+    display:flex; align-items:center; gap:.5rem; padding:.35rem .55rem;
+    color:var(--ink-faint); font-size:.78rem; font-family:'JetBrains Mono',monospace;
+  }
+  .tree-static.depth-1{padding-left:1.3rem;}
+
+  /* ---------- stage ---------- */
+  .stage{flex:1; min-width:0; padding:1.25rem 1.25rem 4rem;}
+  .tabbar{display:inline-flex; align-items:center; gap:.6rem; background:var(--panel-2);
+    border:1px solid var(--line); border-bottom:none; padding:.55rem 1.1rem;
+    border-radius:8px 8px 0 0; position:relative; top:1px; max-width:100%;}
+  .win-dots{display:flex; gap:5px; margin-right:.3rem;}
+  .win-dots span{width:8px; height:8px; border-radius:50%; opacity:.55;}
+  .win-dots span:nth-child(1){background:var(--coral);}
+  .win-dots span:nth-child(2){background:var(--amber);}
+  .win-dots span:nth-child(3){background:var(--teal);}
+  .tab-file{font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--ink-dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+
+  .panel{
+    background:var(--panel); border:1px solid var(--line); border-radius:0 10px 10px 10px;
+    padding:2.4rem clamp(1.25rem,4vw,3rem); box-shadow:0 20px 50px -25px rgba(0,0,0,.6);
+  }
+  .content-col{max-width:760px;}
+  .step{display:none;}
+  .step.active{display:block; animation:fadein .35s ease;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+  @media (prefers-reduced-motion: reduce){ .step.active{animation:none;} }
+
+  .kicker{font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--teal); margin-bottom:.6rem; display:block;}
+  h2.step-title{font-family:'JetBrains Mono',monospace; font-size:1.7rem; font-weight:700;
+    color:var(--ink); margin:0 0 1.1rem; line-height:1.3;}
+  h3{font-family:'JetBrains Mono',monospace; font-size:1.05rem; color:var(--amber); margin:1.8rem 0 .7rem;}
+  p{line-height:1.75; margin:0 0 1rem; color:var(--ink);}
+  .lede{font-size:1.05rem; color:var(--ink-dim);}
+  strong{color:var(--amber); font-weight:600;}
+  a{color:var(--teal);}
+  code{font-family:'JetBrains Mono',monospace; background:var(--panel-2); color:var(--teal);
+    padding:.12em .38em; border-radius:4px; font-size:.88em;}
+  ul, ol{padding-left:0; margin:0 0 1.1rem;}
+  ul li, ol li{list-style:none; padding-left:1.4rem; position:relative; margin-bottom:.45rem; line-height:1.65;}
+  ul li::before{content:"▸"; color:var(--amber); position:absolute; left:0; top:0;}
+  ol{counter-reset:step;}
+  ol li{counter-increment:step;}
+  ol li::before{content:counter(step)"."; color:var(--amber); position:absolute; left:0; top:0; font-family:'JetBrains Mono',monospace; font-weight:700;}
+
+  .code-wrap{margin:1.2rem 0 1.4rem;}
+  .code-label{font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--ink-faint);
+    background:var(--panel-2); display:inline-block; padding:.3rem .7rem; border-radius:6px 6px 0 0;
+    border:1px solid var(--line); border-bottom:none;}
+  pre{background:var(--code-bg); border:1px solid var(--line); border-radius:0 8px 8px 8px;
+    padding:1.1rem 1.3rem; overflow-x:auto; margin:0;}
+  pre code{background:none; padding:0; color:#d8e2e8; font-size:.83rem; line-height:1.65;}
+
+  table{width:100%; border-collapse:collapse; margin:1.2rem 0 1.4rem; font-size:.88rem;}
+  th{font-family:'JetBrains Mono',monospace; text-transform:uppercase; letter-spacing:.05em;
+    font-size:.7rem; color:var(--amber); background:var(--panel-2); text-align:left;
+    padding:.65rem .8rem; border-bottom:1px solid var(--line);}
+  td{padding:.65rem .8rem; border-bottom:1px solid var(--line); color:var(--ink-dim); vertical-align:top;}
+  td code{white-space:nowrap;}
+  tr:last-child td{border-bottom:none;}
+
+  .callout{border-left:3px solid var(--amber); background:var(--amber-soft); border-radius:0 8px 8px 0;
+    padding:1rem 1.3rem; margin:1.3rem 0;}
+  .callout p:last-child{margin-bottom:0;}
+
+  .distinguo{display:grid; grid-template-columns:1fr; gap:.6rem; margin:1rem 0 1.4rem;}
+  @media(min-width:640px){.distinguo{grid-template-columns:1fr 1fr 1fr;}}
+  .distinguo div{background:var(--panel-2); border:1px solid var(--line); border-radius:8px; padding:.9rem 1rem;}
+  .distinguo b{display:block; color:var(--amber); font-family:'JetBrains Mono',monospace; font-size:.85rem; margin-bottom:.35rem;}
+  .distinguo span{font-size:.85rem; color:var(--ink-dim); line-height:1.55;}
+
+  /* ---------- resource chips ---------- */
+  .learn-block{margin-top:2.2rem; padding-top:1.6rem; border-top:1px dashed var(--line);}
+  .learn-eyebrow{font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--ink-faint); margin-bottom:.8rem; display:block;}
+  .chip-row{display:flex; flex-wrap:wrap; gap:.6rem;}
+  .chip{
+    display:inline-flex; align-items:center; gap:.55rem; text-decoration:none;
+    background:var(--panel-2); border:1px solid var(--line); border-radius:999px;
+    padding:.55rem .95rem .55rem .7rem; color:var(--ink); font-size:.82rem; transition:.15s;
+  }
+  .chip:hover{border-color:var(--accent,var(--amber)); transform:translateY(-1px); background:#262a37;}
+  .chip .pdot{width:8px; height:8px; border-radius:50%; background:var(--accent,var(--amber)); flex-shrink:0;}
+  .chip .plat{color:var(--ink-faint); font-family:'JetBrains Mono',monospace; font-size:.7rem; text-transform:uppercase; letter-spacing:.04em;}
+  .chip .arrow{color:var(--ink-faint); margin-left:.15rem;}
+  .chip.gap{background:none; border-style:dashed; color:var(--ink-faint); font-style:italic; cursor:default;}
+  .chip.gap:hover{transform:none; background:none;}
+  .further{margin-top:.9rem; font-size:.85rem;}
+
+  /* ---------- nav buttons ---------- */
+  .stepnav{display:flex; justify-content:space-between; align-items:center; margin-top:2.4rem; padding-top:1.4rem; border-top:1px solid var(--line);}
+  .navbtn{
+    font-family:'JetBrains Mono',monospace; font-size:.82rem; background:var(--panel-2);
+    border:1px solid var(--line); color:var(--ink); padding:.65rem 1.15rem; border-radius:8px;
+    cursor:pointer; transition:.15s; display:inline-flex; align-items:center; gap:.5rem;
+  }
+  .navbtn:hover{border-color:var(--amber); color:var(--amber);}
+  .navbtn:disabled{opacity:.3; cursor:default; pointer-events:none;}
+  .navbtn .sub{color:var(--ink-faint); font-size:.72rem;}
+
+  /* ---------- hero / intro ---------- */
+  .hero{text-align:left; padding:1rem 0 .5rem;}
+  .term-mock{
+    background:var(--code-bg); border:1px solid var(--line); border-radius:10px;
+    padding:1.3rem 1.5rem; margin-bottom:1.8rem; min-height:190px;
+  }
+  .term-mock .win-dots{margin-bottom:.9rem;}
+  #termout{font-family:'JetBrains Mono',monospace; font-size:.86rem; line-height:1.85; color:#cfe8df; white-space:pre-wrap;}
+  #termout .ok{color:var(--teal);}
+  .hero h1{font-family:'JetBrains Mono',monospace; font-size:clamp(1.8rem,4vw,2.6rem); margin:0 0 .7rem; color:var(--ink); line-height:1.2;}
+  .hero h1 span{color:var(--amber);}
+  .hero p.lede{max-width:620px;}
+  .startbtn{
+    margin-top:1.4rem; font-family:'JetBrains Mono',monospace; font-size:.9rem; font-weight:600;
+    background:var(--amber); color:#1a1608; border:none; padding:.85rem 1.6rem; border-radius:8px;
+    cursor:pointer; transition:.15s;
+  }
+  .startbtn:hover{filter:brightness(1.08); transform:translateY(-1px);}
+
+  footer.pagefoot{text-align:center; color:var(--ink-faint); font-family:'JetBrains Mono',monospace; font-size:.72rem; margin-top:2.5rem;}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:880px){
+    .layout{flex-direction:column;}
+    .sidebar{
+      width:100%; height:auto; position:static; display:flex; flex-wrap:nowrap;
+      overflow-x:auto; overflow-y:hidden; gap:.3rem; padding:.75rem;
+      border-right:none; border-bottom:1px solid var(--line);
+    }
+    .grp-label{display:none;}
+    .tree-static{display:none;}
+    .tree-item{white-space:nowrap; padding:.5rem .7rem !important; border-left:none; border-bottom:2px solid transparent;}
+    .tree-item.active{border-bottom-color:var(--amber); border-left-color:transparent;}
+    .stage{padding:1rem .75rem 3rem;}
+    .panel{padding:1.6rem 1.1rem;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="cursor"></span>
+    <span class="brand mono"><b>claude-code-mastery</b> — srikanth's prep guide</span>
+  </div>
+  <div class="topbar-right">
+    <span class="step-counter mono" id="stepCounter">Welcome</span>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar">
+    <button class="tree-item" data-step="intro"><span class="dot"></span> ~ / welcome</button>
+
+    <div class="grp-label">Tutorial · 12 files</div>
+    <button class="tree-item" data-step="overview"><span class="dot"></span> OVERVIEW.md</button>
+    <button class="tree-item" data-step="claudemd"><span class="dot"></span> CLAUDE.md</button>
+    <div class="tree-static">▸ .claude/</div>
+    <button class="tree-item depth-1" data-step="subagents"><span class="dot"></span> agents/reviewer.md</button>
+    <button class="tree-item depth-1" data-step="skills"><span class="dot"></span> skills/kafka-check/SKILL.md</button>
+    <button class="tree-item depth-1" data-step="hooks"><span class="dot"></span> settings.json</button>
+    <button class="tree-item" data-step="mcp"><span class="dot"></span> .mcp.json</button>
+    <div class="tree-static">▸ .claude-plugin/</div>
+    <button class="tree-item depth-1" data-step="plugins"><span class="dot"></span> plugin.json</button>
+    <button class="tree-item" data-step="notes"><span class="dot"></span> NOTES.md</button>
+    <button class="tree-item" data-step="layout"><span class="dot"></span> tree . (recap)</button>
+
+    <div class="grp-label">Guides</div>
+    <button class="tree-item" data-step="vscode"><span class="dot"></span> VSCODE.md</button>
+    <button class="tree-item" data-step="assessment"><span class="dot"></span> DERIV_ASSESSMENT.md</button>
+    <button class="tree-item" data-step="cheatsheet"><span class="dot"></span> CHEATSHEET.md</button>
+
+    <div class="grp-label">Case Study · 4 files</div>
+    <button class="tree-item" data-step="cs-overview"><span class="dot"></span> CASE_STUDY.md</button>
+    <button class="tree-item" data-step="cs-markdown"><span class="dot"></span> markdown files</button>
+    <button class="tree-item" data-step="cs-config"><span class="dot"></span> config (json) files</button>
+    <button class="tree-item" data-step="cs-code"><span class="dot"></span> working code</button>
+    <button class="tree-item" data-step="cs-run"><span class="dot"></span> run.sh (step by step)</button>
+  </nav>
+
+  <main class="stage">
+    <div class="tabbar">
+      <div class="win-dots"><span></span><span></span><span></span></div>
+      <span class="tab-file mono" id="tabFile">welcome</span>
+    </div>
+    <div class="panel">
+      <div class="content-col">
+
+        <!-- INTRO -->
+        <section class="step active" id="step-intro">
+          <div class="hero">
+            <div class="term-mock">
+              <div class="win-dots"><span></span><span></span><span></span></div>
+              <div id="termout"></div>
+            </div>
+            <h1>Claude Code, <span>properly.</span></h1>
+            <p class="lede">A step-by-step field guide to the files that actually run Claude Code — <code>CLAUDE.md</code>, subagents, skills, hooks, MCP, plugins — plus the exact Anthropic Academy, DeepLearning.AI, LinkedIn Learning, and YouTube resources to learn each one. Built for the Deriv Head of Engineering assessment. Useful long after it.</p>
+            <button class="startbtn" onclick="go(1)">Start reading →</button>
+          </div>
+        </section>
+
+        <!-- 1. OVERVIEW -->
+        <section class="step" id="step-overview">
+          <span class="kicker">File 1 / 12 · Mental model</span>
+          <h2 class="step-title">The layered context system</h2>
+          <p class="lede">Claude Code isn't "a chatbot with file access." It's an agentic loop — read → plan → act → check — wrapped around a layered context system. Each layer loads at a different <em>time</em>, for a different <em>reason</em>. Understanding the timing is 80% of using Claude Code properly.</p>
+
+          <table>
+            <tr><th>Layer</th><th>File(s)</th><th>Loaded</th><th>Purpose</th></tr>
+            <tr><td>Project memory</td><td><code>CLAUDE.md</code></td><td>Every session, upfront</td><td>Standing facts: architecture, conventions, "never do X"</td></tr>
+            <tr><td>Personal overrides</td><td><code>CLAUDE.local.md</code></td><td>Every session (gitignored)</td><td>Your machine-specific stuff</td></tr>
+            <tr><td>Path-scoped rules</td><td><code>.claude/rules/*.md</code></td><td>When you touch matching files</td><td>Narrow conventions</td></tr>
+            <tr><td>Config &amp; permissions</td><td><code>.claude/settings.json</code></td><td>Every session</td><td>Model choice, tool permissions, hooks</td></tr>
+            <tr><td>Reusable expertise</td><td><code>.claude/skills/*/SKILL.md</code></td><td>On demand, task-matched</td><td>Playbooks, checklists, domain procedures</td></tr>
+            <tr><td>Delegated specialists</td><td><code>.claude/agents/*.md</code></td><td>On demand, own context</td><td>Isolated sub-tasks</td></tr>
+            <tr><td>External tools/data</td><td><code>.mcp.json</code></td><td>At session start, calls on demand</td><td>DBs, trackers, your RAG index</td></tr>
+            <tr><td>Shareable bundles</td><td><code>.claude-plugin/plugin.json</code></td><td>On install</td><td>Packages skills+agents+hooks+MCP</td></tr>
+            <tr><td>Session continuity</td><td><code>NOTES.md</code> (your convention)</td><td>Manually, by you or Claude</td><td>Survives compaction / new sessions</td></tr>
+          </table>
+
+          <p>The single biggest mistake people make: stuffing everything into <code>CLAUDE.md</code>. It's <strong>always loaded</strong>, so every line is a permanent tax on every session's context. The skill is knowing what deserves to be always-loaded vs. loaded just-in-time.</p>
+
+          <div class="learn-block">
+            <span class="learn-eyebrow">Learn this</span>
+            <div class="chip-row">
+              <a class="chip" style="--accent:var(--amber)" href="https://anthropic.skilljar.com/claude-code-101" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">Academy</span><br>Claude Code 101</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--teal)" href="https://www.deeplearning.ai/courses/claude-code-a-highly-agentic-coding-assistant" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">DeepLearning.AI</span><br>Claude Code: A Highly Agentic Coding Assistant</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--blue)" href="https://www.linkedin.com/learning/claude-code-101-from-prompt-to-product" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">LinkedIn Learning</span><br>Claude Code 101: From Prompt to Product</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--coral)" href="https://www.youtube.com/watch?v=8PVGtt7Fa7g" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">YouTube</span><br>Claude Code for Beginners (1 hour)</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--purple)" href="https://www.udemy.com/course/anthropic-claude-code/" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">Udemy · 2026</span><br>Claude Code: Building Faster with AI, from Prototype to Prod</span><span class="arrow">↗</span></a>
+            </div>
+          </div>
+
+          <div class="stepnav">
+            <button class="navbtn" onclick="go(0)">← <span>Welcome</span></button>
+            <button class="navbtn" onclick="go(2)"><span>CLAUDE.md</span> →</button>
+          </div>
+        </section>
+
+        <!-- 2. CLAUDE.md -->
+        <section class="step" id="step-claudemd">
+          <span class="kicker">File 2 / 12 · Project memory</span>
+          <h2 class="step-title">CLAUDE.md</h2>
+          <p><strong>What it is:</strong> a markdown file at your project root. Claude Code walks up the directory tree from your working directory to the repo root, reading every <code>CLAUDE.md</code> it finds along the way, and concatenates them — additive, not overriding.</p>
+
+          <h3>Where</h3>
+          <ul>
+            <li><code>./CLAUDE.md</code> — project root, checked into git, shared with the team</li>
+            <li><code>./CLAUDE.local.md</code> — same directory, gitignored, personal</li>
+            <li><code>~/.claude/CLAUDE.md</code> — your global preferences across all projects</li>
+            <li>Nested <code>CLAUDE.md</code> in subdirectories — applies when work touches that subtree (monorepos)</li>
+          </ul>
+          <p>Generate a starting point: run <code>/init</code> inside Claude Code — it scans the repo and drafts one you then edit.</p>
+
+          <h3>What to put in it</h3>
+          <ul>
+            <li>Architecture in 3–5 lines ("API Gateway → 6 microservices via gRPC, Postgres per service, Kafka for events")</li>
+            <li>Tech stack and <em>why</em> ("Spring Boot 3, not Micronaut — team expertise")</li>
+            <li>Commands Claude should use (<code>make test</code>, not <code>npm test</code> if that's wrong)</li>
+            <li>Hard rules ("never touch <code>/infra/terraform</code> without asking")</li>
+            <li>Review checklist expectations (idempotency keys, structured logging fields)</li>
+          </ul>
+          <p><strong>What NOT to put in it:</strong> full API docs (link instead), one-off task instructions, anything you wouldn't repeat to a new hire twice.</p>
+
+          <div class="code-wrap">
+            <span class="code-label">CLAUDE.md</span>
+            <pre><code># CLAUDE.md — Payments Ledger Service
+
+## Architecture
+Java 21 / Spring Boot 3 microservice. Exposes REST + gRPC. Postgres (ledger DB),
+Kafka topic `ledger.events.v1` for downstream settlement. Deployed on EKS.
+
+## Conventions
+- All monetary values: `long` cents, never `double`/`float`.
+- Every write endpoint requires an `Idempotency-Key` header — see `IdempotencyFilter`.
+- Tests: JUnit5 + Testcontainers. Run with `./gradlew test`. No mocking the DB layer.
+- Commits: Conventional Commits. PR must reference a Jira ticket (LEDGER-XXXX).
+
+## Do not
+- Do not modify `schema.sql` directly — use Flyway migrations in `db/migration/`.
+- Do not call external payment providers directly from this service; use `payment-gateway-client`.</code></pre>
+          </div>
+
+          <div class="learn-block">
+            <span class="learn-eyebrow">Learn this</span>
+            <div class="chip-row">
+              <a class="chip" style="--accent:var(--amber)" href="https://anthropic.skilljar.com/claude-code-101" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">Academy</span><br>Claude Code 101</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--teal)" href="https://www.deeplearning.ai/courses/claude-code-a-highly-agentic-coding-assistant" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">DeepLearning.AI</span><br>Claude Code: A Highly Agentic Coding Assistant</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--blue)" href="https://www.linkedin.com/learning/claude-code-101-from-prompt-to-product" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">LinkedIn Learning</span><br>Claude Code 101: From Prompt to Product</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--coral)" href="https://www.youtube.com/watch?v=O7l9SqEpEXI" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">YouTube</span><br>How to Write an Effective CLAUDE.md File</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--purple)" href="https://www.udemy.com/course/claude-code-the-practical-guide/" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">Udemy · 2026</span><br>Claude Code — The Practical Guide (context engineering)</span><span class="arrow">↗</span></a>
+            </div>
+          </div>
+
+          <div class="stepnav">
+            <button class="navbtn" onclick="go(1)">← <span>Mental model</span></button>
+            <button class="navbtn" onclick="go(3)"><span>Subagents</span> →</button>
+          </div>
+        </section>
+
+        <!-- 3. SUBAGENTS -->
+        <section class="step" id="step-subagents">
+          <span class="kicker">File 3 / 12 · Delegation</span>
+          <h2 class="step-title">.claude/agents/*.md — Subagents</h2>
+          <p>A subagent is a markdown file with YAML frontmatter, run in its <strong>own context window</strong>, with its own system prompt, restricted toolset, and independent permissions. This is how you stop one giant session from doing exploration, coding, and review all in one polluted context.</p>
+
+          <p><strong>Where:</strong> <code>.claude/agents/</code> (project, shared via git) or <code>~/.claude/agents/</code> (personal). Create interactively with <code>/agents</code>.</p>
+          <p><strong>Built-in, for free:</strong> <code>Explore</code> (read-only, fast, runs on Haiku), <code>Plan</code> (gathers context before proposing a strategy), <code>general-purpose</code> (explore + modify). Claude routes to these automatically.</p>
+          <p><strong>Frontmatter that matters:</strong> <code>name</code>, <code>description</code> (write it behaviorally — add "use proactively" to trigger it automatically), <code>tools</code> (narrow allow-list), <code>disallowedTools</code>, <code>model</code>, <code>permissionMode</code>, <code>maxTurns</code>.</p>
+
+          <div class="code-wrap">
+            <span class="code-label">.claude/agents/payments-security-reviewer.md</span>
+            <pre><code>---
+name: payments-security-reviewer
+description: Use proactively after any change to files under src/payments/. Reviews for PCI-relevant issues, idempotency gaps, and missing audit logging. Read-only — never edit.
+tools:
+  - Read
+  - Grep
+  - Glob
+model: sonnet
+---
+
+You are a security-focused reviewer for a payments microservice.
+For every change, check specifically for:
+1. Missing idempotency keys on state-changing endpoints
+2. Card/account data logged in plaintext
+3. Missing audit trail entries for balance-changing operations
+Report findings as a short bullet list with file:line references. Do not fix — only report.</code></pre>
+          </div>
+          <p>A read-only reviewer like this <strong>cannot</strong> accidentally edit what it's reviewing — that's the point of the narrow <code>tools</code> list, not an accident.</p>
+
+          <div class="learn-block">
+            <span class="learn-eyebrow">Learn this</span>
+            <div class="chip-row">
+              <a class="chip" style="--accent:var(--amber)" href="https://anthropic.skilljar.com/introduction-to-subagents" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">Academy</span><br>Introduction to Subagents</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--teal)" href="https://www.deeplearning.ai/courses/agent-skills-with-anthropic" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">DeepLearning.AI</span><br>Agent Skills with Anthropic (covers subagents too)</span><span class="arrow">↗</span></a>
+              <span class="chip gap"><span class="pdot" style="background:var(--ink-faint)"></span><span><span class="plat">LinkedIn Learning</span><br>No dedicated course yet</span></span>
+              <a class="chip" style="--accent:var(--coral)" href="https://www.youtube.com/watch?v=MbKUeufUZIY" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">YouTube</span><br>Sub-Agents: Step-by-Step Beginner Tutorial</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--purple)" href="https://www.udemy.com/course/claude-code-for-agentic-ai-build-ai-agents-10x-faster/" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">Udemy · 2026</span><br>Claude Code 2026: Subagents, MCP, Skills and Plugins Bootcamp</span><span class="arrow">↗</span></a>
+            </div>
+          </div>
+
+          <div class="stepnav">
+            <button class="navbtn" onclick="go(2)">← <span>CLAUDE.md</span></button>
+            <button class="navbtn" onclick="go(4)"><span>Skills</span> →</button>
+          </div>
+        </section>
+
+        <!-- 4. SKILLS -->
+        <section class="step" id="step-skills">
+          <span class="kicker">File 4 / 12 · Just-in-time expertise</span>
+          <h2 class="step-title">.claude/skills/*/SKILL.md</h2>
+          <p>Skills are the newest, most important primitive. A Skill is a <strong>folder</strong> with a <code>SKILL.md</code> (frontmatter + instructions) plus optional scripts, templates, or reference files. Claude scans the name + description of every skill every session (cheap), but only pulls the full body into context when the task actually matches — progressive disclosure. A project can have 50 skills without bloating every session; a 5,000-line <code>CLAUDE.md</code> would.</p>
+
+          <p><strong>Where:</strong> <code>.claude/skills/&lt;name&gt;/SKILL.md</code> (project) or <code>~/.claude/skills/</code> (personal). Invoke with <code>/skill-name</code> or let Claude auto-trigger it.</p>
+          <p>Skills follow an <strong>open standard</strong> (Agent Skills spec) — the same <code>SKILL.md</code> works in Claude.ai, the API, and other adopting tools. A skill written for the assessment could be reused later without rewriting.</p>
+
+          <div class="code-wrap">
+            <span class="code-label">.claude/skills/kafka-capacity-check/SKILL.md</span>
+            <pre><code>---
+name: kafka-capacity-check
+description: Use when asked to size Kafka partitions/brokers for a target throughput, or to review an existing topic's capacity assumptions.
+---
+
+# Kafka Capacity Sizing Playbook
+
+Given a target events/sec and average message size:
+1. Compute required partition count: throughput ÷ per-partition-throughput-budget (~10MB/s/partition unless told otherwise).
+2. Recommend replication factor 3 for anything touching money movement; RF 2 for pure telemetry.
+3. Flag if consumer group lag would exceed 2x partition count (rebalancing risk).
+4. Always show the formula, not just the number.
+
+See `reference/broker-sizing-table.md` for AWS MSK instance-type throughput numbers.</code></pre>
+          </div>
+
+          <h3>Skill vs. Subagent vs. Hook</h3>
+          <div class="distinguo">
+            <div><b>Skill</b><span>On-demand knowledge/procedure the main agent loads into its own context.</span></div>
+            <div><b>Subagent</b><span>On-demand delegation to a separate context window — isolation, not just knowledge.</span></div>
+            <div><b>Hook</b><span>Deterministic enforcement outside the model entirely — fires every time, no matter what Claude "decides."</span></div>
+          </div>
+
+          <div class="learn-block">
+            <span class="learn-eyebrow">Learn this</span>
+            <div class="chip-row">
+              <a class="chip" style="--accent:var(--amber)" href="https://anthropic.skilljar.com/introduction-to-agent-skills" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">Academy</span><br>Introduction to Agent Skills</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--teal)" href="https://www.deeplearning.ai/courses/agent-skills-with-anthropic" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">DeepLearning.AI</span><br>Agent Skills with Anthropic</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--blue)" href="https://www.linkedin.com/learning/claude-code-101-from-prompt-to-product/create-and-use-skills" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">LinkedIn Learning</span><br>Create and use Skills (lesson)</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--coral)" href="https://www.youtube.com/watch?v=8PVGtt7Fa7g" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">YouTube</span><br>Skills, MCP, Subagents, Hooks (1 hour)</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--purple)" href="https://www.udemy.com/course/claude-code-ai-apps-agents/" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">Udemy · 2026</span><br>Claude Code — The Ultimate Guide! (highest-rated on Udemy)</span><span class="arrow">↗</span></a>
+            </div>
+          </div>
+
+          <div class="stepnav">
+            <button class="navbtn" onclick="go(3)">← <span>Subagents</span></button>
+            <button class="navbtn" onclick="go(5)"><span>Hooks</span> →</button>
+          </div>
+        </section>
+
+        <!-- 5. HOOKS -->
+        <section class="step" id="step-hooks">
+          <span class="kicker">File 5 / 12 · Deterministic control</span>
+          <h2 class="step-title">Hooks — not a markdown file</h2>
+          <p>Hooks are shell commands (or HTTP calls) that fire at fixed lifecycle events, configured as JSON in <code>.claude/settings.json</code>. They exist because you can't rely on a model to <em>remember</em> to run a formatter or block a dangerous command every single time — a hook guarantees it.</p>
+          <p><strong>Common events:</strong> <code>SessionStart</code>, <code>PreToolUse</code> (before any tool runs — can block/rewrite), <code>PostToolUse</code> (after completion — auto-format, log, feedback), <code>UserPromptSubmit</code>, <code>Stop</code>, <code>SubagentStop</code>.</p>
+
+          <div class="code-wrap">
+            <span class="code-label">.claude/settings.json</span>
+            <pre><code>{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          { "type": "command", "command": "scripts/block-env-file-writes.sh" }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          { "type": "command", "command": "npx prettier --write \"$CLAUDE_TOOL_INPUT_FILE_PATH\"" }
+        ]
+      }
+    ]
+  }
+}</code></pre>
+          </div>
+
+          <div class="callout">
+            <p>Exit code 2 from a <code>PreToolUse</code> hook blocks the tool call and feeds the reason back to Claude. This is the layer you'd point to if an interviewer asks "how would you stop Claude Code from ever committing a <code>.env</code> file" — the answer is a hook, not a prompt instruction.</p>
+          </div>
+
+          <div class="learn-block">
+            <span class="learn-eyebrow">Learn this</span>
+            <div class="chip-row">
+              <span class="chip gap"><span class="pdot" style="background:var(--ink-faint)"></span><span><span class="plat">Academy</span><br>No dedicated course yet</span></span>
+              <span class="chip gap"><span class="pdot" style="background:var(--ink-faint)"></span><span><span class="plat">DeepLearning.AI</span><br>No dedicated course yet</span></span>
+              <a class="chip" style="--accent:var(--blue)" href="https://www.linkedin.com/learning/claude-code-in-action-by-anthropic" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">LinkedIn Learning</span><br>Claude Code in Action (incl. "Introducing hooks")</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--coral)" href="https://www.youtube.com/watch?v=62b5-4MLB_E" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">YouTube</span><br>Deep Dive: Skills, Hooks &amp; Sub-Agents</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--purple)" href="https://www.udemy.com/course/claude-code-ai-coding-agents-automation/" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">Udemy · 2026</span><br>Claude Code: AI Agents, MCP, Hooks &amp; Plugins</span><span class="arrow">↗</span></a>
+            </div>
+          </div>
+
+          <div class="stepnav">
+            <button class="navbtn" onclick="go(4)">← <span>Skills</span></button>
+            <button class="navbtn" onclick="go(6)"><span>MCP &amp; RAG</span> →</button>
+          </div>
+        </section>
+
+        <!-- 6. MCP -->
+        <section class="step" id="step-mcp">
+          <span class="kicker">File 6 / 12 · The outside world</span>
+          <h2 class="step-title">.mcp.json — MCP &amp; your RAG answer</h2>
+          <p>MCP (Model Context Protocol) is the open protocol that lets Claude Code call tools outside its built-in set — a database, an issue tracker, a browser, or <strong>your own RAG pipeline</strong>. Servers are configured in <code>.mcp.json</code> at the project root (commit it — teammates get an approval prompt and just connect) or added via <code>claude mcp add</code>.</p>
+
+          <div class="code-wrap">
+            <span class="code-label">.mcp.json</span>
+            <pre><code>{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": { "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}" }
+    },
+    "ledger-rag": {
+      "command": "node",
+      "args": ["./tools/rag-mcp-server/dist/index.js"]
+    }
+  }
+}</code></pre>
+          </div>
+
+          <h3>Which RAG pattern to reach for</h3>
+          <ul>
+            <li><strong>Lightweight / static corpus</strong> → a <strong>Skill</strong> with reference files Claude greps on demand. No vector DB needed.</li>
+            <li><strong>Real RAG / large, changing corpus</strong> → a small <strong>MCP server</strong> wrapping your embedding + vector store (pgvector/Chroma), exposing tools like <code>rag_query</code>, <code>rag_search</code>, <code>index_document</code>.</li>
+          </ul>
+          <p>The tool <code>description</code> field in a custom MCP server is the <em>only</em> signal the model uses to pick the right tool — write it like "executes a read-only SQL query against the analytics replica and returns rows as JSON," not "runs a query."</p>
+          <p>For a standalone agent/RAG service outside the CLI: that's the <strong>Claude Agent SDK</strong> — same primitives, embedded programmatically in your own service.</p>
+
+          <div class="learn-block">
+            <span class="learn-eyebrow">Learn this</span>
+            <div class="chip-row">
+              <a class="chip" style="--accent:var(--amber)" href="https://anthropic.skilljar.com/introduction-to-model-context-protocol" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">Academy</span><br>Introduction to Model Context Protocol</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--amber)" href="https://anthropic.skilljar.com/model-context-protocol-advanced-topics" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">Academy</span><br>MCP: Advanced Topics</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--teal)" href="https://www.deeplearning.ai/courses/mcp-build-rich-context-ai-apps-with-anthropic" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">DeepLearning.AI</span><br>MCP: Build Rich-Context AI Apps</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--blue)" href="https://www.linkedin.com/learning/model-context-protocol-mcp-hands-on-with-agentic-ai" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">LinkedIn Learning</span><br>MCP: Hands-On With Agentic AI</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--coral)" href="https://www.youtube.com/watch?v=kQmXtrmQ5Zg" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">YouTube</span><br>Building Agents with MCP — Full Workshop (Anthropic)</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--purple)" href="https://www.udemy.com/course/mastering-model-context-protocol-mcp-a-practical-guide/" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">Udemy · 2026</span><br>Mastering Model Context Protocol (MCP): A Practical Guide</span><span class="arrow">↗</span></a>
+            </div>
+          </div>
+
+          <div class="stepnav">
+            <button class="navbtn" onclick="go(5)">← <span>Hooks</span></button>
+            <button class="navbtn" onclick="go(7)"><span>Plugins</span> →</button>
+          </div>
+        </section>
+
+        <!-- 7. PLUGINS -->
+        <section class="step" id="step-plugins">
+          <span class="kicker">File 7 / 12 · Distribution</span>
+          <h2 class="step-title">.claude-plugin/plugin.json — Plugins</h2>
+          <p>A plugin bundles skills, agents, hooks, and MCP servers into something installable via a marketplace:</p>
+
+          <div class="code-wrap">
+            <span class="code-label">plugin structure</span>
+            <pre><code>my-plugin/
+├── .claude-plugin/
+│   ├── plugin.json        # required manifest
+│   └── marketplace.json   # if publishing to a marketplace
+├── commands/               # slash commands
+├── agents/                 # subagent definitions
+├── skills/                 # skill folders (each with SKILL.md)
+├── hooks/                  # hook configs
+├── .mcp.json               # bundled MCP servers
+└── README.md</code></pre>
+          </div>
+          <p>Install with <code>/plugin install &lt;name&gt;@&lt;marketplace&gt;</code>. You probably won't need to build one for a live assessment, but knowing the shape — and that it's <code>plugin.json</code>, not "PLUGIN.md" — is worth having straight if it comes up.</p>
+
+          <div class="learn-block">
+            <span class="learn-eyebrow">Learn this</span>
+            <div class="chip-row">
+              <span class="chip gap"><span class="pdot" style="background:var(--ink-faint)"></span><span><span class="plat">Academy</span><br>No dedicated course yet</span></span>
+              <span class="chip gap"><span class="pdot" style="background:var(--ink-faint)"></span><span><span class="plat">DeepLearning.AI</span><br>No dedicated course yet</span></span>
+              <a class="chip" style="--accent:var(--blue)" href="https://www.linkedin.com/learning/claude-code-101-from-prompt-to-product" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">LinkedIn Learning</span><br>Claude Code 101 (covers plugins)</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--coral)" href="https://www.youtube.com/watch?v=-KusSduAP1A" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">YouTube</span><br>Plugins Tutorial: Install &amp; Build Your Own</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--purple)" href="https://www.udemy.com/course/claude-code-ai-coding-agents-automation/" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">Udemy · 2026</span><br>Claude Code: AI Agents, MCP, Hooks &amp; Plugins (plugin marketplace deep-dive)</span><span class="arrow">↗</span></a>
+            </div>
+          </div>
+
+          <div class="stepnav">
+            <button class="navbtn" onclick="go(6)">← <span>MCP &amp; RAG</span></button>
+            <button class="navbtn" onclick="go(8)"><span>NOTES.md</span> →</button>
+          </div>
+        </section>
+
+        <!-- 8. NOTES -->
+        <section class="step" id="step-notes">
+          <span class="kicker">File 8 / 12 · Session continuity</span>
+          <h2 class="step-title">NOTES.md — the "journal.md" pattern</h2>
+          <p>There's no Anthropic-mandated <code>journal.md</code>. What's real is a widely-used <strong>"Document &amp; Clear"</strong> discipline: before context gets long or you compact/clear a session, dump the current plan and decisions to a plain markdown file — <code>PROGRESS.md</code>, <code>NOTES.md</code>, whatever you call it. A long session is not a reliable record of what was decided; a file is.</p>
+
+          <div class="code-wrap">
+            <span class="code-label">NOTES.md</span>
+            <pre><code># NOTES.md — Assessment session, Deriv
+
+## Decisions
+- Chose MCP server over embedding RAG directly into a Skill: corpus is large + changes daily.
+- Idempotency key strategy: UUID v4 client-generated, stored with 24h TTL in Redis.
+
+## Open questions
+- Confirm whether settlement events need exactly-once or at-least-once semantics.</code></pre>
+          </div>
+
+          <div class="callout">
+            <p>For your assessment this is a gift: narrating <em>"I'm going to write our decisions to a NOTES.md as we go so there's a clean record of trade-offs"</em> is exactly the kind of engineering-leadership habit a Head of Engineering interview is trying to surface — and it's current Claude Code best practice too.</p>
+          </div>
+
+          <div class="learn-block">
+            <span class="learn-eyebrow">Learn this</span>
+            <div class="chip-row">
+              <span class="chip gap"><span class="pdot" style="background:var(--ink-faint)"></span><span><span class="plat">Academy</span><br>No dedicated course yet</span></span>
+              <a class="chip" style="--accent:var(--teal)" href="https://www.deeplearning.ai/courses/agent-memory-building-memory-aware-agents" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">DeepLearning.AI</span><br>Agent Memory: Building Memory-Aware Agents*</span><span class="arrow">↗</span></a>
+              <span class="chip gap"><span class="pdot" style="background:var(--ink-faint)"></span><span><span class="plat">LinkedIn Learning</span><br>No dedicated course yet</span></span>
+              <span class="chip gap"><span class="pdot" style="background:var(--ink-faint)"></span><span><span class="plat">YouTube</span><br>No dedicated video found</span></span>
+              <a class="chip" style="--accent:var(--purple)" href="https://www.udemy.com/course/claude-code-the-practical-guide/" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">Udemy · 2026</span><br>Claude Code — The Practical Guide (context engineering)</span><span class="arrow">↗</span></a>
+            </div>
+            <p class="further" style="color:var(--ink-faint)">DL.AI course above is a general framework (LangChain), not Claude-Code-specific — same underlying idea, different tool. The Udemy course covers context engineering within Claude Code itself but isn't a dedicated "journal.md" lesson. Also worth reading (not a course): Anthropic's <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" target="_blank" rel="noopener">Effective Context Engineering for AI Agents</a>.</p>
+          </div>
+
+          <div class="stepnav">
+            <button class="navbtn" onclick="go(7)">← <span>Plugins</span></button>
+            <button class="navbtn" onclick="go(9)"><span>Putting it together</span> →</button>
+          </div>
+        </section>
+
+        <!-- 9. LAYOUT -->
+        <section class="step" id="step-layout">
+          <span class="kicker">File 9 / 12 · Recap</span>
+          <h2 class="step-title">Putting it all together</h2>
+          <p>Everything from files 1–8, in one real repo:</p>
+
+          <div class="code-wrap">
+            <span class="code-label">payments-ledger-service/</span>
+            <pre><code>payments-ledger-service/
+├── CLAUDE.md
+├── CLAUDE.local.md              (gitignored)
+├── .mcp.json
+├── NOTES.md                      (session journal, your convention)
+├── .claude/
+│   ├── settings.json             (hooks, permissions, model)
+│   ├── rules/
+│   │   ├── api-rules.md
+│   │   └── testing-rules.md
+│   ├── skills/
+│   │   └── kafka-capacity-check/
+│   │       ├── SKILL.md
+│   │       └── reference/broker-sizing-table.md
+│   └── agents/
+│       └── payments-security-reviewer.md
+└── src/...</code></pre>
+          </div>
+
+          <div class="learn-block">
+            <span class="learn-eyebrow">If you only do three things before the assessment</span>
+            <div class="chip-row">
+              <a class="chip" style="--accent:var(--amber)" href="https://anthropic.skilljar.com/claude-code-101" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">Academy</span><br>Claude Code 101</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--amber)" href="https://anthropic.skilljar.com/introduction-to-model-context-protocol" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">Academy</span><br>Introduction to Model Context Protocol</span><span class="arrow">↗</span></a>
+              <a class="chip" style="--accent:var(--teal)" href="https://www.deeplearning.ai/courses/claude-code-a-highly-agentic-coding-assistant" target="_blank" rel="noopener"><span class="pdot"></span><span><span class="plat">DeepLearning.AI</span><br>Claude Code: A Highly Agentic Coding Assistant</span><span class="arrow">↗</span></a>
+            </div>
+          </div>
+
+          <div class="stepnav">
+            <button class="navbtn" onclick="go(8)">← <span>NOTES.md</span></button>
+            <button class="navbtn" onclick="go(10)"><span>Using VS Code</span> →</button>
+          </div>
+        </section>
+
+        <!-- 10. VSCODE -->
+        <section class="step" id="step-vscode">
+          <span class="kicker">Guide · Your actual setup</span>
+          <h2 class="step-title">Doing all of this from VS Code</h2>
+          <p>Everything above is just files in your project folder. They work identically no matter which surface you use. What changes in VS Code is only <em>how you invoke Claude Code and review its work</em>.</p>
+
+          <h3>Two ways Claude Code shows up in VS Code</h3>
+          <ol>
+            <li><strong>The official Claude Code extension</strong> (what you've been using) — <code>Ctrl+Shift+X</code> / <code>Cmd+Shift+X</code> → search "Claude Code" → the one published by Anthropic. Bundles its own CLI, gives inline diffs, plan review, <code>@</code>-mentions with line ranges, conversation history. Anthropic's recommended surface.</li>
+            <li><strong>The standalone CLI</strong> — <code>npm install -g @anthropic-ai/claude-code</code>, run <code>claude</code> in VS Code's integrated terminal. Same engine; needed if an environment expects the raw command or scriptable/headless behavior.</li>
+          </ol>
+
+          <div class="callout">
+            <p><strong>Install both before the assessment.</strong> Deriv's note ("AI assistant <em>and</em> API key ready") reads like they may expect the terminal-style flow. Set <code>ANTHROPIC_API_KEY</code> as a shell env var in advance — either surface accepts it, and launching VS Code with <code>code .</code> from that terminal inherits it automatically.</p>
+          </div>
+
+          <h3>Where the conventions live in the panel</h3>
+          <ul>
+            <li>Press <code>/</code> for the slash-command surface: <code>/memory</code>, <code>/agents</code>, <code>/mcp</code>, <code>/hooks</code>, <code>/plugin</code>.</li>
+            <li>Or just create <code>CLAUDE.md</code>, <code>.claude/agents/reviewer.md</code>, <code>.mcp.json</code> directly in the file explorer — often faster once you know the shape.</li>
+            <li>The Spark icon (✦) — editor toolbar, Activity Bar, or status bar — opens the panel.</li>
+          </ul>
+
+          <p><strong>One deliberate choice for the recording:</strong> leave approval-gated permission mode on (<code>claudeCode.initialPermissionMode</code>) and narrate your review of each diff before accepting. Auto-accept removes the exact moment you get to demonstrate judgment.</p>
+
+          <div class="stepnav">
+            <button class="navbtn" onclick="go(9)">← <span>Putting it together</span></button>
+            <button class="navbtn" onclick="go(11)"><span>Assessment playbook</span> →</button>
+          </div>
+        </section>
+
+        <!-- 11. ASSESSMENT -->
+        <section class="step" id="step-assessment">
+          <span class="kicker">Guide · Deriv, Head of Engineering</span>
+          <h2 class="step-title">The assessment-day playbook</h2>
+          <p>A recorded, think-aloud assessment isn't testing whether you can write a for-loop. It's testing whether you can <strong>direct</strong> an AI tool the way you'd direct a senior engineer, and narrate architectural reasoning in real time.</p>
+
+          <h3>Before you join</h3>
+          <ol>
+            <li>Install Claude Code and confirm it runs — don't debug installation on camera.</li>
+            <li>Set <code>ANTHROPIC_API_KEY</code> as a shell env var in advance; confirm subscription login is active if you use that instead.</li>
+            <li>Keep a minimal <code>CLAUDE.md</code> template ready to fill in fast.</li>
+            <li>Do one full test round-trip beforehand — scaffold something, edit a file.</li>
+            <li>Have a scratch repo with <code>git init</code> already done; commit as you go.</li>
+            <li>Decide your narration rhythm: state intent before every prompt, state what you're verifying after.</li>
+          </ol>
+
+          <h3>During the assessment</h3>
+          <ol>
+            <li><strong>Restate the requirement, sketch the architecture before touching Claude Code.</strong></li>
+            <li><strong>Write the CLAUDE.md first, narrating why</strong> — the single highest-leverage first five minutes.</li>
+            <li><strong>Use Plan mode and say why</strong> you want to see the approach before it touches files.</li>
+            <li><strong>Delegate isolation/repetition to a subagent, and say so</strong> — tie tool choice to a security/process rationale.</li>
+            <li><strong>Verify, don't just accept</strong> — run tests, read diffs, push back out loud when warranted.</li>
+            <li><strong>Narrate production considerations unprompted</strong> — observability, idempotency, rollback, DORA metrics.</li>
+            <li><strong>Keep a running NOTES.md</strong> of decisions and open questions as you go.</li>
+          </ol>
+
+          <div class="callout">
+            <p>An assessment requiring "your API key ready" very likely includes a task where you write or wire up something live. The MCP/RAG decision framework (file 6) and subagents (file 3) are the parts most worth being fluent in cold.</p>
+          </div>
+
+          <div class="stepnav">
+            <button class="navbtn" onclick="go(10)">← <span>Using VS Code</span></button>
+            <button class="navbtn" onclick="go(12)"><span>Cheat sheet</span> →</button>
+          </div>
+        </section>
+
+        <!-- 12. CHEATSHEET -->
+        <section class="step" id="step-cheatsheet">
+          <span class="kicker">Reference · Keep this tab open</span>
+          <h2 class="step-title">Quick-reference cheat sheet</h2>
+          <table>
+            <tr><th>You want to...</th><th>Use</th></tr>
+            <tr><td>Set standing project conventions</td><td><code>CLAUDE.md</code></td></tr>
+            <tr><td>Personal, non-shared overrides</td><td><code>CLAUDE.local.md</code></td></tr>
+            <tr><td>Rules that only apply to certain paths</td><td><code>.claude/rules/*.md</code></td></tr>
+            <tr><td>A reusable procedure, loaded only when relevant</td><td><code>.claude/skills/&lt;name&gt;/SKILL.md</code></td></tr>
+            <tr><td>Delegate an isolated sub-task with its own permissions</td><td><code>.claude/agents/&lt;name&gt;.md</code></td></tr>
+            <tr><td>Guarantee something happens every time</td><td>Hook in <code>.claude/settings.json</code></td></tr>
+            <tr><td>Connect to a DB, tracker, or your RAG index</td><td>MCP server via <code>.mcp.json</code></td></tr>
+            <tr><td>Share skills+agents+hooks+MCP as one unit</td><td>Plugin (<code>.claude-plugin/plugin.json</code>)</td></tr>
+            <tr><td>Preserve reasoning across a long session</td><td><code>NOTES.md</code> / <code>PROGRESS.md</code></td></tr>
+            <tr><td>Build a standalone agent/RAG service outside the CLI</td><td>Claude Agent SDK</td></tr>
+          </table>
+
+          <div class="stepnav">
+            <button class="navbtn" onclick="go(11)">← <span>Assessment playbook</span></button>
+            <button class="navbtn" onclick="go(13)"><span>Case Study</span> →</button>
+          </div>
+
+          <footer class="pagefoot">built for srikanth's claude code prep — course links verified against live catalogs, july 2026</footer>
+        </section>
+
+        <!-- CASE STUDY 1: OVERVIEW -->
+        <section class="step" id="step-cs-overview">
+          <span class="kicker">Case Study 1 / 4 · Worked example</span>
+          <h2 class="step-title">Payments Ledger &amp; Settlement Service</h2>
+          <p class="lede">One production-grade system, built out completely, that exercises every primitive from files 1–9 at once — the same "payments-ledger-service" this whole guide has been sketching, now filled in for real.</p>
+
+          <p><strong>Why this system:</strong> it's a fintech settlement microservice — the same shape of system a trading platform like Deriv actually runs (write-heavy, money-moving, latency- and correctness-sensitive), and it maps directly onto 18+ years of payments/fintech delivery (DBS, PayPal, MaxMoney) rather than a toy to-do app. More importantly, its real engineering constraints — idempotency, reconciliation, Kafka throughput, security review — happen to need <em>every single Claude Code primitive</em> for a genuine reason, not because the example was built backwards from the file types.</p>
+
+          <table>
+            <tr><th>Primitive</th><th>Concrete file in this repo</th><th>Why it's needed here</th></tr>
+            <tr><td>Project memory</td><td><code>CLAUDE.md</code></td><td>Money-as-cents and idempotency rules must never be silently violated</td></tr>
+            <tr><td>Personal overrides</td><td><code>CLAUDE.local.md</code></td><td>Local Postgres port / single-broker Kafka differ from the shared dev env</td></tr>
+            <tr><td>Path-scoped rules</td><td><code>.claude/rules/api-rules.md</code>, <code>testing-rules.md</code></td><td>Controller-layer and test-layer conventions differ and shouldn't compete for space in CLAUDE.md</td></tr>
+            <tr><td>Hooks</td><td><code>.claude/settings.json</code> + <code>block-env-file-writes.sh</code></td><td>Secrets protection and a NOTES.md nudge must fire every time, not just when remembered</td></tr>
+            <tr><td>Skill</td><td><code>.claude/skills/kafka-capacity-check/</code></td><td>Partition sizing is a repeatable calculation, not something to re-derive by hand each time</td></tr>
+            <tr><td>Subagent</td><td><code>.claude/agents/payments-security-reviewer.md</code></td><td>PCI-relevant review needs isolation so it can't accidentally patch what it's reviewing</td></tr>
+            <tr><td>MCP / RAG</td><td><code>.mcp.json</code> + <code>tools/rag-mcp-server/</code></td><td>Runbooks change weekly — a static Skill reference would go stale</td></tr>
+            <tr><td>Plugin</td><td><code>.claude-plugin/plugin.json</code></td><td>New joiners get reviewer + skill + hooks + MCP in one install, not five setup steps</td></tr>
+            <tr><td>Journal</td><td><code>NOTES.md</code></td><td>Architectural decisions (Redis TTL, RF choice) must survive context compaction</td></tr>
+          </table>
+
+          <h3>The complete repository</h3>
+          <div class="code-wrap">
+            <span class="code-label">payments-ledger-service/</span>
+            <pre><code>payments-ledger-service/
+├── CLAUDE.md
+├── CLAUDE.local.md                (gitignored)
+├── .mcp.json
+├── NOTES.md
+├── .claude/
+│   ├── settings.json               (hooks, permissions, model)
+│   ├── scripts/
+│   │   └── block-env-file-writes.sh
+│   ├── rules/
+│   │   ├── api-rules.md
+│   │   └── testing-rules.md
+│   ├── skills/
+│   │   └── kafka-capacity-check/
+│   │       ├── SKILL.md
+│   │       ├── scripts/
+│   │       │   └── kafka_sizing.py
+│   │       └── reference/
+│   │           └── broker-sizing-table.md
+│   └── agents/
+│       └── payments-security-reviewer.md
+├── .claude-plugin/
+│   ├── plugin.json
+│   └── marketplace.json
+├── runbooks/
+│   ├── incident-response.md
+│   └── reconciliation.md
+├── tools/
+│   └── rag-mcp-server/
+│       ├── package.json
+│       └── index.js
+└── src/main/java/com/deriv/ledger/filter/
+    └── IdempotencyFilter.java</code></pre>
+          </div>
+          <p>The next three files walk through every markdown file, every JSON file, and every piece of working code in this tree — each with an explanation of what it does at the end.</p>
+
+          <div class="stepnav">
+            <button class="navbtn" onclick="go(12)">← <span>Cheat sheet</span></button>
+            <button class="navbtn" onclick="go(14)"><span>Markdown files</span> →</button>
+          </div>
+        </section>
+
+        <!-- CASE STUDY 2: MARKDOWN FILES -->
+        <section class="step" id="step-cs-markdown">
+          <span class="kicker">Case Study 2 / 4 · Markdown files</span>
+          <h2 class="step-title">Every markdown file, in full</h2>
+          <p class="lede">Eight files. Each one is real, complete, and ready to drop into a repo — not a trimmed snippet.</p>
+
+          <div class="code-wrap">
+            <span class="code-label">CLAUDE.md</span>
+            <pre><code># CLAUDE.md — Payments Ledger Service
+
+## Architecture
+Java 21 / Spring Boot 3 microservice. Exposes REST + gRPC. Postgres (ledger DB),
+Kafka topic `ledger.events.v1` for downstream settlement. Deployed on EKS.
+Redis for idempotency-key storage (24h TTL).
+
+## Conventions
+- All monetary values: `long` cents, never `double`/`float`.
+- Every write endpoint requires an `Idempotency-Key` header — see `IdempotencyFilter`.
+- Tests: JUnit5 + Testcontainers. Run with `./gradlew test`. No mocking the DB layer.
+- Commits: Conventional Commits. PR must reference a Jira ticket (LEDGER-XXXX).
+- Log decisions to `NOTES.md` as you go — don't rely on chat history surviving compaction.
+
+## Do not
+- Do not modify `schema.sql` directly — use Flyway migrations in `db/migration/`.
+- Do not call external payment providers directly from this service; use `payment-gateway-client`.
+- Do not add a new runbook without also updating `tools/rag-mcp-server` — it's the source of truth for `rag_query`.
+
+## Tooling
+- Team's Claude Code setup ships as one plugin: `/plugin install payments-ledger-toolkit@payments-platform-marketplace`.
+- See `.claude/agents/payments-security-reviewer.md`, `.claude/skills/kafka-capacity-check/`, `.mcp.json` for what that installs.</code></pre>
+          </div>
+
+          <div class="code-wrap">
+            <span class="code-label">CLAUDE.local.md (gitignored)</span>
+            <pre><code># CLAUDE.local.md — not committed
+
+- Local Postgres runs on port 5433, not 5432 (avoids clashing with the shared dev instance).
+- Use `payments_dev` as the local DB name; seed data lives in `db/seed/local.sql`.
+- My Kafka is a single-broker Docker container — ignore replication-factor-3 advice
+  when testing locally, RF 1 is fine here.
+- I prefer `./gradlew test --tests "*Idempotency*"` for fast local iteration instead
+  of the full suite.</code></pre>
+          </div>
+
+          <div class="code-wrap">
+            <span class="code-label">.claude/rules/api-rules.md</span>
+            <pre><code>---
+paths:
+  - "src/main/java/**/controller/**"
+  - "src/main/java/**/api/**"
+---
+
+# API layer rules
+
+- Every write endpoint (POST/PUT/PATCH) must accept and validate an `Idempotency-Key` header.
+- Money fields are always `long` cents in request/response DTOs. Never `double`, `float`, or `BigDecimal` on the wire.
+- Every new endpoint needs an OpenAPI `@Operation` annotation and an entry in `docs/api-reference.md`.
+- Do not return raw JPA entities from controllers — always map to a response DTO.</code></pre>
+          </div>
+
+          <div class="code-wrap">
+            <span class="code-label">.claude/rules/testing-rules.md</span>
+            <pre><code>---
+paths:
+  - "src/test/**"
+---
+
+# Testing rules
+
+- Integration tests use Testcontainers for Postgres and Kafka — never mock the DB layer or an embedded broker.
+- Every new write endpoint needs a duplicate-request test asserting a 409 on a replayed Idempotency-Key.
+- Run `./gradlew test` before proposing any diff as done; paste the summary line, not the full log.
+- Flaky test allowance: zero. Fix or quarantine in the same PR — do not silently retry.</code></pre>
+          </div>
+
+          <div class="code-wrap">
+            <span class="code-label">.claude/agents/payments-security-reviewer.md</span>
+            <pre><code>---
+name: payments-security-reviewer
+description: Use proactively after any change to files under src/payments/. Reviews for PCI-relevant issues, idempotency gaps, and missing audit logging. Read-only — never edit.
+tools:
+  - Read
+  - Grep
+  - Glob
+model: sonnet
+---
+
+You are a security-focused reviewer for a payments microservice.
+For every change, check specifically for:
+1. Missing idempotency keys on state-changing endpoints
+2. Card/account data logged in plaintext
+3. Missing audit trail entries for balance-changing operations
+Report findings as a short bullet list with file:line references. Do not fix — only report.</code></pre>
+          </div>
+
+          <div class="code-wrap">
+            <span class="code-label">.claude/skills/kafka-capacity-check/SKILL.md</span>
+            <pre><code>---
+name: kafka-capacity-check
+description: Use when asked to size Kafka partitions/brokers for a target throughput, or to review an existing topic's capacity assumptions.
+---
+
+# Kafka Capacity Sizing Playbook
+
+Given a target events/sec and average message size, run `scripts/kafka_sizing.py`
+rather than estimating the arithmetic by hand:
+
+    python3 scripts/kafka_sizing.py --events-per-sec 650000 --avg-msg-bytes 512 --critical
+
+1. Use `--critical` for any topic touching money movement (forces replication factor 3).
+2. Flag if consumer group lag would exceed 2x partition count (rebalancing risk).
+3. Always show the script's output, not just the final number — the reviewer needs the reasoning.
+
+See `reference/broker-sizing-table.md` for AWS MSK instance-type throughput numbers.</code></pre>
+          </div>
+
+          <div class="code-wrap">
+            <span class="code-label">.claude/skills/kafka-capacity-check/reference/broker-sizing-table.md</span>
+            <pre><code># AWS MSK broker sizing reference
+
+Conservative sustained throughput budget per partition, by broker instance type
+(single-AZ replication overhead already factored in):
+
+| Instance type    | vCPU | Memory | Safe MB/s per partition | Notes                          |
+|------------------|------|--------|--------------------------|---------------------------------|
+| kafka.m5.large   | 2    | 8 GB   | 6                        | Dev/staging only                |
+| kafka.m5.xlarge  | 4    | 16 GB  | 10                       | Default assumption in the script|
+| kafka.m5.2xlarge | 8    | 32 GB  | 18                       | Use for topics &gt;500K events/sec |
+| kafka.m5.4xlarge | 16   | 64 GB  | 32                       | Reserve for the settlement cluster only |
+
+Rule of thumb: reprovision one tier up once observed p99 partition lag exceeds
+30 seconds during a traffic spike, rather than adding partitions reactively —
+partition count changes break existing key-based ordering.</code></pre>
+          </div>
+
+          <div class="code-wrap">
+            <span class="code-label">NOTES.md</span>
+            <pre><code># NOTES.md — Ledger Service, Q3 platform hardening
+
+## Decisions
+- 2026-07-10: Chose an MCP server over a Skill for runbook search — corpus (12 runbooks,
+  growing) changes weekly as incidents are documented; a Skill's static reference files
+  would go stale.
+- 2026-07-10: RAG server uses keyword/TF-IDF scoring, not embeddings — good enough for
+  &lt;50 short documents, avoids needing an external embedding API key in the loop.
+- 2026-07-11: Idempotency keys are client-generated UUID v4, stored in Redis with a
+  24h TTL (matches the settlement provider's own retry window).
+- 2026-07-14: Bundled the reviewer subagent + Kafka skill + hooks + MCP server into one
+  plugin so new joiners get the full toolkit with one `/plugin install` instead of five
+  separate setup steps.
+
+## Open questions
+- Should the security-reviewer subagent also run in CI, or stay a local-only pre-PR check?
+- Revisit replication factor 3 vs 2 once the settlement topic crosses 500K events/sec.</code></pre>
+          </div>
+
+          <h3>What each file does</h3>
+          <table>
+            <tr><th>File</th><th>What it does</th></tr>
+            <tr><td><code>CLAUDE.md</code></td><td>Standing architecture, conventions, and hard rules loaded into every session — the behavioral contract for the whole repo.</td></tr>
+            <tr><td><code>CLAUDE.local.md</code></td><td>Personal, gitignored overrides for one engineer's local environment — never shared, never committed.</td></tr>
+            <tr><td><code>.claude/rules/api-rules.md</code></td><td>Narrow conventions that only load when Claude touches controller/API files — keeps CLAUDE.md from bloating with layer-specific detail.</td></tr>
+            <tr><td><code>.claude/rules/testing-rules.md</code></td><td>Same idea for the test layer — Testcontainers-only policy and the zero-flaky-tests rule.</td></tr>
+            <tr><td><code>.claude/agents/payments-security-reviewer.md</code></td><td>Defines a read-only subagent that reviews payments-layer changes in its own context window, so it can't accidentally edit what it's checking.</td></tr>
+            <tr><td><code>.claude/skills/kafka-capacity-check/SKILL.md</code></td><td>A just-in-time playbook Claude loads only when asked about Kafka sizing — points at the real script instead of estimating by hand.</td></tr>
+            <tr><td><code>reference/broker-sizing-table.md</code></td><td>Supporting data the skill references but doesn't inline — keeps the SKILL.md body short.</td></tr>
+            <tr><td><code>NOTES.md</code></td><td>The running decision log — the "journal.md" pattern — so architectural reasoning survives compaction and new sessions.</td></tr>
+          </table>
+
+          <div class="stepnav">
+            <button class="navbtn" onclick="go(13)">← <span>Overview</span></button>
+            <button class="navbtn" onclick="go(15)"><span>Config (JSON) files</span> →</button>
+          </div>
+        </section>
+
+        <!-- CASE STUDY 3: CONFIG FILES -->
+        <section class="step" id="step-cs-config">
+          <span class="kicker">Case Study 3 / 4 · Config (JSON) files</span>
+          <h2 class="step-title">Every JSON file, in full</h2>
+          <p class="lede">Four files: hooks + permissions, MCP connections, and the plugin manifest that bundles all of it for the team.</p>
+
+          <div class="code-wrap">
+            <span class="code-label">.claude/settings.json</span>
+            <pre><code>{
+  "model": "claude-sonnet-4-6",
+  "permissions": {
+    "allow": ["Read", "Grep", "Glob", "Bash(./gradlew *)"],
+    "ask": ["Edit", "Write", "Bash(*)"]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          { "type": "command", "command": ".claude/scripts/block-env-file-writes.sh" }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          { "type": "command", "command": "npx prettier --write \"$CLAUDE_TOOL_INPUT_FILE_PATH\" 2&gt;/dev/null || true" }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "echo '[session end] remember to update NOTES.md' &gt;&amp;2" }
+        ]
+      }
+    ]
+  }
+}</code></pre>
+          </div>
+
+          <div class="code-wrap">
+            <span class="code-label">.mcp.json</span>
+            <pre><code>{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": { "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}" }
+    },
+    "ledger-rag": {
+      "command": "node",
+      "args": ["./tools/rag-mcp-server/index.js"],
+      "env": { "RUNBOOK_DIR": "./runbooks" }
+    }
+  }
+}</code></pre>
+          </div>
+
+          <div class="code-wrap">
+            <span class="code-label">.claude-plugin/plugin.json</span>
+            <pre><code>{
+  "name": "payments-ledger-toolkit",
+  "version": "1.0.0",
+  "description": "Bundles the ledger service's security reviewer subagent, Kafka sizing skill, hardening hooks, and RAG MCP server into one installable package.",
+  "author": "Payments Platform Team",
+  "agents": ["./agents/payments-security-reviewer.md"],
+  "skills": ["./skills/kafka-capacity-check"],
+  "hooks": "./hooks/hooks.json",
+  "mcpServers": "./.mcp.json"
+}</code></pre>
+          </div>
+
+          <div class="code-wrap">
+            <span class="code-label">.claude-plugin/marketplace.json</span>
+            <pre><code>{
+  "name": "payments-platform-marketplace",
+  "owner": "payments-platform-team",
+  "plugins": [
+    {
+      "name": "payments-ledger-toolkit",
+      "source": "./",
+      "description": "Security review, Kafka sizing, and RAG runbook search for the ledger service"
+    }
+  ]
+}</code></pre>
+          </div>
+
+          <div class="callout">
+            <p>The exact manifest field names for <code>plugin.json</code>/<code>marketplace.json</code> are still evolving on Anthropic's side — treat this as the right <em>shape</em>, and check <a href="https://code.claude.com/docs/en/plugins" target="_blank" rel="noopener">code.claude.com/docs/en/plugins</a> for the current authoritative schema before shipping it to a team.</p>
+          </div>
+
+          <h3>What each file does</h3>
+          <table>
+            <tr><th>File</th><th>What it does</th></tr>
+            <tr><td><code>.claude/settings.json</code></td><td>Pins the model, sets tool permissions (tests auto-allowed, edits/writes ask first), and registers three hooks: block secret-file writes, auto-format on save, and a session-end nudge to update NOTES.md.</td></tr>
+            <tr><td><code>.mcp.json</code></td><td>Connects two MCP servers: GitHub (issues/PRs) and the team's own <code>ledger-rag</code> server for runbook search.</td></tr>
+            <tr><td><code>.claude-plugin/plugin.json</code></td><td>Declares one installable bundle — reviewer + skill + hooks + MCP — so a new engineer gets the whole toolkit in one command.</td></tr>
+            <tr><td><code>.claude-plugin/marketplace.json</code></td><td>Registers that bundle as an installable entry so <code>/plugin marketplace add</code> can find it.</td></tr>
+          </table>
+
+          <div class="stepnav">
+            <button class="navbtn" onclick="go(14)">← <span>Markdown files</span></button>
+            <button class="navbtn" onclick="go(16)"><span>Working code</span> →</button>
+          </div>
+        </section>
+
+        <!-- CASE STUDY 4: WORKING CODE -->
+        <section class="step" id="step-cs-code">
+          <span class="kicker">Case Study 4 / 5 · Working code</span>
+          <h2 class="step-title">The code that makes it real</h2>
+          <p class="lede">Six files: a runnable MCP server, its two-document corpus, a hook script, a skill script, and the Java filter that enforces the idempotency rule CLAUDE.md declares.</p>
+
+          <div class="code-wrap">
+            <span class="code-label">tools/rag-mcp-server/package.json</span>
+            <pre><code>{
+  "name": "ledger-rag-mcp-server",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "MCP server exposing keyword-search RAG over the payments ledger service's runbooks",
+  "main": "index.js",
+  "scripts": { "start": "node index.js" },
+  "dependencies": { "@modelcontextprotocol/sdk": "^1.5.0" }
+}</code></pre>
+          </div>
+
+          <div class="code-wrap">
+            <span class="code-label">tools/rag-mcp-server/index.js</span>
+            <pre><code>#!/usr/bin/env node
+// MCP server: keyword/TF-IDF search over local runbooks. No embedding
+// API key required — good enough for a few dozen short documents (see NOTES.md).
+import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import {
+  CallToolRequestSchema,
+  ListToolsRequestSchema,
+} from "@modelcontextprotocol/sdk/types.js";
+import fs from "node:fs";
+import path from "node:path";
+
+const RUNBOOK_DIR = process.env.RUNBOOK_DIR || path.join(process.cwd(), "runbooks");
+
+function tokenize(text) {
+  return text.toLowerCase().match(/[a-z0-9]+/g) || [];
+}
+
+function loadCorpus() {
+  const files = fs.readdirSync(RUNBOOK_DIR).filter((f) => f.endsWith(".md"));
+  return files.map((file) => {
+    const raw = fs.readFileSync(path.join(RUNBOOK_DIR, file), "utf8");
+    return { file, raw, tokens: tokenize(raw) };
+  });
+}
+
+function scoreDoc(queryTokens, doc) {
+  const freq = {};
+  for (const t of doc.tokens) freq[t] = (freq[t] || 0) + 1;
+  let score = 0;
+  for (const q of queryTokens) score += freq[q] || 0;
+  return score / Math.sqrt(doc.tokens.length || 1);
+}
+
+function ragSearch(query, topK = 3) {
+  const corpus = loadCorpus();
+  const qTokens = tokenize(query);
+  return corpus
+    .map((doc) => ({ file: doc.file, score: scoreDoc(qTokens, doc), snippet: doc.raw.slice(0, 400) }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, topK)
+    .filter((r) => r.score > 0);
+}
+
+const server = new Server(
+  { name: "ledger-rag", version: "1.0.0" },
+  { capabilities: { tools: {} } }
+);
+
+server.setRequestHandler(ListToolsRequestSchema, async () => ({
+  tools: [
+    {
+      name: "rag_query",
+      description:
+        "Answers a question using the ledger service's runbooks and reconciliation docs. Returns the top matching passages with source file names.",
+      inputSchema: {
+        type: "object",
+        properties: { question: { type: "string" } },
+        required: ["question"],
+      },
+    },
+    {
+      name: "rag_search",
+      description: "Keyword search across indexed runbooks. Returns ranked file matches with a short snippet each.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          query: { type: "string" },
+          top_k: { type: "number", description: "Number of results to return (default 3)" },
+        },
+        required: ["query"],
+      },
+    },
+    {
+      name: "get_stats",
+      description: "Returns how many runbook documents are currently indexed.",
+      inputSchema: { type: "object", properties: {} },
+    },
+  ],
+}));
+
+server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  const { name, arguments: args } = request.params;
+
+  if (name === "rag_query" || name === "rag_search") {
+    const query = args.question || args.query;
+    const results = ragSearch(query, args.top_k || 3);
+    if (results.length === 0) {
+      return { content: [{ type: "text", text: `No runbook matched "${query}".` }] };
+    }
+    const text = results.map((r) => `### ${r.file} (score ${r.score.toFixed(2)})\n${r.snippet}...`).join("\n\n");
+    return { content: [{ type: "text", text }] };
+  }
+
+  if (name === "get_stats") {
+    const corpus = loadCorpus();
+    return { content: [{ type: "text", text: `${corpus.length} runbook document(s) indexed from ${RUNBOOK_DIR}` }] };
+  }
+
+  throw new Error(`Unknown tool: ${name}`);
+});
+
+const transport = new StdioServerTransport();
+await server.connect(transport);</code></pre>
+          </div>
+
+          <div class="code-wrap">
+            <span class="code-label">runbooks/incident-response.md</span>
+            <pre><code># Incident response — ledger settlement lag
+
+If `ledger.events.v1` consumer lag exceeds 30s for more than 5 minutes:
+1. Check Kafka broker CPU/memory via the MSK dashboard — see kafka_sizing.py for
+   expected safe throughput per partition.
+2. If brokers are healthy, check for a stuck consumer — restart the settlement-worker pod.
+3. If neither resolves it within 15 minutes, page the on-call payments engineer and open a SEV-2.
+4. Record the timeline and root cause in NOTES.md once resolved.</code></pre>
+          </div>
+
+          <div class="code-wrap">
+            <span class="code-label">runbooks/reconciliation.md</span>
+            <pre><code># Daily ledger reconciliation
+
+Every day at 02:00 UTC, the reconciliation job compares ledger balances against
+the settlement provider's end-of-day report.
+
+- A mismatch under $1.00 aggregate is auto-approved and logged.
+- A mismatch over $1.00 blocks the job and pages the payments on-call.
+- Idempotency-Key collisions during the previous 24h are the first thing to check —
+  see IdempotencyFilter and the Redis TTL window.
+- Root cause and resolution get appended to NOTES.md, not just Slack.</code></pre>
+          </div>
+
+          <div class="code-wrap">
+            <span class="code-label">.claude/scripts/block-env-file-writes.sh</span>
+            <pre><code>#!/usr/bin/env bash
+# PreToolUse hook — reads the tool-call JSON Claude Code pipes on stdin
+# and blocks any Edit/Write whose target path looks like a secrets file.
+set -euo pipefail
+
+file_path="$(jq -r '.tool_input.file_path // empty')"
+
+if [[ -z "$file_path" ]]; then
+  exit 0
+fi
+
+case "$file_path" in
+  *.env|*.env.*|*secrets*|*credentials*)
+    echo "Blocked: '$file_path' looks like a secrets file. Edit it by hand if this is intentional." 1&gt;&amp;2
+    exit 2
+    ;;
+  *)
+    exit 0
+    ;;
+esac</code></pre>
+          </div>
+
+          <div class="code-wrap">
+            <span class="code-label">.claude/skills/kafka-capacity-check/scripts/kafka_sizing.py</span>
+            <pre><code>#!/usr/bin/env python3
+"""
+Computes recommended partition count and replication factor for a target
+Kafka throughput. Referenced by SKILL.md so Claude executes it directly
+instead of estimating the arithmetic itself.
+
+Usage:
+    python3 kafka_sizing.py --events-per-sec 650000 --avg-msg-bytes 512 --critical
+"""
+import argparse
+import math
+
+PARTITION_THROUGHPUT_MB_S = 10  # see reference/broker-sizing-table.md
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--events-per-sec", type=float, required=True)
+    parser.add_argument("--avg-msg-bytes", type=float, required=True)
+    parser.add_argument(
+        "--critical", action="store_true",
+        help="Set for money-movement topics (forces replication factor 3)",
+    )
+    args = parser.parse_args()
+
+    throughput_mb_s = (args.events_per_sec * args.avg_msg_bytes) / (1024 * 1024)
+    partitions = math.ceil(throughput_mb_s / PARTITION_THROUGHPUT_MB_S)
+    replication_factor = 3 if args.critical else 2
+
+    print(f"Target throughput:      {throughput_mb_s:.2f} MB/s")
+    print(f"Recommended partitions: {partitions}")
+    print(f"Replication factor:     {replication_factor}")
+    print(f"Formula: partitions = ceil(throughput_MB_s / {PARTITION_THROUGHPUT_MB_S} MB/s per partition)")
+
+if __name__ == "__main__":
+    main()</code></pre>
+          </div>
+
+          <div class="code-wrap">
+            <span class="code-label">src/main/java/com/deriv/ledger/filter/IdempotencyFilter.java</span>
+            <pre><code>package com.deriv.ledger.filter;
+
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.time.Duration;
+
+/**
+ * Enforces the CLAUDE.md convention: "Every write endpoint requires an
+ * Idempotency-Key header." Matches the Redis-backed strategy recorded in
+ * NOTES.md (24h TTL, client-generated UUID v4).
+ */
+@Component
+public class IdempotencyFilter implements Filter {
+
+    private static final Duration TTL = Duration.ofHours(24);
+    private final StringRedisTemplate redis;
+
+    public IdempotencyFilter(StringRedisTemplate redis) {
+        this.redis = redis;
+    }
+
+    @Override
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
+            throws IOException, ServletException {
+        HttpServletRequest httpReq = (HttpServletRequest) req;
+        HttpServletResponse httpRes = (HttpServletResponse) res;
+
+        boolean isWrite = "POST".equals(httpReq.getMethod()) || "PUT".equals(httpReq.getMethod());
+        if (!isWrite) {
+            chain.doFilter(req, res);
+            return;
+        }
+
+        String key = httpReq.getHeader("Idempotency-Key");
+        if (key == null || key.isBlank()) {
+            httpRes.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing Idempotency-Key header");
+            return;
+        }
+
+        String redisKey = "idempotency:" + key;
+        Boolean firstSeen = redis.opsForValue().setIfAbsent(redisKey, "1", TTL);
+
+        if (Boolean.FALSE.equals(firstSeen)) {
+            httpRes.setStatus(HttpServletResponse.SC_CONFLICT);
+            httpRes.getWriter().write("Duplicate request for Idempotency-Key: " + key);
+            return;
+        }
+
+        chain.doFilter(req, res);
+    }
+}</code></pre>
+          </div>
+
+          <div class="callout">
+            <p><strong>To actually run the MCP server:</strong> <code>cd tools/rag-mcp-server && npm install && npm start</code> — then point <code>.mcp.json</code> at it and ask Claude Code "what's the reconciliation mismatch threshold?" It'll call <code>rag_query</code> and answer from <code>runbooks/reconciliation.md</code>. To try the sizing script standalone: <code>python3 .claude/skills/kafka-capacity-check/scripts/kafka_sizing.py --events-per-sec 650000 --avg-msg-bytes 512 --critical</code>.</p>
+          </div>
+
+          <h3>What each file does</h3>
+          <table>
+            <tr><th>File</th><th>What it does</th></tr>
+            <tr><td><code>package.json</code></td><td>Declares the MCP server as an ES module and its one real dependency, the official MCP SDK.</td></tr>
+            <tr><td><code>index.js</code></td><td>A working MCP server: indexes every <code>.md</code> file in <code>runbooks/</code>, scores them against a query with simple term-frequency matching, and exposes <code>rag_query</code>, <code>rag_search</code>, and <code>get_stats</code> as callable tools over stdio.</td></tr>
+            <tr><td><code>runbooks/incident-response.md</code></td><td>Part of the RAG corpus — real operational content the MCP server searches, not filler.</td></tr>
+            <tr><td><code>runbooks/reconciliation.md</code></td><td>Second corpus document — cross-references <code>IdempotencyFilter</code> and <code>NOTES.md</code>, so a <code>rag_query</code> answer can point back into the rest of the repo.</td></tr>
+            <tr><td><code>block-env-file-writes.sh</code></td><td>The actual <code>PreToolUse</code> hook body: parses the tool-call JSON with <code>jq</code>, exits 2 (blocking) if the target path looks like a secrets file.</td></tr>
+            <tr><td><code>kafka_sizing.py</code></td><td>The real calculation behind the Kafka skill — partitions and replication factor from throughput, with the formula printed alongside the answer.</td></tr>
+            <tr><td><code>IdempotencyFilter.java</code></td><td>The Spring Boot filter that actually enforces the CLAUDE.md rule in production: rejects writes missing the header, returns 409 on a replayed key, backed by Redis <code>SETNX</code> + TTL.</td></tr>
+          </table>
+
+          <div class="stepnav">
+            <button class="navbtn" onclick="go(15)">← <span>Config (JSON) files</span></button>
+            <button class="navbtn" onclick="go(17)"><span>Run it, step by step</span> →</button>
+          </div>
+        </section>
+
+        <!-- CASE STUDY 5: RUN IT -->
+        <section class="step" id="step-cs-run">
+          <span class="kicker">Case Study 5 / 5 · Run it yourself</span>
+          <h2 class="step-title">From empty folder to a working session</h2>
+          <p class="lede">Every command below is real and ordered — copy them top to bottom in a terminal and you'll have the whole case study running, not just readable.</p>
+
+          <div class="callout">
+            <p><strong>Prerequisites</strong> — check each before starting: <code>node -v</code> (18+), <code>python3 --version</code> (3.10+), <code>java -version</code> (21), <code>docker --version</code>, <code>jq --version</code>, and <code>claude --version</code>. Missing <code>claude</code>? See file "Doing all of this from VS Code" for install options.</p>
+          </div>
+
+          <h3>Step 1 — scaffold the repository</h3>
+          <div class="code-wrap">
+            <span class="code-label">terminal</span>
+            <pre><code>mkdir -p payments-ledger-service/.claude/scripts \
+         payments-ledger-service/.claude/rules \
+         payments-ledger-service/.claude/skills/kafka-capacity-check/scripts \
+         payments-ledger-service/.claude/skills/kafka-capacity-check/reference \
+         payments-ledger-service/.claude/agents \
+         payments-ledger-service/.claude-plugin \
+         payments-ledger-service/runbooks \
+         payments-ledger-service/tools/rag-mcp-server \
+         payments-ledger-service/src/main/java/com/deriv/ledger/filter
+
+cd payments-ledger-service
+git init -q
+echo "CLAUDE.local.md" >> .gitignore</code></pre>
+          </div>
+          <p>This mirrors the tree from file 1 exactly — every folder below already exists once this runs.</p>
+
+          <h3>Step 2 — add the files</h3>
+          <p>Paste each file from "Markdown files" and "Config (JSON) files" into the matching path above. The fastest way, one file at a time:</p>
+          <div class="code-wrap">
+            <span class="code-label">terminal</span>
+            <pre><code>cat > CLAUDE.md << 'EOF'
+# CLAUDE.md — Payments Ledger Service
+... (paste full content from the "Markdown files" step) ...
+EOF
+
+cat > .mcp.json << 'EOF'
+{ "mcpServers": { "...": "... (paste from the Config step) ..." } }
+EOF
+
+# repeat for CLAUDE.local.md, .claude/rules/*.md, .claude/agents/*.md,
+# .claude/skills/kafka-capacity-check/{SKILL.md,reference/broker-sizing-table.md},
+# NOTES.md, .claude/settings.json, .claude-plugin/{plugin.json,marketplace.json}</code></pre>
+          </div>
+
+          <h3>Step 3 — install and smoke-test the MCP server (no Claude Code needed yet)</h3>
+          <div class="code-wrap">
+            <span class="code-label">terminal</span>
+            <pre><code># drop in package.json and index.js from the "Working code" step, plus
+# the two runbooks/*.md files, then:
+cd tools/rag-mcp-server
+npm install
+
+# start it directly and talk to it with the official MCP Inspector —
+# this proves the server works before Claude Code ever touches it
+npx @modelcontextprotocol/inspector node index.js
+# → opens a local browser UI; call rag_query with
+#   { "question": "what's the reconciliation mismatch threshold?" }
+# → should return a passage from runbooks/reconciliation.md
+
+cd ../..</code></pre>
+          </div>
+
+          <h3>Step 4 — test the hook in isolation</h3>
+          <div class="code-wrap">
+            <span class="code-label">terminal</span>
+            <pre><code>chmod +x .claude/scripts/block-env-file-writes.sh
+
+# simulate the JSON Claude Code would pipe in on a PreToolUse event
+echo '{"tool_input":{"file_path":".env"}}' | .claude/scripts/block-env-file-writes.sh
+echo "exit code: $?"     # → 2  (blocked)
+
+echo '{"tool_input":{"file_path":"src/Foo.java"}}' | .claude/scripts/block-env-file-writes.sh
+echo "exit code: $?"     # → 0  (allowed)</code></pre>
+          </div>
+
+          <h3>Step 5 — run the Kafka sizing skill script directly</h3>
+          <div class="code-wrap">
+            <span class="code-label">terminal</span>
+            <pre><code>python3 .claude/skills/kafka-capacity-check/scripts/kafka_sizing.py \
+  --events-per-sec 650000 --avg-msg-bytes 512 --critical
+
+# → Target throughput:      317.38 MB/s
+#   Recommended partitions: 32
+#   Replication factor:     3</code></pre>
+          </div>
+
+          <h3>Step 6 — start Claude Code and verify every primitive is wired up</h3>
+          <div class="code-wrap">
+            <span class="code-label">terminal</span>
+            <pre><code>export ANTHROPIC_API_KEY=sk-ant-...     # or run: claude login
+claude</code></pre>
+          </div>
+          <p>Then, inside the session, check each layer loaded correctly:</p>
+          <div class="code-wrap">
+            <span class="code-label">inside claude</span>
+            <pre><code>/memory     → confirms CLAUDE.md + both rules files are active
+/agents     → confirms payments-security-reviewer is registered
+/mcp        → confirms github and ledger-rag show as connected</code></pre>
+          </div>
+          <p>Now exercise each primitive with a real prompt and watch which tool/agent/skill fires:</p>
+          <ul>
+            <li><strong>"What's our reconciliation mismatch threshold?"</strong> → routes to the <code>ledger-rag</code> MCP server's <code>rag_query</code> tool</li>
+            <li><strong>"Size Kafka partitions for 650K events/sec, this is a critical topic."</strong> → auto-triggers the <code>kafka-capacity-check</code> skill, which runs <code>kafka_sizing.py</code></li>
+            <li><strong>"Review my latest changes under src/payments for security issues."</strong> → delegates to the <code>payments-security-reviewer</code> subagent in its own context window</li>
+          </ul>
+
+          <h3>Step 7 — install everything as one plugin (what a new teammate would run)</h3>
+          <div class="code-wrap">
+            <span class="code-label">inside claude</span>
+            <pre><code>/plugin marketplace add ./.claude-plugin
+/plugin install payments-ledger-toolkit@payments-platform-marketplace
+/reload-plugins</code></pre>
+          </div>
+          <p>One command instead of five manual setup steps — the whole point of bundling reviewer + skill + hooks + MCP into a plugin back in file 3 of this case study.</p>
+
+          <h3>Step 8 — exercise the actual idempotency enforcement</h3>
+          <div class="callout">
+            <p>This step needs the real Spring Boot service around <code>IdempotencyFilter.java</code> — this guide ships the filter, not the whole app. Drop it into an existing Spring Boot 3 project with Spring Data Redis on the classpath and a <code>POST /payments</code> controller, then:</p>
+          </div>
+          <div class="code-wrap">
+            <span class="code-label">terminal</span>
+            <pre><code>docker run -d --name ledger-redis -p 6379:6379 redis:7
+./gradlew bootRun
+
+# in a second terminal:
+KEY=$(uuidgen)
+curl -i -X POST localhost:8080/payments -H "Idempotency-Key: $KEY" -d '{"amountCents":500}'
+curl -i -X POST localhost:8080/payments -H "Idempotency-Key: $KEY" -d '{"amountCents":500}'
+# first call → 200/201
+# second call with the SAME key → 409 Conflict, exactly as NOTES.md decided</code></pre>
+          </div>
+
+          <div class="callout">
+            <p><strong>If everything above worked:</strong> you've exercised all nine primitives from files 1–9 end to end — memory, rules, hooks, skill, subagent, MCP/RAG, plugin, journal, and the enforced convention in real code — on one coherent system, not nine disconnected demos.</p>
+          </div>
+
+          <div class="stepnav">
+            <button class="navbtn" onclick="go(16)">← <span>Working code</span></button>
+            <button class="navbtn" onclick="go(0)"><span>Back to welcome</span> ↻</button>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  const steps = ["intro","overview","claudemd","subagents","skills","hooks","mcp","plugins","notes","layout","vscode","assessment","cheatsheet","cs-overview","cs-markdown","cs-config","cs-code","cs-run"];
+  const labels = {
+    intro:"welcome", overview:"OVERVIEW.md", claudemd:"CLAUDE.md",
+    subagents:".claude/agents/reviewer.md", skills:".claude/skills/kafka-check/SKILL.md",
+    hooks:".claude/settings.json", mcp:".mcp.json", plugins:".claude-plugin/plugin.json",
+    notes:"NOTES.md", layout:"tree .", vscode:"VSCODE.md",
+    assessment:"DERIV_ASSESSMENT.md", cheatsheet:"CHEATSHEET.md",
+    "cs-overview":"CASE_STUDY.md", "cs-markdown":"case-study/*.md",
+    "cs-config":"case-study/*.json", "cs-code":"case-study/src/*",
+    "cs-run":"run.sh"
+  };
+  let current = 0;
+  const read = new Set();
+
+  function render(){
+    document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+    document.getElementById('step-'+steps[current]).classList.add('active');
+
+    document.querySelectorAll('.tree-item').forEach(b=>b.classList.remove('active'));
+    const activeBtn = document.querySelector('.tree-item[data-step="'+steps[current]+'"]');
+    if(activeBtn) activeBtn.classList.add('active');
+
+    document.getElementById('tabFile').textContent = labels[steps[current]];
+
+    const counter = document.getElementById('stepCounter');
+    const fill = document.getElementById('progressFill');
+    if(current === 0){
+      counter.textContent = 'Welcome';
+      fill.style.width = '0%';
+    } else if(current <= 12){
+      const n = current; // 1..12
+      counter.textContent = 'File ' + n + ' / 12';
+      fill.style.width = (n/12*100) + '%';
+    } else {
+      const n = current - 12; // 1..5
+      counter.textContent = 'Case Study ' + n + ' / 5';
+      fill.style.width = (n/5*100) + '%';
+    }
+
+    if(current > 0){
+      read.add(steps[current]);
+      if(activeBtn) activeBtn.classList.add('read');
+    }
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function go(i){
+    current = Math.max(0, Math.min(steps.length-1, i));
+    render();
+  }
+
+  document.querySelectorAll('.tree-item[data-step]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      current = steps.indexOf(btn.getAttribute('data-step'));
+      render();
+    });
+  });
+
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'ArrowRight') go(current+1);
+    if(e.key === 'ArrowLeft') go(current-1);
+  });
+
+  // terminal boot animation
+  const lines = [
+    "$ claude",
+    "Claude Code v2.1 — reading project context...",
+    "[ok] CLAUDE.md loaded",
+    "[ok] 3 skills indexed",
+    "[ok] 2 subagents ready",
+    "[ok] MCP: github, ledger-rag connected",
+    "Ready. What are we building?"
+  ];
+  const out = document.getElementById('termout');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function paintPlain(){
+    out.innerHTML = lines.map(l => l.startsWith('[ok]') ? '<span class="ok">'+l+'</span>' : l).join('\n');
+  }
+
+  function typeLines(){
+    let li = 0, ci = 0, buffer = [];
+    function tick(){
+      if(li >= lines.length){ return; }
+      const line = lines[li];
+      if(ci <= line.length){
+        const partial = buffer.concat(line.slice(0,ci)).join('\n');
+        out.textContent = partial;
+        ci++;
+        setTimeout(tick, line.startsWith('$') ? 45 : 14);
+      } else {
+        buffer.push(line);
+        li++; ci = 0;
+        setTimeout(tick, 160);
+      }
+    }
+    tick();
+    // colorize [ok] lines after typing settles
+    setTimeout(paintPlain, lines.reduce((a,l)=>a+l.length*16+160,400));
+  }
+
+  if(reduceMotion){ paintPlain(); } else { typeLines(); }
+
+  render();
+</script>
+</body>
+</html>
