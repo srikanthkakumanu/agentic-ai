@@ -319,12 +319,12 @@
             </div>
             <h1>Claude Code, <span>by workflow type.</span></h1>
             <p class="lede">Everything in this guide — every markdown file, every JSON config, every prompt, every case study — is organized around one question: <strong>which of the three 2026 workflow types are you doing right now?</strong> Agentic Coding, Agentic Engineering, or Harness Engineering. Same underlying files you'd learn either way; very different golden templates and prompts once you know which one you're in.</p>
-            <button class="startbtn" onclick="go(1)">Start with WORKFLOWS.md →</button>
+            <button class="startbtn" onclick="go('workflows')">Start with WORKFLOWS.md →</button>
 
             <div class="path-cards">
-              <button class="path-card ac" onclick="go(2)"><b>1 · Agentic Coding</b><span>One agent, one task, one session. Start here if you just want CLAUDE.md done right.</span></button>
-              <button class="path-card ae" onclick="go(7)"><b>2 · Agentic Engineering</b><span>Plan→Execute→Verify across a small agent team. Subagents, skills, NOTES.md.</span></button>
-              <button class="path-card he" onclick="go(14)"><b>3 · Harness Engineering</b><span>The reusable environment: hooks, MCP, plugins. Skip here if you already know 1 &amp; 2.</span></button>
+              <button class="path-card ac" onclick="go('ac-overview')"><b>1 · Agentic Coding</b><span>One agent, one task, one session. Start here if you just want CLAUDE.md done right.</span></button>
+              <button class="path-card ae" onclick="go('ae-overview')"><b>2 · Agentic Engineering</b><span>Plan→Execute→Verify across a small agent team. Subagents, skills, NOTES.md.</span></button>
+              <button class="path-card he" onclick="go('he-overview')"><b>3 · Harness Engineering</b><span>The reusable environment: hooks, MCP, plugins. Skip here if you already know 1 &amp; 2.</span></button>
             </div>
           </div>
         </section>
@@ -369,8 +369,8 @@
           </ul>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(0)">← <span>Welcome</span></button>
-            <button class="navbtn" onclick="go(2)"><span>1 · Agentic Coding</span> →</button>
+            <button class="navbtn" onclick="go('intro')">← <span>Welcome</span></button>
+            <button class="navbtn" onclick="go('ac-overview')"><span>1 · Agentic Coding</span> →</button>
           </div>
         </section>
 
@@ -380,6 +380,8 @@
           <span class="kicker">1 / 5 · What &amp; why</span>
           <h2 class="step-title">One agent, one task, one session</h2>
           <p class="lede">This is what "using Claude Code" means on a normal Tuesday. You have a scoped task, you describe it, the agent works within a session, and you review the diff. No subagents, no hooks, no MCP — adding those here is premature scaffolding for a workflow that doesn't need it yet.</p>
+
+          <p>This section's example is <strong>QuoteBox</strong> — a tiny public API that serves inspirational quotes. Deliberately unrelated to any other example in this guide: no shared code, no shared domain, nothing to cross-reference. If you only ever read this one section, you have everything you need to build it.</p>
 
           <h3>Required files</h3>
           <table>
@@ -404,8 +406,8 @@
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(1)">← <span>WORKFLOWS.md</span></button>
-            <button class="navbtn" onclick="go(3)"><span>CLAUDE.md</span> →</button>
+            <button class="navbtn" onclick="go('workflows')">← <span>WORKFLOWS.md</span></button>
+            <button class="navbtn" onclick="go('ac-claudemd')"><span>CLAUDE.md</span> →</button>
           </div>
         </section>
 
@@ -437,43 +439,36 @@
 - {{How the team's Claude Code setup is installed, if bundled as a plugin}}</code></pre>
           </div>
 
-          <h3>Filled example — Payments Ledger Service</h3>
+          <h3>Filled example — QuoteBox</h3>
           <div class="code-wrap">
             <span class="code-label">CLAUDE.md</span>
-            <pre><code># CLAUDE.md — Payments Ledger Service
+            <pre><code># CLAUDE.md — QuoteBox
 
 ## Architecture
-Java 21 / Spring Boot 3 microservice. Exposes REST + gRPC. Postgres (ledger DB),
-Kafka topic `ledger.events.v1` for downstream settlement. Deployed on EKS.
-Redis for idempotency-key storage (24h TTL).
+Node.js 20 / Express 4 REST API. Quotes live in `data/quotes.json` — intentionally
+no database. Deployed as a single container on Fly.io.
 
 ## Conventions
-- All monetary values: `long` cents, never `double`/`float`.
-- Every write endpoint requires an `Idempotency-Key` header — see `IdempotencyFilter`.
-- Tests: JUnit5 + Testcontainers. Run with `./gradlew test`. No mocking the DB layer.
-- Commits: Conventional Commits. PR must reference a Jira ticket (LEDGER-XXXX).
-- Log decisions to `NOTES.md` as you go — don't rely on chat history surviving compaction.
+- Every response is JSON: `{ "quote": "...", "author": "..." }`.
+- Tests: Vitest. Run with `npm test`.
+- New endpoints go in `src/routes/`, one file per resource.
+- Commits: Conventional Commits.
 
 ## Do not
-- Do not modify `schema.sql` directly — use Flyway migrations in `db/migration/`.
-- Do not call external payment providers directly from this service; use `payment-gateway-client`.
-- Do not add a new runbook without also updating `tools/rag-mcp-server`.
-
-## Tooling
-- Team's Claude Code setup ships as one plugin: `/plugin install payments-ledger-toolkit@payments-platform-marketplace`.</code></pre>
+- Do not add a database — the whole point of QuoteBox is that `quotes.json` is the entire data layer.
+- Do not add authentication — this API is intentionally public and read-only.</code></pre>
           </div>
 
           <table>
             <tr><th>Section</th><th>What it does</th></tr>
-            <tr><td>Architecture</td><td>3–5 lines of standing fact — stack, data stores, deployment — so Claude never has to guess or ask</td></tr>
-            <tr><td>Conventions</td><td>The rules that would otherwise get silently violated: money representation, header requirements, test framework</td></tr>
-            <tr><td>Do not</td><td>Hard boundaries — paired with the safe alternative, not just a prohibition</td></tr>
-            <tr><td>Tooling</td><td>Points at the Harness Engineering layer (file 3 of this guide) without duplicating it here</td></tr>
+            <tr><td>Architecture</td><td>3–5 lines of standing fact — stack, data store, deployment — so Claude never has to guess or ask</td></tr>
+            <tr><td>Conventions</td><td>The rules that would otherwise get silently violated: response shape, test framework, file layout</td></tr>
+            <tr><td>Do not</td><td>Hard boundaries — including scope boundaries ("no database") as well as safety ones</td></tr>
           </table>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(2)">← <span>Overview</span></button>
-            <button class="navbtn" onclick="go(4)"><span>CLAUDE.local.md</span> →</button>
+            <button class="navbtn" onclick="go('ac-overview')">← <span>Overview</span></button>
+            <button class="navbtn" onclick="go('ac-local')"><span>CLAUDE.local.md</span> →</button>
           </div>
         </section>
 
@@ -499,17 +494,14 @@ Redis for idempotency-key storage (24h TTL).
             <span class="code-label">CLAUDE.local.md</span>
             <pre><code># CLAUDE.local.md — not committed
 
-- Local Postgres runs on port 5433, not 5432 (avoids clashing with the shared dev instance).
-- Use `payments_dev` as the local DB name; seed data lives in `db/seed/local.sql`.
-- My Kafka is a single-broker Docker container — ignore replication-factor-3 advice
-  when testing locally, RF 1 is fine here.
-- I prefer `./gradlew test --tests "*Idempotency*"` for fast local iteration instead
-  of the full suite.</code></pre>
+- I run the dev server with `npm run dev` on port 4000, not the default 3000 — clashes with another project.
+- My editor formats on save, so don't bother running prettier for me.
+- I keep a personal data/quotes.local.json with extra test quotes — never commit it.</code></pre>
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(3)">← <span>CLAUDE.md</span></button>
-            <button class="navbtn" onclick="go(5)"><span>Prompts</span> →</button>
+            <button class="navbtn" onclick="go('ac-claudemd')">← <span>CLAUDE.md</span></button>
+            <button class="navbtn" onclick="go('ac-prompts')"><span>Prompts</span> →</button>
           </div>
         </section>
 
@@ -522,25 +514,25 @@ Redis for idempotency-key storage (24h TTL).
 
           <div class="prompt-block">
             <span class="p-num">Prompt · bootstrap the project memory</span>
-            <p class="p-text">Run /init to scan this repo, then rewrite the generated CLAUDE.md so it documents: a Java 21 / Spring Boot 3 payments ledger microservice, Postgres for the ledger DB, a Kafka topic ledger.events.v1 for settlement, and Redis for idempotency keys with a 24h TTL, deployed on EKS. Add a Conventions section requiring all money values as long cents — never double or float — and an Idempotency-Key header on every write endpoint. Add a Do-not section blocking direct schema.sql edits and direct calls to external payment providers. Keep the whole file under 40 lines.</p>
+            <p class="p-text">Run /init to scan this repo, then rewrite the generated CLAUDE.md so it documents: QuoteBox, a Node.js 20 / Express 4 REST API that serves quotes from a JSON file with no database. Add a Conventions section for the response shape ({quote, author}) and the testing framework. Add a Do-not section explicitly forbidding adding a database or authentication, since this API is intentionally small and public. Keep it under 30 lines.</p>
             <div class="p-produces">→ produces: <b>CLAUDE.md</b></div>
           </div>
 
           <div class="prompt-block">
             <span class="p-num">Prompt · personal, local-only overrides</span>
-            <p class="p-text">Create a CLAUDE.local.md and add it to .gitignore. Note that my local Postgres runs on port 5433 with DB name payments_dev, my local Kafka is a single-broker container so ignore the replication-factor-3 advice when testing locally, and I prefer running ./gradlew test --tests "*Idempotency*" for fast local iteration.</p>
+            <p class="p-text">Create a CLAUDE.local.md and add it to .gitignore. Note that I run the dev server on port 4000, my editor already formats on save, and I keep a personal data/quotes.local.json with extra test quotes that should never be committed.</p>
             <div class="p-produces">→ produces: <b>CLAUDE.local.md</b>, updated <b>.gitignore</b></div>
           </div>
 
           <div class="prompt-block">
             <span class="p-num">Prompt · a single scoped task</span>
-            <p class="p-text">Add a GET /health endpoint to the ledger service returning {"status":"ok","version":"&lt;build version from build.gradle&gt;"}. Write a JUnit test for it. Follow the conventions in CLAUDE.md.</p>
-            <div class="p-produces">→ produces: one controller method, one test — reviewed and merged in a single sitting</div>
+            <p class="p-text">Add a GET /quotes/random endpoint that returns a random quote from data/quotes.json in the standard {quote, author} shape. Write a Vitest test for it. Follow the conventions in CLAUDE.md.</p>
+            <div class="p-produces">→ produces: one route file, one test — reviewed and merged in a single sitting</div>
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(4)">← <span>CLAUDE.local.md</span></button>
-            <button class="navbtn" onclick="go(6)"><span>Case study</span> →</button>
+            <button class="navbtn" onclick="go('ac-local')">← <span>CLAUDE.local.md</span></button>
+            <button class="navbtn" onclick="go('ac-case')"><span>Case study</span> →</button>
           </div>
         </section>
 
@@ -548,21 +540,35 @@ Redis for idempotency-key storage (24h TTL).
         <section class="step" id="step-ac-case">
           <span class="badge ac">1 · Agentic Coding</span>
           <span class="kicker">5 / 5 · Case study</span>
-          <h2 class="step-title">Add a /health endpoint</h2>
+          <h2 class="step-title">Add a GET /quotes/random endpoint</h2>
           <p class="lede">Deliberately small. This is the whole point of Agentic Coding as a workflow type — it doesn't need more than this to be done well.</p>
           <ol>
             <li>CLAUDE.md and CLAUDE.local.md already exist (files 2–3, above).</li>
             <li>You type the one prompt from the Prompts file.</li>
-            <li>Claude Code plans (reads the controller package, the test conventions), writes the endpoint and test, runs <code>./gradlew test</code> itself.</li>
-            <li>You review one diff — a controller method and a test file — and merge.</li>
+            <li>Claude Code plans (reads <code>data/quotes.json</code>, the routing conventions in <code>src/routes/</code>), writes the endpoint and test, runs <code>npm test</code> itself.</li>
+            <li>You review one diff — a route file and a test file — and merge.</li>
           </ol>
+          <div class="code-wrap">
+            <span class="code-label">src/routes/quotes.js</span>
+            <pre><code>import { Router } from "express";
+import quotes from "../../data/quotes.json" assert { type: "json" };
+
+const router = Router();
+
+router.get("/quotes/random", (req, res) => {
+  const pick = quotes[Math.floor(Math.random() * quotes.length)];
+  res.json({ quote: pick.quote, author: pick.author });
+});
+
+export default router;</code></pre>
+          </div>
           <div class="callout">
-            <p>Total new files: <strong>zero</strong>. Total new primitives: <strong>zero</strong>. That's correct — a task this size doesn't earn a subagent, a hook, or an MCP server. Reaching for those here would be over-engineering the harness for the task at hand.</p>
+            <p>Total new files beyond the route and its test: <strong>zero</strong>. Total new primitives: <strong>zero</strong>. That's correct — a task this size doesn't earn a subagent, a hook, or an MCP server. Reaching for those here would be over-engineering the harness for the task at hand.</p>
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(5)">← <span>Prompts</span></button>
-            <button class="navbtn" onclick="go(7)"><span>2 · Agentic Engineering</span> →</button>
+            <button class="navbtn" onclick="go('ac-prompts')">← <span>Prompts</span></button>
+            <button class="navbtn" onclick="go('ae-overview')"><span>2 · Agentic Engineering</span> →</button>
           </div>
         </section>
 
@@ -573,13 +579,15 @@ Redis for idempotency-key storage (24h TTL).
           <h2 class="step-title">The Plan → Execute → Verify loop, with an agent team</h2>
           <p class="lede">Once a task needs an author, a tester, and a reviewer with genuinely different concerns, running them all as one undifferentiated Claude Code session stops working — context gets muddled and nothing is isolated. Agentic engineering is Karpathy's name for the fix: define roles, run a Plan → Execute → Verify loop, and let the roles run mostly unattended between the two human checkpoints.</p>
 
+          <p>This section's example is <strong>PawMatch</strong> — an animal shelter's adoption-application service. Completely independent from Agentic Coding's QuoteBox: different stack, different domain, its own RAG server built from scratch below rather than borrowed from anywhere else in this guide.</p>
+
           <h3>The agent-team model</h3>
           <p>Industry practice (per Karpathy's framing and how teams like Stripe and TELUS report using it) assigns each concern its own agent rather than one agent doing everything:</p>
           <table>
             <tr><th>Role</th><th>Responsibility</th><th>Maps to, in this guide</th></tr>
             <tr><td>Feature Author</td><td>Writes the implementation</td><td>The main Claude Code session, or a dedicated author subagent</td></tr>
-            <tr><td>Test Generator</td><td>Writes and runs tests</td><td>A read-write subagent scoped to <code>src/test/</code></td></tr>
-            <tr><td>Code / Security Reviewer</td><td>Checks style, patterns, security — never edits</td><td>A read-only subagent</td></tr>
+            <tr><td>Test Generator</td><td>Writes and runs tests</td><td>A read-write subagent scoped to <code>tests/</code></td></tr>
+            <tr><td>Code / Policy Reviewer</td><td>Checks style, patterns, compliance — never edits</td><td>A read-only subagent</td></tr>
           </table>
 
           <h3>Required files</h3>
@@ -590,7 +598,40 @@ Redis for idempotency-key storage (24h TTL).
             <tr><td><code>.claude/agents/*.md</code></td><td>Yes — this is the point</td><td>Each subagent is one role in the agent team</td></tr>
             <tr><td><code>.claude/skills/*/SKILL.md</code></td><td>Common</td><td>Repeatable procedures an agent calls instead of re-deriving each time</td></tr>
             <tr><td><code>NOTES.md</code></td><td>Yes — this is the audit trail</td><td>Records the Plan and the Verify outcome, so the loop survives compaction and multiple sessions</td></tr>
+            <tr><td><code>.mcp.json</code> tools (e.g. RAG)</td><td>Situational</td><td>Execute-phase agents often need to retrieve a fact — a threshold, a policy — rather than guess it; this section's own case study (file 7) builds a small policy-rag MCP server for exactly that, independent of anything in Harness Engineering</td></tr>
           </table>
+
+          <h3>Carried over: CLAUDE.md &amp; CLAUDE.local.md</h3>
+          <p>Every agent in the pipeline — author, tester, reviewer — reads the same <code>CLAUDE.md</code> before doing anything. It's what keeps three separately-run agents from silently inventing three different conventions.</p>
+          <div class="code-wrap">
+            <span class="code-label">CLAUDE.md</span>
+            <pre><code># CLAUDE.md — PawMatch
+
+## Architecture
+Python 3.12 / FastAPI service. Postgres for adoption applications. Deployed on Render.
+
+## Conventions
+- Applicant PII (address, phone, income) never appears in logs or error messages.
+- Screening decisions must always trace back to a documented policy — no undocumented judgment calls in code.
+- Tests: pytest. Run with `pytest`.
+- Commits: Conventional Commits.
+
+## Do not
+- Do not expose one applicant's data in another applicant's API response, even partially.
+- Do not hardcode screening thresholds without a comment tracing them to the policy doc they came from.
+
+## Tooling
+- Team's Claude Code setup ships as one plugin: `/plugin install pawmatch-toolkit@shelter-platform-marketplace`.</code></pre>
+          </div>
+          <div class="code-wrap">
+            <span class="code-label">CLAUDE.local.md (gitignored — one engineer's copy, not shared across the agent team)</span>
+            <pre><code># CLAUDE.local.md — not committed
+
+- Local Postgres runs on port 5544, not 5432 — avoids clashing with another project.
+- Seed data for testing lives in `fixtures/sample_applications.json`.
+- I run `pytest -k screening` for fast iteration on the screening logic only.</code></pre>
+          </div>
+          <p>Note what this proves: the file's <em>shape</em> (Architecture / Conventions / Do not / Tooling) is identical to QuoteBox's in Agentic Coding, even though the stack, domain, and every line of content are completely different. That's the pattern generalizing, not a coincidence.</p>
 
           <div class="learn-block">
             <span class="learn-eyebrow">Learn Agentic Engineering specifically</span>
@@ -605,8 +646,8 @@ Redis for idempotency-key storage (24h TTL).
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(6)">← <span>1 · Agentic Coding</span></button>
-            <button class="navbtn" onclick="go(8)"><span>rules/*.md</span> →</button>
+            <button class="navbtn" onclick="go('ac-case')">← <span>1 · Agentic Coding</span></button>
+            <button class="navbtn" onclick="go('ae-rules')"><span>rules/*.md</span> →</button>
           </div>
         </section>
 
@@ -637,35 +678,34 @@ paths:
             <span class="code-label">.claude/rules/api-rules.md</span>
             <pre><code>---
 paths:
-  - "src/main/java/**/controller/**"
-  - "src/main/java/**/api/**"
+  - "app/routers/**"
+  - "app/services/**"
 ---
 
-# API layer rules
+# API &amp; service layer rules
 
-- Every write endpoint (POST/PUT/PATCH) must accept and validate an `Idempotency-Key` header.
-- Money fields are always `long` cents in request/response DTOs. Never `double`, `float`, or `BigDecimal` on the wire.
-- Every new endpoint needs an OpenAPI `@Operation` annotation and an entry in `docs/api-reference.md`.
-- Do not return raw JPA entities from controllers — always map to a response DTO.</code></pre>
+- Never return another applicant's data, even in error messages or logs.
+- Every screening decision must be traceable to a line in policies/screening-policy.md.
+- New endpoints need an entry in docs/api-reference.md.
+- Do not return raw ORM model instances — always map to a Pydantic response schema.</code></pre>
           </div>
           <div class="code-wrap">
             <span class="code-label">.claude/rules/testing-rules.md</span>
             <pre><code>---
 paths:
-  - "src/test/**"
+  - "tests/**"
 ---
 
 # Testing rules
 
-- Integration tests use Testcontainers for Postgres and Kafka — never mock the DB layer or an embedded broker.
-- Every new write endpoint needs a duplicate-request test asserting a 409 on a replayed Idempotency-Key.
-- Run `./gradlew test` before proposing any diff as done; paste the summary line, not the full log.
-- Flaky test allowance: zero. Fix or quarantine in the same PR — do not silently retry.</code></pre>
+- Every new screening rule needs boundary-case tests: just under, at, and just over any threshold.
+- Run `pytest` before proposing any diff as done; paste the summary line, not the full log.
+- Flaky test allowance: zero.</code></pre>
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(7)">← <span>Overview</span></button>
-            <button class="navbtn" onclick="go(9)"><span>agents/*.md</span> →</button>
+            <button class="navbtn" onclick="go('ae-overview')">← <span>Overview</span></button>
+            <button class="navbtn" onclick="go('ae-agents')"><span>agents/*.md</span> →</button>
           </div>
         </section>
 
@@ -696,10 +736,10 @@ Report as {{format}}. {{Instruction on whether it may fix things itself}}.</code
 
           <h3>Filled example — the reviewer (read-only)</h3>
           <div class="code-wrap">
-            <span class="code-label">.claude/agents/payments-security-reviewer.md</span>
+            <span class="code-label">.claude/agents/pawmatch-policy-reviewer.md</span>
             <pre><code>---
-name: payments-security-reviewer
-description: Use proactively after any change to files under src/payments/. Reviews for PCI-relevant issues, idempotency gaps, and missing audit logging. Read-only — never edit.
+name: pawmatch-policy-reviewer
+description: Use proactively after any change to files under app/services/screening/. Reviews for PII leakage, undocumented screening logic, and hardcoded thresholds that should trace back to policy. Read-only — never edit.
 tools:
   - Read
   - Grep
@@ -707,35 +747,35 @@ tools:
 model: sonnet
 ---
 
-You are a security-focused reviewer for a payments microservice.
+You are a policy-compliance reviewer for an animal shelter's adoption service.
 For every change, check specifically for:
-1. Missing idempotency keys on state-changing endpoints
-2. Card/account data logged in plaintext
-3. Missing audit trail entries for balance-changing operations
+1. Applicant PII appearing in logs, error messages, or another applicant's response
+2. Screening logic with no comment tracing it back to policies/screening-policy.md
+3. Any hardcoded threshold or criterion — re-query the policy-rag MCP server to confirm it still matches the source policy, and flag drift if it doesn't
 Report findings as a short bullet list with file:line references. Do not fix — only report.</code></pre>
           </div>
 
           <h3>Filled example — the tester (read-write, narrowly scoped)</h3>
           <div class="code-wrap">
-            <span class="code-label">.claude/agents/idempotency-test-writer.md</span>
+            <span class="code-label">.claude/agents/pawmatch-test-writer.md</span>
             <pre><code>---
-name: idempotency-test-writer
-description: Use after the feature author finishes an endpoint touching money. Writes the duplicate-request test required by testing-rules.md. Read-write, but only inside src/test/.
+name: pawmatch-test-writer
+description: Use after the feature author adds a new screening or validation rule. Writes the boundary-case unit tests required by testing-rules.md. Read-write, but only inside tests/.
 tools:
   - Read
   - Write
-  - Bash(./gradlew test)
+  - Bash(pytest)
 model: sonnet
 ---
 
-You write JUnit5 + Testcontainers tests only. For any new write endpoint, add a test
-that fires the same request twice with the same Idempotency-Key and asserts the
-second response is 409. Run ./gradlew test yourself before reporting done.</code></pre>
+You write pytest unit tests only, for screening and validation rules. For any new
+rule, add a test for the boundary case, one clearly-fails case, and one clearly-passes
+case. Run pytest yourself before reporting done.</code></pre>
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(8)">← <span>rules/*.md</span></button>
-            <button class="navbtn" onclick="go(10)"><span>skills/*/SKILL.md</span> →</button>
+            <button class="navbtn" onclick="go('ae-rules')">← <span>rules/*.md</span></button>
+            <button class="navbtn" onclick="go('ae-skills')"><span>skills/*/SKILL.md</span> →</button>
           </div>
         </section>
 
@@ -763,70 +803,70 @@ See `reference/{{file}}` for supporting data this skill relies on.</code></pre>
 
           <h3>Filled example</h3>
           <div class="code-wrap">
-            <span class="code-label">.claude/skills/kafka-capacity-check/SKILL.md</span>
+            <span class="code-label">.claude/skills/kennel-capacity-check/SKILL.md</span>
             <pre><code>---
-name: kafka-capacity-check
-description: Use when asked to size Kafka partitions/brokers for a target throughput, or to review an existing topic's capacity assumptions.
+name: kennel-capacity-check
+description: Use when asked how many additional animals the shelter can safely intake this week, given current kennel occupancy.
 ---
 
-# Kafka Capacity Sizing Playbook
+# Kennel Capacity Playbook
 
-Given a target events/sec and average message size, run `scripts/kafka_sizing.py`
-rather than estimating the arithmetic by hand:
+Given total kennels, currently occupied kennels, and expected adoptions this week,
+run `scripts/kennel_capacity.py` rather than estimating by hand:
 
-    python3 scripts/kafka_sizing.py --events-per-sec 650000 --avg-msg-bytes 512 --critical
+    python3 scripts/kennel_capacity.py --total-kennels 40 --occupied-kennels 33 --expected-adoptions-this-week 4
 
-1. Use `--critical` for any topic touching money movement (forces replication factor 3).
-2. Flag if consumer group lag would exceed 2x partition count (rebalancing risk).
+1. Warn if projected available capacity drops to 2 or fewer kennels.
+2. Never plan intake assuming more than 80% of total capacity — some kennels are always reserved for medical holds.
 3. Always show the script's output, not just the final number.
 
-See `reference/broker-sizing-table.md` for AWS MSK instance-type throughput numbers.</code></pre>
+See `reference/kennel-sizing-notes.md` for capacity by building.</code></pre>
           </div>
           <div class="code-wrap">
-            <span class="code-label">.claude/skills/kafka-capacity-check/scripts/kafka_sizing.py</span>
+            <span class="code-label">.claude/skills/kennel-capacity-check/scripts/kennel_capacity.py</span>
             <pre><code>#!/usr/bin/env python3
-"""Computes recommended partition count and replication factor for a target
-Kafka throughput. Referenced by SKILL.md so Claude executes it directly
-instead of estimating the arithmetic itself."""
+"""Computes how many more animals the shelter can safely intake this week.
+Referenced by SKILL.md so Claude executes it directly instead of estimating
+the arithmetic itself."""
 import argparse
-import math
-
-PARTITION_THROUGHPUT_MB_S = 10  # see reference/broker-sizing-table.md
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--events-per-sec", type=float, required=True)
-    parser.add_argument("--avg-msg-bytes", type=float, required=True)
-    parser.add_argument("--critical", action="store_true",
-                         help="Set for money-movement topics (forces replication factor 3)")
+    parser.add_argument("--total-kennels", type=int, required=True)
+    parser.add_argument("--occupied-kennels", type=int, required=True)
+    parser.add_argument("--expected-adoptions-this-week", type=int, default=0)
     args = parser.parse_args()
 
-    throughput_mb_s = (args.events_per_sec * args.avg_msg_bytes) / (1024 * 1024)
-    partitions = math.ceil(throughput_mb_s / PARTITION_THROUGHPUT_MB_S)
-    replication_factor = 3 if args.critical else 2
+    available_now = args.total_kennels - args.occupied_kennels
+    available_this_week = available_now + args.expected_adoptions_this_week
+    safe_ceiling = int(args.total_kennels * 0.8)
 
-    print(f"Target throughput:      {throughput_mb_s:.2f} MB/s")
-    print(f"Recommended partitions: {partitions}")
-    print(f"Replication factor:     {replication_factor}")
+    print(f"Available now:             {available_now}")
+    print(f"Available by end of week:  {available_this_week}")
+    print(f"Safe intake ceiling (80%): {safe_ceiling}")
+    if available_this_week <= 2:
+        print("WARNING: capacity is tight — consider pausing new intake requests.")
 
 if __name__ == "__main__":
     main()</code></pre>
           </div>
           <div class="code-wrap">
-            <span class="code-label">.claude/skills/kafka-capacity-check/reference/broker-sizing-table.md</span>
-            <pre><code># AWS MSK broker sizing reference
+            <span class="code-label">.claude/skills/kennel-capacity-check/reference/kennel-sizing-notes.md</span>
+            <pre><code># Kennel capacity by building
 
-| Instance type    | vCPU | Memory | Safe MB/s per partition | Notes                            |
-|------------------|------|--------|--------------------------|-----------------------------------|
-| kafka.m5.large   | 2    | 8 GB   | 6                        | Dev/staging only                  |
-| kafka.m5.xlarge  | 4    | 16 GB  | 10                       | Default assumption in the script  |
-| kafka.m5.2xlarge | 8    | 32 GB  | 18                       | Use for topics &gt;500K events/sec   |
-| kafka.m5.4xlarge | 16   | 64 GB  | 32                       | Reserve for the settlement cluster|</code></pre>
+| Building           | Total kennels  | Notes                          |
+|---------------------|----------------|----------------------------------|
+| Main shelter        | 40             | Dogs and cats, mixed            |
+| Annex (seasonal)     | 15             | Opens May–September only        |
+| Foster network       | ~25 (variable) | Not guaranteed — confirm weekly |
+
+Rule of thumb: never plan intake assuming more than 80% of total capacity —
+some kennels are always reserved for medical holds.</code></pre>
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(9)">← <span>agents/*.md</span></button>
-            <button class="navbtn" onclick="go(11)"><span>NOTES.md</span> →</button>
+            <button class="navbtn" onclick="go('ae-agents')">← <span>agents/*.md</span></button>
+            <button class="navbtn" onclick="go('ae-notes')"><span>NOTES.md</span> →</button>
           </div>
         </section>
 
@@ -860,28 +900,29 @@ if __name__ == "__main__":
           <h3>Filled example</h3>
           <div class="code-wrap">
             <span class="code-label">NOTES.md</span>
-            <pre><code># NOTES.md — Idempotency enforcement on POST /payments
+            <pre><code># NOTES.md — Auto-flag applications needing a home visit
 
 ## Plan
-- Objective: reject a replayed POST /payments with the same Idempotency-Key
-- Constraints: Redis-backed, 24h TTL, per CLAUDE.md and prior architecture decision
-- Quality gates: duplicate-request test must exist and pass; security reviewer must sign off
-- Agent roles: feature-author (writes filter) → idempotency-test-writer (writes test) → payments-security-reviewer (reviews both)
+- Objective: adoption applications matching the shelter's documented screening criteria should be auto-flagged for a mandatory home visit, not silently approved
+- Constraints: criteria must be retrieved from policies/screening-policy.md via the policy-rag MCP server, never hardcoded from memory — if the policy changes, this code should be revisited, not silently drift
+- Quality gates: unit tests for a clear-pass, a clear-flag, and a boundary case; reviewer must independently re-confirm criteria against the policy
+- Agent roles: feature-author (retrieves criteria via rag_query, then implements) → pawmatch-test-writer (writes boundary tests) → pawmatch-policy-reviewer (re-queries policy-rag to catch drift)
 
 ## Execute (agent log)
-- 2026-08-05: feature-author wrote IdempotencyFilter.java using StringRedisTemplate.setIfAbsent
-- 2026-08-05: idempotency-test-writer added the duplicate-request test, ./gradlew test passed
-- 2026-08-05: payments-security-reviewer flagged nothing — no plaintext key logging found
+- 2026-08-07: feature-author called rag_query("which applications require a mandatory home visit?") — returned the criteria list from policies/screening-policy.md
+- 2026-08-07: feature-author implemented requires_home_visit() using those retrieved criteria, with a comment tracing them back to the policy
+- 2026-08-07: pawmatch-test-writer added three tests (clear-pass, clear-flag, boundary), pytest passed
+- 2026-08-07: pawmatch-policy-reviewer re-ran rag_query, confirmed criteria still match the policy — no drift
 
 ## Verify
-- Meets acceptance criteria? Yes — second request returns 409
+- Meets acceptance criteria? Yes — applications matching any documented criterion are flagged
 - Security/architecture concerns? None
 - Decision: merged</code></pre>
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(10)">← <span>skills/*/SKILL.md</span></button>
-            <button class="navbtn" onclick="go(12)"><span>Prompts</span> →</button>
+            <button class="navbtn" onclick="go('ae-skills')">← <span>skills/*/SKILL.md</span></button>
+            <button class="navbtn" onclick="go('ae-prompts')"><span>Prompts</span> →</button>
           </div>
         </section>
 
@@ -893,44 +934,56 @@ if __name__ == "__main__":
           <p class="lede">Agentic Engineering prompts define a <strong>role and a boundary</strong>, then get out of the way until Verify. Compare these to the Agentic Coding prompts — notice these ones delegate instead of instructing step by step, and reference Plan/Execute/Verify explicitly.</p>
 
           <div class="prompt-block">
+            <span class="p-num">Prompt · bootstrap the project memory</span>
+            <p class="p-text">Run /init to scan this repo, then rewrite the generated CLAUDE.md so it documents: PawMatch, a Python 3.12 / FastAPI service for animal shelter adoption applications, using Postgres, deployed on Render. Add a Conventions section requiring applicant PII never appear in logs or error messages, and that every screening decision traces back to a documented policy. Add a Do-not section forbidding exposing one applicant's data in another's response, and hardcoding thresholds without tracing them to policy. Keep it under 30 lines.</p>
+            <div class="p-produces">→ produces: <b>CLAUDE.md</b></div>
+          </div>
+
+          <div class="prompt-block">
+            <span class="p-num">Prompt · personal, local-only overrides</span>
+            <p class="p-text">Create a CLAUDE.local.md and add it to .gitignore. Note that my local Postgres runs on port 5544, my seed data lives in fixtures/sample_applications.json, and I run pytest -k screening for fast iteration on just the screening logic.</p>
+            <div class="p-produces">→ produces: <b>CLAUDE.local.md</b>, updated <b>.gitignore</b></div>
+          </div>
+
+          <div class="prompt-block">
             <span class="p-num">Prompt · path-scoped rules</span>
-            <p class="p-text">Add .claude/rules/api-rules.md, scoped only to src/main/java/**/controller/** and src/main/java/**/api/**, requiring Idempotency-Key validation on every write, long-cents money fields, an OpenAPI @Operation annotation, and DTO mapping instead of returning raw JPA entities. Then add .claude/rules/testing-rules.md, scoped to src/test/**, requiring Testcontainers, a duplicate-request test on every new write endpoint, and zero tolerance for flaky tests.</p>
+            <p class="p-text">Add .claude/rules/api-rules.md, scoped only to app/routers/** and app/services/**, requiring that no endpoint ever returns another applicant's data, that every screening decision traces back to policies/screening-policy.md, and that responses always use a Pydantic schema instead of raw ORM instances. Then add .claude/rules/testing-rules.md, scoped to tests/**, requiring boundary-case tests for every new screening rule and zero tolerance for flaky tests.</p>
             <div class="p-produces">→ produces: <b>.claude/rules/api-rules.md</b>, <b>.claude/rules/testing-rules.md</b></div>
           </div>
 
           <div class="prompt-block">
             <span class="p-num">Prompt · the reviewer role</span>
-            <p class="p-text">Create a subagent called payments-security-reviewer in .claude/agents/. It should trigger proactively after any change under src/payments/, be strictly read-only — Read, Grep, Glob only — and check for missing idempotency keys, plaintext-logged card data, and missing audit-trail entries. Report as a bullet list with file:line references. Report only, never fix.</p>
-            <div class="p-produces">→ produces: <b>.claude/agents/payments-security-reviewer.md</b></div>
+            <p class="p-text">Create a subagent called pawmatch-policy-reviewer in .claude/agents/. It should trigger proactively after any change under app/services/screening/, be strictly read-only — Read, Grep, Glob only — and check for applicant PII in logs or responses, screening logic with no traceable policy reference, and hardcoded thresholds that should instead be re-confirmed against policy. Report as a bullet list with file:line references. Report only, never fix.</p>
+            <div class="p-produces">→ produces: <b>.claude/agents/pawmatch-policy-reviewer.md</b></div>
           </div>
 
           <div class="prompt-block">
             <span class="p-num">Prompt · the tester role</span>
-            <p class="p-text">Create a subagent called idempotency-test-writer, read-write but scoped only to src/test/. It should trigger after the feature author finishes an endpoint touching money, and write a JUnit5 duplicate-request test asserting a 409 on a replayed Idempotency-Key. It should run ./gradlew test itself before reporting done.</p>
-            <div class="p-produces">→ produces: <b>.claude/agents/idempotency-test-writer.md</b></div>
+            <p class="p-text">Create a subagent called pawmatch-test-writer, read-write but scoped only to tests/. It should trigger after the feature author adds a new screening or validation rule, and write pytest tests covering the boundary case, one clearly-fails case, and one clearly-passes case. It should run pytest itself before reporting done.</p>
+            <div class="p-produces">→ produces: <b>.claude/agents/pawmatch-test-writer.md</b></div>
           </div>
 
           <div class="prompt-block">
             <span class="p-num">Prompt · the reusable skill</span>
-            <p class="p-text">Create a Skill at .claude/skills/kafka-capacity-check/ for sizing Kafka partitions and replication factor, backed by a script rather than hand-estimated arithmetic, plus a reference table of AWS MSK broker throughput.</p>
-            <div class="p-produces">→ produces: <b>SKILL.md</b>, <b>scripts/kafka_sizing.py</b>, <b>reference/broker-sizing-table.md</b></div>
+            <p class="p-text">Create a Skill at .claude/skills/kennel-capacity-check/ for figuring out how many more animals the shelter can safely intake this week, backed by a script rather than hand-estimated arithmetic, plus a reference table of kennel capacity by building.</p>
+            <div class="p-produces">→ produces: <b>SKILL.md</b>, <b>scripts/kennel_capacity.py</b>, <b>reference/kennel-sizing-notes.md</b></div>
           </div>
 
           <div class="prompt-block">
-            <span class="p-num">Prompt · Execute (the author's actual task)</span>
-            <p class="p-text">As the feature author: write src/main/java/com/deriv/ledger/filter/IdempotencyFilter.java as a Spring @Component implementing the Idempotency-Key convention from CLAUDE.md. Reject writes missing the header with 400. Use StringRedisTemplate's setIfAbsent with a 24-hour TTL and return 409 on a replayed key. Match the Redis-backed strategy already recorded in NOTES.md's Plan section.</p>
-            <div class="p-produces">→ produces: <b>IdempotencyFilter.java</b></div>
+            <span class="p-num">Prompt · Execute (the author's actual task — retrieve, then implement)</span>
+            <p class="p-text">As the feature author: first call the policy-rag MCP server's rag_query tool to find out exactly which applications require a mandatory home visit — don't guess it or pull it from memory. Then implement requires_home_visit(application) using exactly those retrieved criteria, with a comment tracing the logic back to the policy it came from.</p>
+            <div class="p-produces">→ produces: a <b>rag_query</b> call, then <b>app/services/screening.py</b></div>
           </div>
 
           <div class="prompt-block">
             <span class="p-num">Prompt · Plan &amp; Verify (the human checkpoints)</span>
-            <p class="p-text">Before we start: write the Plan section of NOTES.md for shipping idempotency enforcement — objective, constraints, quality gates, and which agent does what. [...after Execute...] Now write the Verify section: did the tester's test pass, did the reviewer flag anything, and what's the merge decision?</p>
+            <p class="p-text">Before we start: write the Plan section of NOTES.md for auto-flagging applications needing a home visit — objective, the constraint that criteria must come from policy via RAG rather than memory, quality gates, and which agent does what. [...after Execute...] Now write the Verify section: did the tester's tests pass, did the reviewer's re-query of the policy confirm no drift, and what's the merge decision?</p>
             <div class="p-produces">→ produces: the Plan and Verify sections of <b>NOTES.md</b></div>
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(11)">← <span>NOTES.md</span></button>
-            <button class="navbtn" onclick="go(13)"><span>Case study</span> →</button>
+            <button class="navbtn" onclick="go('ae-notes')">← <span>NOTES.md</span></button>
+            <button class="navbtn" onclick="go('ae-case')"><span>Case study</span> →</button>
           </div>
         </section>
 
@@ -938,70 +991,130 @@ if __name__ == "__main__":
         <section class="step" id="step-ae-case">
           <span class="badge ae">2 · Agentic Engineering</span>
           <span class="kicker">7 / 7 · Case study</span>
-          <h2 class="step-title">Shipping idempotency enforcement as a 3-agent pipeline</h2>
-          <p class="lede">One feature, three roles, two human checkpoints. This is the smallest example that's still genuinely Agentic Engineering rather than Agentic Coding with extra steps.</p>
+          <h2 class="step-title">Auto-flagging adoption applications for a home visit — grounded in shelter policy via RAG</h2>
+          <p class="lede">Same three roles, same Plan→Execute→Verify shape as any Agentic Engineering pipeline — but Execute genuinely needs a retrieval step, not just implementation. "Flag applications needing a home visit" means nothing until an agent knows the actual criteria, and those live in a policy document, not in anyone's memory. This example builds its own small RAG server from scratch — nothing borrowed from elsewhere in this guide.</p>
           <ol>
-            <li><strong>Plan:</strong> you write the objective, constraint, and agent-role assignment into NOTES.md (prompt 6, above).</li>
-            <li><strong>Execute — author:</strong> the main session (or a dedicated author subagent) writes <code>IdempotencyFilter.java</code>.</li>
-            <li><strong>Execute — tester:</strong> <code>idempotency-test-writer</code> adds the duplicate-request test and runs it.</li>
-            <li><strong>Execute — reviewer:</strong> <code>payments-security-reviewer</code> checks both, read-only, reports findings.</li>
-            <li><strong>Verify:</strong> you read the reviewer's report and the test result, then write the Verify section and merge.</li>
+            <li><strong>Plan:</strong> objective — auto-flag applications matching the documented criteria, never let the criteria drift from what's actually written down.</li>
+            <li><strong>Execute — retrieve:</strong> the feature author calls the <code>policy-rag</code> MCP server's <code>rag_query</code> tool with "which applications require a mandatory home visit?" — it returns the criteria from <code>policies/screening-policy.md</code>.</li>
+            <li><strong>Execute — implement:</strong> the author writes <code>requires_home_visit()</code> using those retrieved criteria, with a comment tracing it back to the policy.</li>
+            <li><strong>Execute — test:</strong> <code>pawmatch-test-writer</code> adds three tests: a clear pass, a clear flag, and the boundary case (exactly two animals).</li>
+            <li><strong>Execute — review:</strong> <code>pawmatch-policy-reviewer</code> independently re-runs <code>rag_query</code> to confirm the criteria in the diff still match the policy <em>right now</em> — this catches drift if the policy changed after the author's session started.</li>
+            <li><strong>Verify:</strong> you read the reviewer's confirmation and the test results, write Verify, merge.</li>
           </ol>
+
+          <h3>The RAG server this example builds — <code>policy-rag</code></h3>
+          <p>Independent of anything in Harness Engineering: PawMatch's own small MCP server, over its own corpus.</p>
           <div class="code-wrap">
-            <span class="code-label">src/main/java/com/deriv/ledger/filter/IdempotencyFilter.java</span>
-            <pre><code>package com.deriv.ledger.filter;
+            <span class="code-label">policies/screening-policy.md (the corpus)</span>
+            <pre><code># Adoption screening policy
 
-import jakarta.servlet.*;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Component;
+Applications require a mandatory home visit before approval if any of the following apply:
+- The applicant has no fenced yard and is adopting a dog over 40 lbs.
+- The applicant has any prior return of an adopted animal to this shelter.
+- The applicant is adopting more than two animals in a single application.
 
-import java.io.IOException;
-import java.time.Duration;
-
-@Component
-public class IdempotencyFilter implements Filter {
-
-    private static final Duration TTL = Duration.ofHours(24);
-    private final StringRedisTemplate redis;
-
-    public IdempotencyFilter(StringRedisTemplate redis) {
-        this.redis = redis;
+All other applications may be approved without a home visit, pending standard reference checks.</code></pre>
+          </div>
+          <div class="code-wrap">
+            <span class="code-label">.mcp.json</span>
+            <pre><code>{
+  "mcpServers": {
+    "policy-rag": {
+      "command": "node",
+      "args": ["./tools/policy-rag-server/index.js"],
+      "env": { "POLICY_DIR": "./policies" }
     }
-
-    @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
-            throws IOException, ServletException {
-        HttpServletRequest httpReq = (HttpServletRequest) req;
-        HttpServletResponse httpRes = (HttpServletResponse) res;
-
-        boolean isWrite = "POST".equals(httpReq.getMethod()) || "PUT".equals(httpReq.getMethod());
-        if (!isWrite) { chain.doFilter(req, res); return; }
-
-        String key = httpReq.getHeader("Idempotency-Key");
-        if (key == null || key.isBlank()) {
-            httpRes.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing Idempotency-Key header");
-            return;
-        }
-
-        Boolean firstSeen = redis.opsForValue().setIfAbsent("idempotency:" + key, "1", TTL);
-        if (Boolean.FALSE.equals(firstSeen)) {
-            httpRes.setStatus(HttpServletResponse.SC_CONFLICT);
-            httpRes.getWriter().write("Duplicate request for Idempotency-Key: " + key);
-            return;
-        }
-        chain.doFilter(req, res);
-    }
+  }
 }</code></pre>
           </div>
+          <div class="code-wrap">
+            <span class="code-label">tools/policy-rag-server/index.js</span>
+            <pre><code>#!/usr/bin/env node
+// Keyword search over shelter policy documents — no embedding API key required.
+import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
+import fs from "node:fs";
+import path from "node:path";
+
+const POLICY_DIR = process.env.POLICY_DIR || path.join(process.cwd(), "policies");
+
+function tokenize(text) { return text.toLowerCase().match(/[a-z0-9]+/g) || []; }
+
+function loadCorpus() {
+  const files = fs.readdirSync(POLICY_DIR).filter((f) => f.endsWith(".md"));
+  return files.map((file) => {
+    const raw = fs.readFileSync(path.join(POLICY_DIR, file), "utf8");
+    return { file, raw, tokens: tokenize(raw) };
+  });
+}
+
+function scoreDoc(queryTokens, doc) {
+  const freq = {};
+  for (const t of doc.tokens) freq[t] = (freq[t] || 0) + 1;
+  let score = 0;
+  for (const q of queryTokens) score += freq[q] || 0;
+  return score / Math.sqrt(doc.tokens.length || 1);
+}
+
+function ragSearch(query, topK = 3) {
+  const corpus = loadCorpus();
+  const qTokens = tokenize(query);
+  return corpus
+    .map((doc) => ({ file: doc.file, score: scoreDoc(qTokens, doc), snippet: doc.raw.slice(0, 400) }))
+    .sort((a, b) => b.score - a.score).slice(0, topK).filter((r) => r.score > 0);
+}
+
+const server = new Server({ name: "policy-rag", version: "1.0.0" }, { capabilities: { tools: {} } });
+
+server.setRequestHandler(ListToolsRequestSchema, async () => ({
+  tools: [
+    { name: "rag_query", description: "Answers a question using the shelter's screening and adoption policies.",
+      inputSchema: { type: "object", properties: { question: { type: "string" } }, required: ["question"] } },
+  ],
+}));
+
+server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  const { name, arguments: args } = request.params;
+  if (name === "rag_query") {
+    const results = ragSearch(args.question, 3);
+    if (results.length === 0) return { content: [{ type: "text", text: `No policy matched "${args.question}".` }] };
+    const text = results.map((r) => `### ${r.file}\n${r.snippet}...`).join("\n\n");
+    return { content: [{ type: "text", text }] };
+  }
+  throw new Error(`Unknown tool: ${name}`);
+});
+
+await server.connect(new StdioServerTransport());</code></pre>
+          </div>
+
+          <h3>What Execute actually produces</h3>
+          <div class="code-wrap">
+            <span class="code-label">app/services/screening.py</span>
+            <pre><code>"""
+Criteria sourced via rag_query("which applications require a mandatory home visit?")
+against policies/screening-policy.md — see NOTES.md for the retrieval log.
+Re-verify against the policy before changing this logic.
+"""
+
+
+def requires_home_visit(application: dict) -> bool:
+    if application["dog_weight_lbs"] > 40 and not application["has_fenced_yard"]:
+        return True
+    if application["has_prior_return"]:
+        return True
+    if application["animal_count"] > 2:
+        return True
+    return False</code></pre>
+          </div>
+
           <div class="callout">
-            <p><strong>To verify it end to end:</strong> <code>docker run -d --name ledger-redis -p 6379:6379 redis:7</code>, then <code>./gradlew bootRun</code>, then send the same <code>POST /payments</code> twice with the same <code>Idempotency-Key</code> via curl — the second call should return 409, exactly as NOTES.md's Plan specified.</p>
+            <p>The interesting part of Agentic Engineering usually isn't the code itself — it's that an agent had to go <em>look something up</em> before it could act correctly at all. That's retrieval, not just generation. Harness Engineering (file 3 of this guide) teaches the general skill of building an MCP/RAG server; this section proves that skill is independent of any one domain by building a completely different one from scratch. <strong>To verify:</strong> <code>pytest</code> — three tests should pass, no external infra needed beyond Node for the MCP server itself.</p>
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(12)">← <span>Prompts</span></button>
-            <button class="navbtn" onclick="go(14)"><span>3 · Harness Engineering</span> →</button>
+            <button class="navbtn" onclick="go('ae-prompts')">← <span>Prompts</span></button>
+            <button class="navbtn" onclick="go('he-overview')"><span>3 · Harness Engineering</span> →</button>
           </div>
         </section>
 
@@ -1010,18 +1123,45 @@ public class IdempotencyFilter implements Filter {
           <span class="badge he">3 · Harness Engineering</span>
           <span class="kicker">1 / 6 · What &amp; why</span>
           <h2 class="step-title">Engineering the environment the agents run inside</h2>
-          <p class="lede">Neither of the previous two workflows is safe by accident. A subagent only stays in its lane because a <code>tools</code> list constrains it; a session only avoids leaking a secret because something is watching for that pattern. Harness engineering is the deliberate design of that watching, constraining, and tool-granting layer — the environment, not a task inside it.</p>
+          <p class="lede">Neither of the previous two workflows is safe by accident. A subagent only stays in its lane because a <code>tools</code> list constrains it; a session only avoids leaking a secret because something is watching for that pattern. Harness engineering is the deliberate design of that watching, constraining, and tool-granting layer — and unlike the other two workflow types, its problems aren't shaped like a feature request. They're mistakes that keep recurring across many tasks and many engineers until someone builds a permanent fix.</p>
+
+          <p>This section's example is <strong>CityFix</strong> — a citizen pothole and infrastructure-issue reporting platform for a city government. A third completely independent domain: different stack, different problem, its own agents, skill, and RAG server, none of it shared with QuoteBox or PawMatch.</p>
 
           <h3>Required files</h3>
           <table>
             <tr><th>File</th><th>Required?</th><th>Purpose</th></tr>
+            <tr><td><code>CLAUDE.md</code></td><td>Yes (carried over)</td><td>Loaded in the same session as every hook/MCP/plugin below — the harness doesn't replace it, it wraps around it</td></tr>
             <tr><td><code>.claude/settings.json</code></td><td>Yes</td><td>Deterministic guardrails (hooks) and permission tiers that don't depend on the model remembering anything</td></tr>
             <tr><td><code>.mcp.json</code></td><td>Yes, once agents need tools beyond the filesystem</td><td>Explicit, auditable tool orchestration</td></tr>
             <tr><td><code>.claude-plugin/plugin.json</code> + <code>marketplace.json</code></td><td>Recommended at team scale</td><td>Packages the whole harness so it's reproducible for every teammate and every new project</td></tr>
           </table>
 
+          <h3>Carried over: CLAUDE.md &amp; CLAUDE.local.md</h3>
+          <p>The harness doesn't replace project memory — it's the layer that makes sure the rest of the layered context system (file 1 of Core Reference) actually gets enforced rather than just requested.</p>
+          <div class="code-wrap">
+            <span class="code-label">CLAUDE.md (relevant excerpt)</span>
+            <pre><code>## Architecture
+Go 1.22 service. Postgres with PostGIS for issue geolocation. Deployed on AWS ECS.
+
+## Do not
+- Do not commit a real Mapbox/GIS API key — read MAPBOX_API_KEY from the environment, never inline.
+- Do not change the issue-priority formula without running scripts/priority_score.go's tests first.
+
+## Tooling
+- Team's Claude Code setup ships as one plugin: `/plugin install cityfix-toolkit@civic-platform-marketplace`.</code></pre>
+          </div>
+          <div class="code-wrap">
+            <span class="code-label">CLAUDE.local.md (gitignored)</span>
+            <pre><code># CLAUDE.local.md — not committed
+
+- Local Postgres+PostGIS runs on port 5433 via Docker, not the default 5432.
+- My Mapbox API key for local testing is a personal sandbox key — never the production one.
+- I run `go test ./internal/priority/...` for fast iteration on scoring logic only.</code></pre>
+          </div>
+          <p>That "Do not" list is exactly what a hook (file 2) turns from a request into a rule, and that "Tooling" line is exactly what the plugin (file 4) makes true.</p>
+
           <div class="callout">
-            <p>Harness engineering doesn't ship a feature, so it doesn't have a feature-shaped case study. Its test is: <strong>does a brand-new teammate get a working, safe environment in under five minutes?</strong> File 6 of this group is built around exactly that test.</p>
+            <p>Harness engineering doesn't ship a feature, so it doesn't have a feature-shaped case study. File 6 walks through two real recurring mistakes — a near-miss secret leak, and the same calculation redone badly three times — and how a hook and a plugin make each one structurally unlikely to happen again, for every engineer, not just the one who hit it first.</p>
           </div>
 
           <div class="learn-block">
@@ -1037,8 +1177,8 @@ public class IdempotencyFilter implements Filter {
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(13)">← <span>2 · Agentic Engineering</span></button>
-            <button class="navbtn" onclick="go(15)"><span>settings.json</span> →</button>
+            <button class="navbtn" onclick="go('ae-case')">← <span>2 · Agentic Engineering</span></button>
+            <button class="navbtn" onclick="go('he-hooks')"><span>settings.json</span> →</button>
           </div>
         </section>
 
@@ -1077,7 +1217,7 @@ public class IdempotencyFilter implements Filter {
             <pre><code>{
   "model": "claude-sonnet-4-6",
   "permissions": {
-    "allow": ["Read", "Grep", "Glob", "Bash(./gradlew *)"],
+    "allow": ["Read", "Grep", "Glob", "Bash(go test ./...)"],
     "ask": ["Edit", "Write", "Bash(*)"]
   },
   "hooks": {
@@ -1085,7 +1225,7 @@ public class IdempotencyFilter implements Filter {
       {
         "matcher": "Edit|Write",
         "hooks": [
-          { "type": "command", "command": ".claude/scripts/block-env-file-writes.sh" }
+          { "type": "command", "command": ".claude/scripts/block-secret-file-writes.sh" }
         ]
       }
     ],
@@ -1093,7 +1233,7 @@ public class IdempotencyFilter implements Filter {
       {
         "matcher": "Write|Edit",
         "hooks": [
-          { "type": "command", "command": "npx prettier --write \"$CLAUDE_TOOL_INPUT_FILE_PATH\" 2&gt;/dev/null || true" }
+          { "type": "command", "command": "gofmt -w \"$CLAUDE_TOOL_INPUT_FILE_PATH\" 2&gt;/dev/null || true" }
         ]
       }
     ],
@@ -1108,7 +1248,7 @@ public class IdempotencyFilter implements Filter {
 }</code></pre>
           </div>
           <div class="code-wrap">
-            <span class="code-label">.claude/scripts/block-env-file-writes.sh</span>
+            <span class="code-label">.claude/scripts/block-secret-file-writes.sh</span>
             <pre><code>#!/usr/bin/env bash
 set -euo pipefail
 file_path="$(jq -r '.tool_input.file_path // empty')"
@@ -1116,8 +1256,8 @@ if [[ -z "$file_path" ]]; then
   exit 0
 fi
 case "$file_path" in
-  *.env|*.env.*|*secrets*|*credentials*)
-    echo "Blocked: '$file_path' looks like a secrets file." 1&gt;&amp;2
+  *.env|*.env.*|*secrets*|*credentials*|*mapbox*key*)
+    echo "Blocked: '$file_path' looks like a secrets file. Edit it by hand if this is intentional." 1&gt;&amp;2
     exit 2
     ;;
   *) exit 0 ;;
@@ -1125,8 +1265,8 @@ esac</code></pre>
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(14)">← <span>Overview</span></button>
-            <button class="navbtn" onclick="go(16)"><span>.mcp.json + server</span> →</button>
+            <button class="navbtn" onclick="go('he-overview')">← <span>Overview</span></button>
+            <button class="navbtn" onclick="go('he-mcp')"><span>.mcp.json + server</span> →</button>
           </div>
         </section>
 
@@ -1161,10 +1301,10 @@ esac</code></pre>
       "args": ["-y", "@modelcontextprotocol/server-github"],
       "env": { "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}" }
     },
-    "ledger-rag": {
+    "cityfix-docs-rag": {
       "command": "node",
-      "args": ["./tools/rag-mcp-server/index.js"],
-      "env": { "RUNBOOK_DIR": "./runbooks" }
+      "args": ["./tools/cityfix-docs-rag/index.js"],
+      "env": { "DOCS_DIR": "./docs/policies" }
     }
   }
 }</code></pre>
@@ -1172,9 +1312,9 @@ esac</code></pre>
 
           <h3>Filled example — the working server behind it</h3>
           <div class="code-wrap">
-            <span class="code-label">tools/rag-mcp-server/package.json</span>
+            <span class="code-label">tools/cityfix-docs-rag/package.json</span>
             <pre><code>{
-  "name": "ledger-rag-mcp-server",
+  "name": "cityfix-docs-rag-server",
   "version": "1.0.0",
   "type": "module",
   "main": "index.js",
@@ -1183,23 +1323,23 @@ esac</code></pre>
 }</code></pre>
           </div>
           <div class="code-wrap">
-            <span class="code-label">tools/rag-mcp-server/index.js</span>
+            <span class="code-label">tools/cityfix-docs-rag/index.js</span>
             <pre><code>#!/usr/bin/env node
-// Keyword/TF-IDF search over local runbooks — no embedding API key required.
+// Keyword/TF-IDF search over local policy docs — no embedding API key required.
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import fs from "node:fs";
 import path from "node:path";
 
-const RUNBOOK_DIR = process.env.RUNBOOK_DIR || path.join(process.cwd(), "runbooks");
+const DOCS_DIR = process.env.DOCS_DIR || path.join(process.cwd(), "docs/policies");
 
 function tokenize(text) { return text.toLowerCase().match(/[a-z0-9]+/g) || []; }
 
 function loadCorpus() {
-  const files = fs.readdirSync(RUNBOOK_DIR).filter((f) => f.endsWith(".md"));
+  const files = fs.readdirSync(DOCS_DIR).filter((f) => f.endsWith(".md"));
   return files.map((file) => {
-    const raw = fs.readFileSync(path.join(RUNBOOK_DIR, file), "utf8");
+    const raw = fs.readFileSync(path.join(DOCS_DIR, file), "utf8");
     return { file, raw, tokens: tokenize(raw) };
   });
 }
@@ -1220,13 +1360,13 @@ function ragSearch(query, topK = 3) {
     .sort((a, b) => b.score - a.score).slice(0, topK).filter((r) => r.score > 0);
 }
 
-const server = new Server({ name: "ledger-rag", version: "1.0.0" }, { capabilities: { tools: {} } });
+const server = new Server({ name: "cityfix-docs-rag", version: "1.0.0" }, { capabilities: { tools: {} } });
 
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
   tools: [
-    { name: "rag_query", description: "Answers a question using the ledger service's runbooks.",
+    { name: "rag_query", description: "Answers a question using CityFix's triage and data-retention policies.",
       inputSchema: { type: "object", properties: { question: { type: "string" } }, required: ["question"] } },
-    { name: "get_stats", description: "Returns how many runbook documents are indexed.",
+    { name: "get_stats", description: "Returns how many policy documents are indexed.",
       inputSchema: { type: "object", properties: {} } },
   ],
 }));
@@ -1235,12 +1375,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
   if (name === "rag_query") {
     const results = ragSearch(args.question, 3);
-    if (results.length === 0) return { content: [{ type: "text", text: `No runbook matched "${args.question}".` }] };
+    if (results.length === 0) return { content: [{ type: "text", text: `No policy matched "${args.question}".` }] };
     const text = results.map((r) => `### ${r.file}\n${r.snippet}...`).join("\n\n");
     return { content: [{ type: "text", text }] };
   }
   if (name === "get_stats") {
-    return { content: [{ type: "text", text: `${loadCorpus().length} runbook document(s) indexed.` }] };
+    return { content: [{ type: "text", text: `${loadCorpus().length} policy document(s) indexed.` }] };
   }
   throw new Error(`Unknown tool: ${name}`);
 });
@@ -1248,19 +1388,30 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 await server.connect(new StdioServerTransport());</code></pre>
           </div>
           <div class="code-wrap">
-            <span class="code-label">runbooks/reconciliation.md (part of the corpus)</span>
-            <pre><code># Daily ledger reconciliation
+            <span class="code-label">docs/policies/triage-policy.md (part of the corpus)</span>
+            <pre><code># Issue triage policy
 
-- A mismatch under $1.00 aggregate is auto-approved and logged.
-- A mismatch over $1.00 blocks the job and pages the payments on-call.
-- Idempotency-Key collisions in the previous 24h are the first thing to check —
-  see IdempotencyFilter and the Redis TTL window.
-- Root cause and resolution get appended to NOTES.md, not just Slack.</code></pre>
+Priority score = (base score by issue type) + (2 × number of duplicate reports)
+− (0.5 × days since first reported, capped at 10).
+
+Base scores: pothole = 5, broken streetlight = 4, water main leak = 9, graffiti = 2,
+downed tree = 8.
+
+Any issue scoring 15 or higher is auto-escalated to the emergency response queue.</code></pre>
           </div>
+          <div class="code-wrap">
+            <span class="code-label">docs/policies/data-retention.md (the rest of the corpus)</span>
+            <pre><code># Citizen data retention policy
+
+Reporter contact info is retained for 90 days after an issue is marked resolved,
+then purged. Photos attached to reports are retained for 2 years for infrastructure
+planning, with reporter identity stripped after 90 days.</code></pre>
+          </div>
+          <p>Two documents is a deliberately small corpus for this guide — the point of a real <code>cityfix-docs-rag</code> deployment is that this folder grows without the MCP server's code changing at all. Compare this server to Agentic Engineering's <code>policy-rag</code>: same pattern, same ~60 lines, completely different corpus — that repetition is the point, not an accident. Once you've built one, you've effectively learned to build all of them.</p>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(15)">← <span>settings.json</span></button>
-            <button class="navbtn" onclick="go(17)"><span>plugin.json</span> →</button>
+            <button class="navbtn" onclick="go('he-hooks')">← <span>settings.json</span></button>
+            <button class="navbtn" onclick="go('he-plugin')"><span>plugin.json</span> →</button>
           </div>
         </section>
 
@@ -1290,26 +1441,133 @@ await server.connect(new StdioServerTransport());</code></pre>
           <div class="code-wrap">
             <span class="code-label">.claude-plugin/plugin.json</span>
             <pre><code>{
-  "name": "payments-ledger-toolkit",
+  "name": "cityfix-toolkit",
   "version": "1.0.0",
-  "description": "Bundles the security reviewer, test-writer, Kafka sizing skill, hardening hooks, and RAG MCP server into one installable package.",
-  "author": "Payments Platform Team",
-  "agents": ["./agents/payments-security-reviewer.md", "./agents/idempotency-test-writer.md"],
-  "skills": ["./skills/kafka-capacity-check"],
+  "description": "Bundles the issue reviewer, test-writer, priority-scoring skill, hardening hooks, and docs-RAG MCP server into one installable package.",
+  "author": "Civic Platform Team",
+  "agents": ["./agents/cityfix-issue-reviewer.md", "./agents/cityfix-test-writer.md"],
+  "skills": ["./skills/issue-priority-scorer"],
   "hooks": "./hooks/hooks.json",
   "mcpServers": "./.mcp.json"
 }</code></pre>
           </div>
+
+          <h3>What's actually inside <code>./agents/</code></h3>
+          <p>The manifest above only points at paths — here's what a teammate installing this plugin actually receives, in full. Both agents built specifically for CityFix, independent of Agentic Engineering's PawMatch agents:</p>
+          <div class="code-wrap">
+            <span class="code-label">.claude-plugin/agents/cityfix-issue-reviewer.md</span>
+            <pre><code>---
+name: cityfix-issue-reviewer
+description: Use proactively after any change to files under internal/priority/ or internal/reports/. Reviews for hardcoded priority weights that should trace back to policy, citizen PII retained past policy, and missing escalation logic. Read-only — never edit.
+tools:
+  - Read
+  - Grep
+  - Glob
+model: sonnet
+---
+
+You are a policy-compliance reviewer for a citizen issue-reporting platform.
+For every change, check specifically for:
+1. Any hardcoded priority weight or score — re-query the cityfix-docs-rag MCP server to confirm it still matches docs/policies/triage-policy.md, and flag drift if it doesn't
+2. Reporter PII retained past the documented 90-day window
+3. Missing auto-escalation logic for issues scoring 15 or higher
+Report findings as a short bullet list with file:line references. Do not fix — only report.</code></pre>
+          </div>
+          <div class="code-wrap">
+            <span class="code-label">.claude-plugin/agents/cityfix-test-writer.md</span>
+            <pre><code>---
+name: cityfix-test-writer
+description: Use after the feature author adds or changes priority-scoring logic. Writes the boundary-case unit tests required by testing-rules.md. Read-write, but only inside internal/priority/priority_test.go.
+tools:
+  - Read
+  - Write
+  - Bash(go test ./...)
+model: sonnet
+---
+
+You write Go table-driven tests only, for priority-scoring logic. For any new or
+changed scoring rule, add a test at the escalation boundary (score 14 vs 15), one
+clearly-low-priority case, and one clearly-high-priority case. Run go test ./...
+yourself before reporting done.</code></pre>
+          </div>
+
+          <h3>What's actually inside <code>./skills/</code></h3>
+          <p>The skill this whole case study's second incident is about — bundled here so a new engineer gets it without ever being told it exists:</p>
+          <div class="code-wrap">
+            <span class="code-label">.claude-plugin/skills/issue-priority-scorer/SKILL.md</span>
+            <pre><code>---
+name: issue-priority-scorer
+description: Use when asked to compute or explain an issue's priority score for triage.
+---
+
+# Issue Priority Scoring Playbook
+
+Given issue type, duplicate report count, and days since first reported, run
+`scripts/priority_score.go` rather than estimating the arithmetic by hand:
+
+    go run scripts/priority_score.go --issue-type pothole --duplicates 6 --days-open 4
+
+1. Any score of 15 or higher must trigger auto-escalation — never suppress this.
+2. Always show the script's output, not just the final number.
+
+See `reference/base-scores.md` for the documented base score per issue type.</code></pre>
+          </div>
+          <div class="code-wrap">
+            <span class="code-label">.claude-plugin/skills/issue-priority-scorer/scripts/priority_score.go</span>
+            <pre><code>// Computes an issue's priority score per docs/policies/triage-policy.md.
+// Referenced by SKILL.md so Claude runs it directly instead of estimating
+// the arithmetic itself.
+package main
+
+import (
+	"flag"
+	"fmt"
+	"math"
+)
+
+var baseScores = map[string]float64{
+	"pothole":             5,
+	"broken_streetlight":  4,
+	"water_main_leak":     9,
+	"graffiti":            2,
+	"downed_tree":         8,
+}
+
+func main() {
+	issueType := flag.String("issue-type", "", "issue type key, e.g. pothole")
+	duplicates := flag.Int("duplicates", 0, "number of duplicate reports")
+	daysOpen := flag.Float64("days-open", 0, "days since first reported")
+	flag.Parse()
+
+	base, ok := baseScores[*issueType]
+	if !ok {
+		fmt.Printf("Unknown issue type: %s\n", *issueType)
+		return
+	}
+
+	decay := math.Min(*daysOpen*0.5, 10)
+	score := base + float64(*duplicates)*2 - decay
+
+	fmt.Printf("Base score:      %.1f\n", base)
+	fmt.Printf("Duplicate bonus: +%.1f\n", float64(*duplicates)*2)
+	fmt.Printf("Age decay:       -%.1f\n", decay)
+	fmt.Printf("Final score:     %.1f\n", score)
+	if score >= 15 {
+		fmt.Println("AUTO-ESCALATE: score meets emergency response threshold")
+	}
+}</code></pre>
+          </div>
+          <p>This is the point of a plugin as a Harness Engineering artifact: a teammate never has to author any of these files themselves, or even be told they exist — <code>/plugin install</code> is the entire onboarding step.</p>
           <div class="code-wrap">
             <span class="code-label">.claude-plugin/marketplace.json</span>
             <pre><code>{
-  "name": "payments-platform-marketplace",
-  "owner": "payments-platform-team",
+  "name": "civic-platform-marketplace",
+  "owner": "civic-platform-team",
   "plugins": [
     {
-      "name": "payments-ledger-toolkit",
+      "name": "cityfix-toolkit",
       "source": "./",
-      "description": "Security review, testing, Kafka sizing, and RAG runbook search for the ledger service"
+      "description": "Issue review, testing, priority scoring, and policy RAG search for CityFix"
     }
   ]
 }</code></pre>
@@ -1319,8 +1577,8 @@ await server.connect(new StdioServerTransport());</code></pre>
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(16)">← <span>.mcp.json + server</span></button>
-            <button class="navbtn" onclick="go(18)"><span>Prompts</span> →</button>
+            <button class="navbtn" onclick="go('he-mcp')">← <span>.mcp.json + server</span></button>
+            <button class="navbtn" onclick="go('he-prompts')"><span>Prompts</span> →</button>
           </div>
         </section>
 
@@ -1332,20 +1590,32 @@ await server.connect(new StdioServerTransport());</code></pre>
           <p class="lede">Harness Engineering prompts talk about the <strong>environment itself</strong> — guardrails, reusability, distribution — not a single feature. Compare the verbs: "add a hook so this can never happen again," not "fix this one instance."</p>
 
           <div class="prompt-block">
+            <span class="p-num">Prompt · bootstrap the project memory</span>
+            <p class="p-text">Run /init to scan this repo, then rewrite the generated CLAUDE.md so it documents: CityFix, a Go 1.22 service using Postgres with PostGIS for issue geolocation, deployed on AWS ECS. Add a Do-not section forbidding committing a real Mapbox/GIS API key inline — it must come from the environment — and changing the issue-priority formula without running its tests first. Add a Tooling line noting the team's Claude Code setup ships as the cityfix-toolkit plugin.</p>
+            <div class="p-produces">→ produces: <b>CLAUDE.md</b></div>
+          </div>
+
+          <div class="prompt-block">
+            <span class="p-num">Prompt · personal, local-only overrides</span>
+            <p class="p-text">Create a CLAUDE.local.md and add it to .gitignore. Note that my local Postgres+PostGIS runs on port 5433 via Docker, my local Mapbox key is a personal sandbox key and never the production one, and I run go test ./internal/priority/... for fast iteration on scoring logic only.</p>
+            <div class="p-produces">→ produces: <b>CLAUDE.local.md</b>, updated <b>.gitignore</b></div>
+          </div>
+
+          <div class="prompt-block">
             <span class="p-num">Prompt · guardrails</span>
-            <p class="p-text">Add a PreToolUse hook in .claude/settings.json that runs .claude/scripts/block-env-file-writes.sh before every Edit or Write. Write that script to read the tool-call JSON from stdin with jq and exit 2 for any path matching *.env, *secrets*, or *credentials*. Also add a PostToolUse hook that runs prettier on any edited file, and a Stop hook reminding me to update NOTES.md. Set the model and require approval for Edit/Write/Bash, but auto-allow Read/Grep/Glob and ./gradlew test.</p>
-            <div class="p-produces">→ produces: <b>.claude/settings.json</b>, <b>block-env-file-writes.sh</b></div>
+            <p class="p-text">Add a PreToolUse hook in .claude/settings.json that runs .claude/scripts/block-secret-file-writes.sh before every Edit or Write. Write that script to read the tool-call JSON from stdin with jq and exit 2 for any path matching *.env, *secrets*, *credentials*, or anything that looks like a Mapbox API key file. Also add a PostToolUse hook that runs gofmt on any edited Go file, and a Stop hook reminding me to update NOTES.md. Set the model and require approval for Edit/Write/Bash, but auto-allow Read/Grep/Glob and go test ./....</p>
+            <div class="p-produces">→ produces: <b>.claude/settings.json</b>, <b>block-secret-file-writes.sh</b></div>
           </div>
 
           <div class="prompt-block">
             <span class="p-num">Prompt · a reusable tool for every future agent</span>
-            <p class="p-text">I need a RAG server for our runbooks, exposed over MCP, so any current or future agent can query it — not just this session. Build tools/rag-mcp-server as a Node.js MCP server using @modelcontextprotocol/sdk, scoring the corpus with term-frequency matching so we never need an embedding API key. Register it in .mcp.json alongside our GitHub server.</p>
-            <div class="p-produces">→ produces: <b>tools/rag-mcp-server/*</b>, <b>.mcp.json</b></div>
+            <p class="p-text">I need a RAG server for our triage and data-retention policies, exposed over MCP, so any current or future agent can query it — not just this session. Build tools/cityfix-docs-rag as a Node.js MCP server using @modelcontextprotocol/sdk, scoring the corpus with term-frequency matching so we never need an embedding API key. Register it in .mcp.json alongside our GitHub server.</p>
+            <div class="p-produces">→ produces: <b>tools/cityfix-docs-rag/*</b>, <b>.mcp.json</b></div>
           </div>
 
           <div class="prompt-block">
             <span class="p-num">Prompt · package it so it outlives this repo</span>
-            <p class="p-text">Bundle the reviewer, the test-writer, the Kafka skill, our hooks, and the ledger-rag MCP server into one installable plugin called payments-ledger-toolkit, so every future project — not just this one — can adopt the whole harness with a single /plugin install instead of five manual steps.</p>
+            <p class="p-text">Bundle the issue reviewer, the test-writer, the priority-scoring skill, our hooks, and the cityfix-docs-rag MCP server into one installable plugin called cityfix-toolkit, so every future project — not just this one — can adopt the whole harness with a single /plugin install instead of five manual steps.</p>
             <div class="p-produces">→ produces: <b>plugin.json</b>, <b>marketplace.json</b></div>
           </div>
 
@@ -1356,8 +1626,8 @@ await server.connect(new StdioServerTransport());</code></pre>
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(17)">← <span>plugin.json</span></button>
-            <button class="navbtn" onclick="go(19)"><span>Case study</span> →</button>
+            <button class="navbtn" onclick="go('he-plugin')">← <span>plugin.json</span></button>
+            <button class="navbtn" onclick="go('he-case')"><span>Case study</span> →</button>
           </div>
         </section>
 
@@ -1365,22 +1635,36 @@ await server.connect(new StdioServerTransport());</code></pre>
         <section class="step" id="step-he-case">
           <span class="badge he">3 · Harness Engineering</span>
           <span class="kicker">6 / 6 · Case study</span>
-          <h2 class="step-title">Proving a new teammate gets a safe environment in under 5 minutes</h2>
-          <p class="lede">Harness engineering's acceptance test isn't a feature demo — it's this sequence, run from a clean checkout.</p>
+          <h2 class="step-title">The two mistakes that kept happening — until the harness made them structurally unlikely</h2>
+          <p class="lede">Distinct on purpose from the other two case studies: this isn't a feature request from a product backlog, it's two recurring incidents that had nothing to do with any single task. Simple to state. The fix for both is environment design, not a one-off patch — which is the whole point of Harness Engineering as its own workflow type.</p>
+
+          <h3>The problem</h3>
+          <ul>
+            <li><strong>Incident 1:</strong> an engineer's Claude Code session was one accepted diff away from committing the city's real Mapbox API key into <code>.env.production</code>. Nobody had told that particular session not to — nothing was watching.</li>
+            <li><strong>Incident 2:</strong> in the same week, three different engineers each independently re-derived the issue-priority-scoring formula by hand instead of finding the existing script, and two of the three got the age-decay term wrong — one issue that should have auto-escalated didn't.</li>
+          </ul>
+          <p>Neither is a feature to build. Both are harness gaps: incident 1 is <strong>nothing enforced</strong>; incident 2 is <strong>nothing discoverable</strong>. A code review comment or a Slack reminder fixes the mistake once, for one person. A harness fixes the class of mistake, for everyone, permanently.</p>
+
+          <h3>The fix</h3>
+          <ul>
+            <li><strong>For incident 1 — enforcement:</strong> the <code>block-secret-file-writes.sh</code> <code>PreToolUse</code> hook (file 2 of this group) makes the mistake structurally impossible rather than just documented against — it blocks the write before it happens, for any engineer, in any session, whether or not they've read this guide.</li>
+            <li><strong>For incident 2 — discoverability:</strong> bundling <code>issue-priority-scorer</code> into the <code>cityfix-toolkit</code> plugin (file 4) means a new or existing engineer gets the skill automatically the moment they install the toolkit — not by remembering it exists or asking around.</li>
+          </ul>
+
+          <h3>Proving both fixes actually work</h3>
           <ol>
-            <li><code>npm install</code> in <code>tools/rag-mcp-server</code>, then smoke-test it alone: <code>npx @modelcontextprotocol/inspector node index.js</code> — call <code>rag_query</code> and confirm it returns a real passage from <code>runbooks/reconciliation.md</code>, before Claude Code is even involved.</li>
-            <li><code>chmod +x .claude/scripts/block-env-file-writes.sh</code>, then test it in isolation: <code>echo '{"tool_input":{"file_path":".env"}}' | .claude/scripts/block-env-file-writes.sh; echo $?</code> → should print <code>2</code>.</li>
-            <li>Start Claude Code: <code>export ANTHROPIC_API_KEY=sk-ant-...</code> then <code>claude</code>.</li>
-            <li>Inside the session: <code>/plugin marketplace add ./.claude-plugin</code> then <code>/plugin install payments-ledger-toolkit@payments-platform-marketplace</code>.</li>
-            <li>Confirm it's live: <code>/memory</code>, <code>/agents</code>, <code>/mcp</code> — all three should show the bundle's contents connected.</li>
+            <li><strong>Test the guardrail in isolation</strong> — solves incident 1: <code>chmod +x .claude/scripts/block-secret-file-writes.sh</code>, then <code>echo '{"tool_input":{"file_path":".env"}}' | .claude/scripts/block-secret-file-writes.sh; echo $?</code> → must print <code>2</code>. A normal file must print <code>0</code>.</li>
+            <li><strong>Test discoverability as a brand-new engineer would experience it</strong> — solves incident 2: from a clean checkout, <code>claude</code>, then <code>/plugin marketplace add ./.claude-plugin</code> and <code>/plugin install cityfix-toolkit@civic-platform-marketplace</code>. Now ask, in plain language, "what's the priority score for a pothole with 6 duplicate reports open 4 days?" — it should surface and use the skill without you pointing Claude Code at anything.</li>
+            <li><strong>Confirm the rest of the bundle rode along too:</strong> <code>/memory</code>, <code>/agents</code>, <code>/mcp</code> — the reviewer, the test-writer, and the <code>cityfix-docs-rag</code> server should all show as connected, even though neither incident was about them.</li>
           </ol>
+
           <div class="callout">
-            <p><strong>If all five steps pass:</strong> a teammate who has never seen this repo before now has the reviewer, the test-writer, the Kafka skill, the guardrail hooks, and the RAG server — everything Agentic Coding and Agentic Engineering (files 1 and 2 of this guide) depend on to run safely — without reading either of those sections first. That's the entire point of engineering the harness separately from any one feature.</p>
+            <p><strong>If all three checks pass:</strong> the specific mistake from incident 1 is now structurally unlikely for <em>any</em> engineer, and the wasted time from incident 2 is gone, because the fix travels with the plugin instead of living in one person's memory. That's the distinct shape of a Harness Engineering win — not a shipped feature, but a class of mistake that stops recurring. Notice too that this entire example — stack, incidents, agents, skill, RAG corpus — shares nothing with QuoteBox in Agentic Coding or PawMatch in Agentic Engineering. Same three underlying patterns, three unrelated problems.</p>
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(18)">← <span>Prompts</span></button>
-            <button class="navbtn" onclick="go(20)"><span>Core Reference</span> →</button>
+            <button class="navbtn" onclick="go('he-prompts')">← <span>Prompts</span></button>
+            <button class="navbtn" onclick="go('tut-overview')"><span>Core Reference</span> →</button>
           </div>
         </section>
 
@@ -1417,8 +1701,8 @@ await server.connect(new StdioServerTransport());</code></pre>
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(19)">← <span>3 · Harness Engineering</span></button>
-            <button class="navbtn" onclick="go(21)"><span>CLAUDE.md</span> →</button>
+            <button class="navbtn" onclick="go('he-case')">← <span>3 · Harness Engineering</span></button>
+            <button class="navbtn" onclick="go('tut-claudemd')"><span>CLAUDE.md</span> →</button>
           </div>
         </section>
 
@@ -1479,8 +1763,8 @@ Kafka topic `ledger.events.v1` for downstream settlement. Deployed on EKS.
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(20)">← <span>Mental model</span></button>
-            <button class="navbtn" onclick="go(22)"><span>Subagents</span> →</button>
+            <button class="navbtn" onclick="go('tut-overview')">← <span>Mental model</span></button>
+            <button class="navbtn" onclick="go('tut-subagents')"><span>Subagents</span> →</button>
           </div>
         </section>
 
@@ -1527,8 +1811,8 @@ Report findings as a short bullet list with file:line references. Do not fix —
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(21)">← <span>CLAUDE.md</span></button>
-            <button class="navbtn" onclick="go(23)"><span>Skills</span> →</button>
+            <button class="navbtn" onclick="go('tut-claudemd')">← <span>CLAUDE.md</span></button>
+            <button class="navbtn" onclick="go('tut-skills')"><span>Skills</span> →</button>
           </div>
         </section>
 
@@ -1579,8 +1863,8 @@ See `reference/broker-sizing-table.md` for AWS MSK instance-type throughput numb
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(22)">← <span>Subagents</span></button>
-            <button class="navbtn" onclick="go(24)"><span>Hooks</span> →</button>
+            <button class="navbtn" onclick="go('tut-subagents')">← <span>Subagents</span></button>
+            <button class="navbtn" onclick="go('tut-hooks')"><span>Hooks</span> →</button>
           </div>
         </section>
 
@@ -1631,8 +1915,8 @@ See `reference/broker-sizing-table.md` for AWS MSK instance-type throughput numb
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(23)">← <span>Skills</span></button>
-            <button class="navbtn" onclick="go(25)"><span>MCP &amp; RAG</span> →</button>
+            <button class="navbtn" onclick="go('tut-skills')">← <span>Skills</span></button>
+            <button class="navbtn" onclick="go('tut-mcp')"><span>MCP &amp; RAG</span> →</button>
           </div>
         </section>
 
@@ -1679,8 +1963,8 @@ See `reference/broker-sizing-table.md` for AWS MSK instance-type throughput numb
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(24)">← <span>Hooks</span></button>
-            <button class="navbtn" onclick="go(26)"><span>Plugins</span> →</button>
+            <button class="navbtn" onclick="go('tut-hooks')">← <span>Hooks</span></button>
+            <button class="navbtn" onclick="go('tut-plugins')"><span>Plugins</span> →</button>
           </div>
         </section>
 
@@ -1717,8 +2001,8 @@ See `reference/broker-sizing-table.md` for AWS MSK instance-type throughput numb
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(25)">← <span>MCP &amp; RAG</span></button>
-            <button class="navbtn" onclick="go(27)"><span>NOTES.md</span> →</button>
+            <button class="navbtn" onclick="go('tut-mcp')">← <span>MCP &amp; RAG</span></button>
+            <button class="navbtn" onclick="go('tut-notes')"><span>NOTES.md</span> →</button>
           </div>
         </section>
 
@@ -1757,8 +2041,8 @@ See `reference/broker-sizing-table.md` for AWS MSK instance-type throughput numb
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(26)">← <span>Plugins</span></button>
-            <button class="navbtn" onclick="go(28)"><span>Putting it together</span> →</button>
+            <button class="navbtn" onclick="go('tut-plugins')">← <span>Plugins</span></button>
+            <button class="navbtn" onclick="go('tut-layout')"><span>Putting it together</span> →</button>
           </div>
         </section>
 
@@ -1803,8 +2087,8 @@ See `reference/broker-sizing-table.md` for AWS MSK instance-type throughput numb
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(27)">← <span>NOTES.md</span></button>
-            <button class="navbtn" onclick="go(29)"><span>Using VS Code</span> →</button>
+            <button class="navbtn" onclick="go('tut-notes')">← <span>NOTES.md</span></button>
+            <button class="navbtn" onclick="go('vscode')"><span>Using VS Code</span> →</button>
           </div>
         </section>
 
@@ -1834,8 +2118,8 @@ See `reference/broker-sizing-table.md` for AWS MSK instance-type throughput numb
           <p><strong>One deliberate choice for a recording:</strong> leave approval-gated permission mode on (<code>claudeCode.initialPermissionMode</code>) and narrate your review of each diff before accepting. Auto-accept removes the exact moment you get to demonstrate judgment.</p>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(28)">← <span>Core Reference</span></button>
-            <button class="navbtn" onclick="go(30)"><span>Assessment playbook</span> →</button>
+            <button class="navbtn" onclick="go('tut-layout')">← <span>Core Reference</span></button>
+            <button class="navbtn" onclick="go('assessment')"><span>Assessment playbook</span> →</button>
           </div>
         </section>
 
@@ -1871,8 +2155,8 @@ See `reference/broker-sizing-table.md` for AWS MSK instance-type throughput numb
           </div>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(29)">← <span>Using VS Code</span></button>
-            <button class="navbtn" onclick="go(31)"><span>Cheat sheet</span> →</button>
+            <button class="navbtn" onclick="go('vscode')">← <span>Using VS Code</span></button>
+            <button class="navbtn" onclick="go('cheatsheet')"><span>Cheat sheet</span> →</button>
           </div>
         </section>
 
@@ -1905,8 +2189,8 @@ See `reference/broker-sizing-table.md` for AWS MSK instance-type throughput numb
           </table>
 
           <div class="stepnav">
-            <button class="navbtn" onclick="go(30)">← <span>Assessment playbook</span></button>
-            <button class="navbtn" onclick="go(0)"><span>Back to welcome</span> ↻</button>
+            <button class="navbtn" onclick="go('assessment')">← <span>Assessment playbook</span></button>
+            <button class="navbtn" onclick="go('intro')"><span>Back to welcome</span> ↻</button>
           </div>
 
           <footer class="pagefoot">built for srikanth's claude code prep — restructured by workflow type, august 2026</footer>
