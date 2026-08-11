@@ -210,6 +210,23 @@
 
   footer.pagefoot{text-align:center; color:var(--ink-faint); font-family:'JetBrains Mono',monospace; font-size:.72rem; margin-top:2.5rem;}
 
+  .prompt-block{
+    background:var(--panel-2); border:1px solid var(--line); border-left:3px solid var(--teal);
+    border-radius:0 8px 8px 0; padding:1.1rem 1.4rem; margin:0 0 1.5rem;
+  }
+  .prompt-block .p-num{
+    font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--teal);
+    text-transform:uppercase; letter-spacing:.1em; display:block; margin-bottom:.55rem;
+  }
+  .prompt-block .p-text{color:var(--ink); line-height:1.75; font-size:.98rem;}
+  .prompt-block .p-text::before{content:"\201C"; color:var(--ink-faint);}
+  .prompt-block .p-text::after{content:"\201D"; color:var(--ink-faint);}
+  .prompt-block .p-produces{
+    margin-top:.8rem; padding-top:.7rem; border-top:1px dashed var(--line);
+    font-size:.76rem; color:var(--ink-faint); font-family:'JetBrains Mono',monospace;
+  }
+  .prompt-block .p-produces b{color:var(--amber); font-weight:600;}
+
   /* ---------- responsive ---------- */
   @media (max-width:880px){
     .layout{flex-direction:column;}
@@ -268,6 +285,7 @@
     <button class="tree-item" data-step="cs-config"><span class="dot"></span> config (json) files</button>
     <button class="tree-item" data-step="cs-code"><span class="dot"></span> working code</button>
     <button class="tree-item" data-step="cs-run"><span class="dot"></span> run.sh (step by step)</button>
+    <button class="tree-item" data-step="cs-prompts"><span class="dot"></span> PROMPTS.md</button>
   </nav>
 
   <main class="stage">
@@ -1453,7 +1471,7 @@ public class IdempotencyFilter implements Filter {
 
         <!-- CASE STUDY 5: RUN IT -->
         <section class="step" id="step-cs-run">
-          <span class="kicker">Case Study 5 / 5 · Run it yourself</span>
+          <span class="kicker">Case Study 5 / 6 · Run it yourself</span>
           <h2 class="step-title">From empty folder to a working session</h2>
           <p class="lede">Every command below is real and ordered — copy them top to bottom in a terminal and you'll have the whole case study running, not just readable.</p>
 
@@ -1592,6 +1610,106 @@ curl -i -X POST localhost:8080/payments -H "Idempotency-Key: $KEY" -d '{"amountC
 
           <div class="stepnav">
             <button class="navbtn" onclick="go(16)">← <span>Working code</span></button>
+            <button class="navbtn" onclick="go(18)"><span>Prompts</span> →</button>
+          </div>
+        </section>
+
+        <!-- CASE STUDY 6: PROMPTS -->
+        <section class="step" id="step-cs-prompts">
+          <span class="kicker">Case Study 6 / 6 · The prompts themselves</span>
+          <h2 class="step-title">How this was actually built, prompt by prompt</h2>
+          <p class="lede">Every file in files 2–4 could have come from these twelve prompts, typed into Claude Code in this exact order, in an empty repo. Not to memorize — to notice the pattern: state the constraint every time, name the exact file, and point back at something that already exists so each prompt builds on the last instead of re-deriving conventions from scratch.</p>
+
+          <h3>Prompt 1 — bootstrap the project memory</h3>
+          <div class="prompt-block">
+            <span class="p-num">Prompt 1</span>
+            <p class="p-text">Run /init to scan this repo, then rewrite the generated CLAUDE.md so it documents: a Java 21 / Spring Boot 3 payments ledger microservice, Postgres for the ledger DB, a Kafka topic ledger.events.v1 for settlement, and Redis for idempotency keys with a 24h TTL, deployed on EKS. Add a Conventions section requiring all money values as long cents — never double or float — and an Idempotency-Key header on every write endpoint. Add a Do-not section blocking direct schema.sql edits (use Flyway migrations instead) and direct calls to external payment providers (route through payment-gateway-client instead). Keep the whole file under 40 lines.</p>
+            <div class="p-produces">→ produces: <b>CLAUDE.md</b></div>
+          </div>
+
+          <h3>Prompt 2 — personal, local-only overrides</h3>
+          <div class="prompt-block">
+            <span class="p-num">Prompt 2</span>
+            <p class="p-text">Create a CLAUDE.local.md and add it to .gitignore. Note that my local Postgres runs on port 5433 with DB name payments_dev, my local Kafka is a single-broker container so ignore the replication-factor-3 advice when testing locally, and I prefer running ./gradlew test --tests "*Idempotency*" for fast local iteration.</p>
+            <div class="p-produces">→ produces: <b>CLAUDE.local.md</b>, updated <b>.gitignore</b></div>
+          </div>
+
+          <h3>Prompt 3 — path-scoped rules</h3>
+          <div class="prompt-block">
+            <span class="p-num">Prompt 3</span>
+            <p class="p-text">Add .claude/rules/api-rules.md, scoped only to src/main/java/**/controller/** and src/main/java/**/api/**, requiring Idempotency-Key validation on every write, long-cents money fields, an OpenAPI @Operation annotation on new endpoints, and DTO mapping instead of returning raw JPA entities. Then add .claude/rules/testing-rules.md, scoped to src/test/**, requiring Testcontainers for Postgres and Kafka in integration tests, a duplicate-request test asserting 409 on every new write endpoint, and zero tolerance for flaky tests — fix or quarantine in the same PR.</p>
+            <div class="p-produces">→ produces: <b>.claude/rules/api-rules.md</b>, <b>.claude/rules/testing-rules.md</b></div>
+          </div>
+
+          <h3>Prompt 4 — the security-review subagent</h3>
+          <div class="prompt-block">
+            <span class="p-num">Prompt 4</span>
+            <p class="p-text">Create a subagent called payments-security-reviewer in .claude/agents/. It should trigger proactively after any change under src/payments/, be strictly read-only — Read, Grep, Glob only, no Edit or Write in its tools list — and check specifically for missing idempotency keys on state-changing endpoints, card or account data logged in plaintext, and missing audit-trail entries on balance-changing operations. Have it report findings as a short bullet list with file:line references, and explicitly instruct it to report only, never to fix anything itself.</p>
+            <div class="p-produces">→ produces: <b>.claude/agents/payments-security-reviewer.md</b></div>
+          </div>
+
+          <h3>Prompt 5 — the Kafka sizing skill</h3>
+          <div class="prompt-block">
+            <span class="p-num">Prompt 5</span>
+            <p class="p-text">Create a Skill at .claude/skills/kafka-capacity-check/ for sizing Kafka partitions and replication factor. Write SKILL.md so it triggers whenever I ask about Kafka partition or broker sizing, and have it call a script rather than estimating the arithmetic itself. Write that script at scripts/kafka_sizing.py, taking --events-per-sec, --avg-msg-bytes, and a --critical flag, computing throughput and partition count against a 10MB/s-per-partition budget, and forcing replication factor 3 whenever --critical is set. Also create reference/broker-sizing-table.md with a real AWS MSK instance-type throughput table the script's assumption is based on.</p>
+            <div class="p-produces">→ produces: <b>SKILL.md</b>, <b>scripts/kafka_sizing.py</b>, <b>reference/broker-sizing-table.md</b></div>
+          </div>
+
+          <h3>Prompt 6 — hooks for deterministic enforcement</h3>
+          <div class="prompt-block">
+            <span class="p-num">Prompt 6</span>
+            <p class="p-text">Add a PreToolUse hook in .claude/settings.json that runs .claude/scripts/block-env-file-writes.sh before every Edit or Write. Write that script to read the tool-call JSON from stdin with jq and exit with code 2 — blocking the write — for any path matching *.env, *secrets*, or *credentials*. Also add a PostToolUse hook that runs prettier on any written or edited file, and a Stop hook that echoes a reminder to update NOTES.md when the session ends. While you're in there, set the model to claude-sonnet-4-6 and require approval for Edit, Write, and Bash, but auto-allow Read, Grep, Glob, and ./gradlew test.</p>
+            <div class="p-produces">→ produces: <b>.claude/settings.json</b>, <b>.claude/scripts/block-env-file-writes.sh</b></div>
+          </div>
+
+          <h3>Prompt 7 — the RAG MCP server</h3>
+          <div class="prompt-block">
+            <span class="p-num">Prompt 7</span>
+            <p class="p-text">I need a RAG server for our runbooks, exposed over MCP. Build tools/rag-mcp-server as a Node.js MCP server using @modelcontextprotocol/sdk over stdio, reading markdown files from a RUNBOOK_DIR environment variable that defaults to ./runbooks. Expose three tools: rag_query and rag_search, both scoring the corpus with simple term-frequency matching so we don't need an embedding API key, and get_stats, returning how many documents are indexed. Write the package.json too — it only needs the one real dependency.</p>
+            <div class="p-produces">→ produces: <b>tools/rag-mcp-server/package.json</b>, <b>tools/rag-mcp-server/index.js</b></div>
+          </div>
+
+          <h3>Prompt 8 — give the server something real to search</h3>
+          <div class="prompt-block">
+            <span class="p-num">Prompt 8</span>
+            <p class="p-text">Now write two real runbooks for that server to index: runbooks/incident-response.md covering what to do when ledger.events.v1 consumer lag exceeds 30 seconds, and runbooks/reconciliation.md covering the daily 02:00 UTC reconciliation job and its mismatch thresholds. Have reconciliation.md reference IdempotencyFilter and the Redis TTL window as the first thing to check on a mismatch. Finally, register both this server and our existing GitHub MCP server in .mcp.json, passing RUNBOOK_DIR=./runbooks as an env var to ledger-rag.</p>
+            <div class="p-produces">→ produces: <b>runbooks/incident-response.md</b>, <b>runbooks/reconciliation.md</b>, <b>.mcp.json</b></div>
+          </div>
+
+          <h3>Prompt 9 — bundle it all into one plugin</h3>
+          <div class="prompt-block">
+            <span class="p-num">Prompt 9</span>
+            <p class="p-text">Bundle the payments-security-reviewer subagent, the kafka-capacity-check skill, our hooks, and the ledger-rag MCP server into one installable plugin called payments-ledger-toolkit. Create .claude-plugin/plugin.json describing what it bundles, and a marketplace.json so a new engineer can get the entire toolkit with one /plugin install command instead of five separate manual setup steps.</p>
+            <div class="p-produces">→ produces: <b>.claude-plugin/plugin.json</b>, <b>.claude-plugin/marketplace.json</b></div>
+          </div>
+
+          <h3>Prompt 10 — the code that actually enforces the rule</h3>
+          <div class="prompt-block">
+            <span class="p-num">Prompt 10</span>
+            <p class="p-text">Write src/main/java/com/deriv/ledger/filter/IdempotencyFilter.java as a Spring @Component implementing the Idempotency-Key convention from CLAUDE.md. Reject POST or PUT requests missing the header with a 400. Otherwise use StringRedisTemplate's setIfAbsent with a 24-hour TTL, keyed as idempotency:&lt;key&gt;, and return 409 on a replayed key. Match the Redis-backed strategy we already recorded in NOTES.md — don't invent a different storage mechanism.</p>
+            <div class="p-produces">→ produces: <b>IdempotencyFilter.java</b></div>
+          </div>
+
+          <h3>Prompt 11 — write the decisions down before context is lost</h3>
+          <div class="prompt-block">
+            <span class="p-num">Prompt 11</span>
+            <p class="p-text">Before we wrap this session, append today's decisions to NOTES.md: why we chose an MCP server over a Skill for runbook search, why the RAG server uses keyword scoring instead of embeddings, the Redis TTL choice for idempotency keys, and the plugin-bundling decision, each with today's date. Add an open question about whether the reviewer subagent should also run in CI, or stay a local-only pre-PR check.</p>
+            <div class="p-produces">→ produces: updated <b>NOTES.md</b></div>
+          </div>
+
+          <h3>Prompt 12 — verify, don't just accept</h3>
+          <div class="prompt-block">
+            <span class="p-num">Prompt 12</span>
+            <p class="p-text">Run /memory, /agents, and /mcp so I can confirm everything we just built is actually loaded and connected — not just written to disk. Then print the full repo tree so I can sanity-check nothing's missing before I commit.</p>
+            <div class="p-produces">→ verifies everything from prompts 1–11</div>
+          </div>
+
+          <div class="callout">
+            <p>Notice prompts 2 onward almost all reference something that already exists — <em>"from CLAUDE.md"</em>, <em>"already recorded in NOTES.md"</em>, <em>"our existing GitHub MCP server"</em>. That's the actual skill this whole guide is teaching: keeping Claude Code anchored to what's already true in the repo, instead of letting each new prompt quietly re-derive its own version of the conventions.</p>
+          </div>
+
+          <div class="stepnav">
+            <button class="navbtn" onclick="go(17)">← <span>Run it, step by step</span></button>
             <button class="navbtn" onclick="go(0)"><span>Back to welcome</span> ↻</button>
           </div>
         </section>
@@ -1602,7 +1720,7 @@ curl -i -X POST localhost:8080/payments -H "Idempotency-Key: $KEY" -d '{"amountC
 </div>
 
 <script>
-  const steps = ["intro","overview","claudemd","subagents","skills","hooks","mcp","plugins","notes","layout","vscode","assessment","cheatsheet","cs-overview","cs-markdown","cs-config","cs-code","cs-run"];
+  const steps = ["intro","overview","claudemd","subagents","skills","hooks","mcp","plugins","notes","layout","vscode","assessment","cheatsheet","cs-overview","cs-markdown","cs-config","cs-code","cs-run","cs-prompts"];
   const labels = {
     intro:"welcome", overview:"OVERVIEW.md", claudemd:"CLAUDE.md",
     subagents:".claude/agents/reviewer.md", skills:".claude/skills/kafka-check/SKILL.md",
@@ -1611,7 +1729,7 @@ curl -i -X POST localhost:8080/payments -H "Idempotency-Key: $KEY" -d '{"amountC
     assessment:"DERIV_ASSESSMENT.md", cheatsheet:"CHEATSHEET.md",
     "cs-overview":"CASE_STUDY.md", "cs-markdown":"case-study/*.md",
     "cs-config":"case-study/*.json", "cs-code":"case-study/src/*",
-    "cs-run":"run.sh"
+    "cs-run":"run.sh", "cs-prompts":"PROMPTS.md"
   };
   let current = 0;
   const read = new Set();
@@ -1636,9 +1754,9 @@ curl -i -X POST localhost:8080/payments -H "Idempotency-Key: $KEY" -d '{"amountC
       counter.textContent = 'File ' + n + ' / 12';
       fill.style.width = (n/12*100) + '%';
     } else {
-      const n = current - 12; // 1..5
-      counter.textContent = 'Case Study ' + n + ' / 5';
-      fill.style.width = (n/5*100) + '%';
+      const n = current - 12; // 1..6
+      counter.textContent = 'Case Study ' + n + ' / 6';
+      fill.style.width = (n/6*100) + '%';
     }
 
     if(current > 0){
