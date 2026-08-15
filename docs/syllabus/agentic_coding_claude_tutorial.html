@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agentic Coding with Claude Code — Production-Grade Java Tutorial</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --bg-soft: #111936;
+      --panel: rgba(255,255,255,0.075);
+      --panel-strong: rgba(255,255,255,0.12);
+      --text: #eef3ff;
+      --muted: #aeb9d6;
+      --brand: #86e7ff;
+      --brand-2: #b69cff;
+      --accent: #7cffc4;
+      --warn: #ffd166;
+      --danger: #ff7b9c;
+      --ok: #8bffb2;
+      --code-bg: #071022;
+      --border: rgba(255,255,255,0.16);
+      --shadow: 0 24px 80px rgba(0,0,0,0.35);
+      --radius: 22px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      background:
+        radial-gradient(circle at top left, rgba(134,231,255,0.2), transparent 34rem),
+        radial-gradient(circle at top right, rgba(182,156,255,0.22), transparent 32rem),
+        radial-gradient(circle at 50% 30%, rgba(124,255,196,0.08), transparent 42rem),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+    }
+    a { color: var(--brand); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .layout { display: grid; grid-template-columns: 310px 1fr; min-height: 100vh; }
+    aside {
+      position: sticky; top: 0; height: 100vh; overflow-y: auto;
+      border-right: 1px solid var(--border); background: rgba(5, 8, 18, 0.72);
+      backdrop-filter: blur(18px); padding: 24px 20px;
+    }
+    .logo { display: flex; gap: 12px; align-items: center; margin-bottom: 24px; }
+    .logo-mark { width: 42px; height: 42px; border-radius: 14px; background: linear-gradient(135deg, var(--brand), var(--brand-2)); box-shadow: 0 10px 30px rgba(134,231,255,0.3); }
+    .logo h1 { font-size: 15px; line-height: 1.25; margin: 0; }
+    .logo p { margin: 2px 0 0; color: var(--muted); font-size: 12px; }
+    nav a { display: block; color: var(--muted); padding: 8px 10px; border-radius: 10px; font-size: 13px; }
+    nav a:hover { background: var(--panel); color: var(--text); text-decoration: none; }
+    main { max-width: 1180px; width: 100%; margin: 0 auto; padding: 42px 44px 80px; }
+    .hero { padding: 58px; border: 1px solid var(--border); border-radius: 32px; background: linear-gradient(135deg, rgba(134,231,255,0.13), rgba(182,156,255,0.10)), var(--panel); box-shadow: var(--shadow); position: relative; overflow: hidden; }
+    .hero:after { content: ""; position: absolute; inset: auto -80px -130px auto; width: 320px; height: 320px; border-radius: 50%; background: rgba(124,255,196,0.14); filter: blur(20px); }
+    .eyebrow { color: var(--accent); letter-spacing: 0.14em; text-transform: uppercase; font-size: 12px; font-weight: 800; }
+    h1, h2, h3 { line-height: 1.15; }
+    .hero h1 { font-size: clamp(40px, 6vw, 74px); margin: 10px 0 18px; max-width: 900px; }
+    .hero p { color: var(--muted); font-size: 19px; max-width: 840px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+    .chip { border: 1px solid var(--border); background: rgba(255,255,255,0.07); color: var(--text); padding: 8px 12px; border-radius: 999px; font-size: 13px; }
+    section { margin-top: 42px; padding: 34px; border: 1px solid var(--border); background: var(--panel); border-radius: var(--radius); box-shadow: 0 18px 60px rgba(0,0,0,0.18); }
+    section h2 { font-size: 32px; margin: 0 0 18px; }
+    section h3 { margin-top: 28px; color: #ffffff; }
+    .lead { font-size: 18px; color: var(--muted); }
+    .grid { display: grid; gap: 18px; }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .card { border: 1px solid var(--border); background: rgba(255,255,255,0.06); border-radius: 18px; padding: 20px; }
+    .card h3, .card h4 { margin-top: 0; }
+    .muted { color: var(--muted); }
+    .callout { border-left: 4px solid var(--brand); background: rgba(134,231,255,0.08); padding: 18px 20px; border-radius: 14px; margin: 20px 0; }
+    .callout.warn { border-left-color: var(--warn); background: rgba(255,209,102,0.08); }
+    .callout.danger { border-left-color: var(--danger); background: rgba(255,123,156,0.08); }
+    table { width: 100%; border-collapse: collapse; margin: 18px 0; overflow: hidden; border-radius: 16px; }
+    th, td { border: 1px solid var(--border); padding: 13px 14px; vertical-align: top; }
+    th { background: rgba(134,231,255,0.13); text-align: left; color: #fff; }
+    td { color: var(--muted); background: rgba(255,255,255,0.035); }
+    code { font-family: var(--mono); color: #d7f7ff; background: rgba(0,0,0,0.28); padding: 0.16rem 0.35rem; border-radius: 6px; }
+    pre { background: var(--code-bg); color: #d9e9ff; border: 1px solid rgba(134,231,255,0.18); padding: 20px; border-radius: 18px; overflow-x: auto; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02); }
+    pre code { background: transparent; padding: 0; color: inherit; }
+    .diagram { margin: 24px 0; padding: 24px; border: 1px solid rgba(134,231,255,0.22); border-radius: 24px; background: linear-gradient(135deg, rgba(134,231,255,0.07), rgba(182,156,255,0.06)); }
+    .flow { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .node { min-width: 128px; flex: 1; padding: 15px 14px; border-radius: 16px; border: 1px solid var(--border); background: rgba(255,255,255,0.08); text-align: center; font-weight: 700; }
+    .arrow { color: var(--brand); font-size: 24px; font-weight: 900; }
+    .stack { display: grid; gap: 10px; }
+    .layer { display: grid; grid-template-columns: 120px 1fr 170px; gap: 12px; align-items: center; padding: 14px; border-radius: 16px; border: 1px solid var(--border); background: rgba(255,255,255,0.055); }
+    .layer .idx { color: var(--accent); font-weight: 900; }
+    .layer .title { font-weight: 800; }
+    .layer .file { font-family: var(--mono); color: var(--brand); font-size: 13px; }
+    .architecture { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .arch-col { border: 1px solid var(--border); border-radius: 18px; padding: 16px; background: rgba(255,255,255,0.055); min-height: 180px; }
+    .arch-col h4 { margin: 0 0 12px; color: var(--accent); }
+    .pill-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill { font-size: 12px; border-radius: 999px; border: 1px solid var(--border); padding: 6px 9px; color: var(--muted); }
+    .timeline { counter-reset: step; display: grid; gap: 14px; }
+    .step { display: grid; grid-template-columns: 52px 1fr; gap: 16px; align-items: start; }
+    .step:before { counter-increment: step; content: counter(step); width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center; font-weight: 900; color: #06101e; background: linear-gradient(135deg, var(--brand), var(--accent)); }
+    .step .body { border: 1px solid var(--border); border-radius: 18px; padding: 18px; background: rgba(255,255,255,0.055); }
+    .badge-ok { color: var(--ok); font-weight: 800; }
+    .badge-warn { color: var(--warn); font-weight: 800; }
+    .badge-danger { color: var(--danger); font-weight: 800; }
+    .footer { padding: 30px; color: var(--muted); text-align: center; }
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { position: relative; height: auto; }
+      main { padding: 24px 18px 60px; }
+      .hero { padding: 34px 24px; }
+      .grid-2, .grid-3, .architecture { grid-template-columns: 1fr; }
+      .layer { grid-template-columns: 1fr; }
+      .arrow { transform: rotate(90deg); }
+    }
+    @media print {
+      body { background: #fff; color: #111827; }
+      aside { display: none; }
+      .layout { display: block; }
+      main { max-width: none; padding: 0; }
+      section, .hero, .card, .diagram { box-shadow: none; background: #fff; color: #111827; border-color: #d1d5db; }
+      .muted, td, .hero p { color: #374151; }
+      pre { white-space: pre-wrap; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside>
+      <div class="logo">
+        <div class="logo-mark"></div>
+        <div>
+          <h1>Agentic Coding<br/>with Claude Code</h1>
+          <p>Java production tutorial</p>
+        </div>
+      </div>
+      <nav>
+        <a href="#definition">1. Definition</a>
+        <a href="#agentic-loop">2. Claude Agentic Loop</a>
+        <a href="#boundaries">3. Autonomy Boundaries</a>
+        <a href="#layers">4. Layered Context System</a>
+        <a href="#project">5. Production Java Example</a>
+        <a href="#files">6. Files Claude Uses</a>
+        <a href="#claudemd">7. CLAUDE.md</a>
+        <a href="#rules">8. Rules</a>
+        <a href="#skills">9. Skills</a>
+        <a href="#agents">10. Subagents</a>
+        <a href="#settings">11. Settings & Permissions</a>
+        <a href="#hooks">12. Hooks</a>
+        <a href="#mcp">13. MCP</a>
+        <a href="#rag">14. RAG Routing</a>
+        <a href="#workflow">15. End-to-End Workflow</a>
+        <a href="#anti-patterns">16. Anti-patterns</a>
+        <a href="#checklist">17. Checklist</a>
+        <a href="#sources">Sources</a>
+      </nav>
+    </aside>
+
+    <main>
+      <header class="hero">
+        <div class="eyebrow">Strict scope: Claude Code Agentic Coding</div>
+        <h1>Build a Production-Grade Agentic Coding System with Claude Code</h1>
+        <p>
+          A step-by-step tutorial for learning how Claude Code uses project memory, rules, skills, subagents,
+          hooks, settings, MCP, and repository knowledge to perform bounded autonomous coding in a Java/Spring Boot codebase.
+        </p>
+        <div class="chips">
+          <span class="chip">Java 21</span>
+          <span class="chip">Spring Boot</span>
+          <span class="chip">Claude Code</span>
+          <span class="chip">Layered Context</span>
+          <span class="chip">Autonomy Guardrails</span>
+          <span class="chip">Production Example</span>
+        </div>
+      </header>
+
+      <section id="definition">
+        <h2>1. What is Agentic Coding?</h2>
+        <p class="lead">
+          Agentic Coding is repository-level software development where Claude Code can reason, inspect files,
+          edit code, run commands, use tools, invoke workflows, delegate to subagents, and iterate until a bounded coding task is complete.
+        </p>
+        <div class="callout">
+          <strong>Precise definition:</strong> Agentic Coding is not merely asking AI for code snippets. It is giving Claude Code controlled autonomy inside a repository so it can complete implementation, testing, review, and validation tasks under explicit engineering boundaries.
+        </div>
+        <table>
+          <thead><tr><th>Term</th><th>What it means here</th><th>Autonomy level</th></tr></thead>
+          <tbody>
+            <tr><td>AI-assisted coding</td><td>Developer asks, AI suggests.</td><td>Low</td></tr>
+            <tr><td>Agentic Coding</td><td>Claude plans, edits, tests, fixes, and summarizes inside repo boundaries.</td><td>Medium to high</td></tr>
+            <tr><td>Agentic Engineering</td><td>AI participates across broader SDLC: product, architecture, delivery, governance.</td><td>Higher and broader</td></tr>
+            <tr><td>Harness Engineering</td><td>A supervisory system governs multiple tools, agents, validations, and delivery flows.</td><td>System-level</td></tr>
+            <tr><td>Vibe Coding</td><td>Informal prompting with weak guardrails and high ambiguity.</td><td>Uncontrolled</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="agentic-loop">
+        <h2>2. How Claude Code Performs Agentic Coding</h2>
+        <p>Claude Code operates in an agentic loop: understand the goal, read context, inspect code, plan, edit, validate, fix, and report.</p>
+        <div class="diagram">
+          <div class="flow">
+            <div class="node">User Goal</div><div class="arrow">→</div>
+            <div class="node">Load Context</div><div class="arrow">→</div>
+            <div class="node">Explore Repo</div><div class="arrow">→</div>
+            <div class="node">Plan</div><div class="arrow">→</div>
+            <div class="node">Edit</div><div class="arrow">→</div>
+            <div class="node">Test</div><div class="arrow">→</div>
+            <div class="node">Fix & Summarize</div>
+          </div>
+        </div>
+        <p>
+          Claude Code’s behavior is shaped by filesystem context such as <code>CLAUDE.md</code>, settings, skills,
+          subagents, hooks, and MCP configuration. Project memory persists across sessions through files such as <code>CLAUDE.md</code>.
+        </p>
+      </section>
+
+      <section id="boundaries">
+        <h2>3. The Core Autonomy Boundary</h2>
+        <p class="lead">The thin line is not whether Claude edits code. The thin line is <strong>which decisions Claude is allowed to make without asking you</strong>.</p>
+        <div class="grid grid-3">
+          <div class="card"><h3 class="badge-ok">Claude may do</h3><p>Read source files, implement bounded features, add tests, run local build/test commands, fix failures caused by its changes.</p></div>
+          <div class="card"><h3 class="badge-warn">Claude must ask</h3><p>Add dependencies, change public API contracts, alter business rules, modify deployment manifests, rename modules, delete files.</p></div>
+          <div class="card"><h3 class="badge-danger">Claude must never do</h3><p>Read secrets, use production data, disable tests, log sensitive payment data, run destructive commands, make production calls.</p></div>
+        </div>
+      </section>
+
+      <section id="layers">
+        <h2>4. Layered Context System</h2>
+        <p>A production-grade Claude Code setup should separate memory, rules, workflows, subagents, enforcement, tools, and knowledge.</p>
+        <div class="diagram stack">
+          <div class="layer"><div class="idx">Layer 0</div><div><div class="title">Human Intent</div><div class="muted">Feature, bug, refactor, review, or test request.</div></div><div class="file">Prompt</div></div>
+          <div class="layer"><div class="idx">Layer 1</div><div><div class="title">Always-On Project Context</div><div class="muted">Repo identity, default rules, autonomy boundaries.</div></div><div class="file">CLAUDE.md</div></div>
+          <div class="layer"><div class="idx">Layer 2</div><div><div class="title">Scoped Standards</div><div class="muted">Java, Spring, testing, security, database, API rules.</div></div><div class="file">.claude/rules/*.md</div></div>
+          <div class="layer"><div class="idx">Layer 3</div><div><div class="title">Executable Workflows</div><div class="muted">Repeatable procedures for implementation, debugging, testing, review.</div></div><div class="file">skills/*/SKILL.md</div></div>
+          <div class="layer"><div class="idx">Layer 4</div><div><div class="title">Specialist Delegation</div><div class="muted">Review, security, test, database, architecture subagents.</div></div><div class="file">agents/*.md</div></div>
+          <div class="layer"><div class="idx">Layer 5</div><div><div class="title">Deterministic Guardrails</div><div class="muted">Permissions and lifecycle enforcement.</div></div><div class="file">settings + hooks</div></div>
+          <div class="layer"><div class="idx">Layer 6</div><div><div class="title">External Tool Access</div><div class="muted">GitHub, Jira, docs, database, observability, service catalog.</div></div><div class="file">MCP</div></div>
+          <div class="layer"><div class="idx">Layer 7</div><div><div class="title">Repository Knowledge</div><div class="muted">Architecture docs, ADRs, domain docs, API docs.</div></div><div class="file">docs/rag/RAG.md</div></div>
+        </div>
+      </section>
+
+      <section id="project">
+        <h2>5. Production-Grade Java Example</h2>
+        <p>We will model a realistic fintech service.</p>
+        <div class="architecture">
+          <div class="arch-col"><h4>API Layer</h4><div class="pill-list"><span class="pill">REST Controller</span><span class="pill">DTOs</span><span class="pill">OpenAPI</span><span class="pill">Validation</span></div></div>
+          <div class="arch-col"><h4>Application Layer</h4><div class="pill-list"><span class="pill">Use Cases</span><span class="pill">Transactions</span><span class="pill">Idempotency</span><span class="pill">Orchestration</span></div></div>
+          <div class="arch-col"><h4>Domain Layer</h4><div class="pill-list"><span class="pill">Authorization</span><span class="pill">Merchant</span><span class="pill">Limits</span><span class="pill">Decisions</span></div></div>
+          <div class="arch-col"><h4>Infrastructure</h4><div class="pill-list"><span class="pill">PostgreSQL</span><span class="pill">Kafka</span><span class="pill">Redis</span><span class="pill">Flyway</span></div></div>
+        </div>
+        <h3>Repository structure</h3>
+        <pre><code>payment-authorization-service/
+├── CLAUDE.md
+├── pom.xml
+├── src/main/java/com/acme/payments/auth/
+├── src/test/java/com/acme/payments/auth/
+├── docs/
+│   ├── architecture/service-architecture.md
+│   ├── domain/payment-authorization-domain.md
+│   ├── adr/ADR-001-transactional-outbox.md
+│   ├── adr/ADR-002-idempotency.md
+│   └── rag/RAG.md
+└── .claude/
+    ├── settings.json
+    ├── rules/java.md
+    ├── rules/spring-boot.md
+    ├── rules/testing.md
+    ├── rules/security.md
+    ├── rules/database.md
+    ├── rules/api-contract.md
+    ├── agents/code-reviewer.md
+    ├── agents/security-reviewer.md
+    ├── agents/test-engineer.md
+    ├── skills/implement-feature/SKILL.md
+    ├── skills/fix-bug/SKILL.md
+    └── hooks/pre-bash-guard.sh</code></pre>
+      </section>
+
+      <section id="files">
+        <h2>6. What Each File Owns</h2>
+        <table>
+          <thead><tr><th>File</th><th>Responsibility</th><th>Do not put here</th></tr></thead>
+          <tbody>
+            <tr><td><code>CLAUDE.md</code></td><td>Always-on project context and autonomy policy.</td><td>Long workflows, full domain manuals, full API specs.</td></tr>
+            <tr><td><code>.claude/rules/*.md</code></td><td>Specific engineering standards.</td><td>Feature implementation procedures.</td></tr>
+            <tr><td><code>skills/*/SKILL.md</code></td><td>Repeatable workflows Claude can execute.</td><td>Global project identity or unrelated standards.</td></tr>
+            <tr><td><code>agents/*.md</code></td><td>Specialist roles with bounded tools and review scopes.</td><td>Main-session responsibilities.</td></tr>
+            <tr><td><code>settings.json</code></td><td>Permissions: allow, ask, deny.</td><td>Architecture explanations.</td></tr>
+            <tr><td><code>hooks/*</code></td><td>Deterministic checks and lifecycle automation.</td><td>Ambiguous reasoning or subjective review.</td></tr>
+            <tr><td><code>docs/rag/RAG.md</code></td><td>Knowledge routing: what to read and when.</td><td>All knowledge content itself.</td></tr>
+            <tr><td><code>MCP</code></td><td>External data/tool integration.</td><td>Static local rules that belong in repo docs.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="claudemd">
+        <h2>7. Step 1 — Write <code>CLAUDE.md</code></h2>
+        <p><code>CLAUDE.md</code> is the always-on project memory. Keep it concise, directional, and stable.</p>
+        <pre><code># CLAUDE.md — Payment Authorization Service
+
+## Purpose
+This repository contains the Payment Authorization Service for card and wallet transactions.
+Claude Code helps implement, test, refactor, and review bounded code changes.
+
+## Primary Stack
+- Java 21
+- Spring Boot 3.x
+- Maven
+- PostgreSQL
+- Flyway
+- Kafka
+- Redis
+- JUnit 5
+- Testcontainers
+- OpenAPI
+
+## Architecture Style
+Follow layered architecture:
+1. API layer: controllers, request/response DTOs
+2. Application layer: use cases and orchestration
+3. Domain layer: business rules and domain models
+4. Infrastructure layer: database, Kafka, Redis, external clients
+
+Do not put business logic in controllers, repositories, Kafka consumers, or mappers.
+
+## Agentic Coding Autonomy
+Claude may autonomously:
+- Explore the repository
+- Read source and test files
+- Modify Java, test, OpenAPI, and documentation files
+- Add tests
+- Run Maven test commands
+- Fix compile and test failures caused by its changes
+
+Claude must ask before:
+- Adding dependencies
+- Changing public API behavior
+- Changing payment authorization business rules
+- Editing production deployment manifests
+- Modifying existing Flyway migrations
+- Deleting files
+
+Claude must never:
+- Read secrets or credentials
+- Disable or delete tests
+- Log sensitive payment data
+- Use production data
+- Make production calls
+
+## Required Workflow
+For every non-trivial change:
+1. Understand the requirement
+2. Inspect relevant files
+3. Create a concise implementation plan
+4. Implement the smallest safe change
+5. Add or update tests
+6. Run targeted tests
+7. Summarize files changed, behavior changed, and tests run
+
+## Context Imports
+@docs/rag/RAG.md
+@.claude/rules/java.md
+@.claude/rules/spring-boot.md
+@.claude/rules/testing.md
+@.claude/rules/security.md
+@.claude/rules/database.md
+@.claude/rules/api-contract.md</code></pre>
+      </section>
+
+      <section id="rules">
+        <h2>8. Step 2 — Write Scoped Rules</h2>
+        <p>Rules reduce ambiguity. They should be specific, short, and enforceable.</p>
+        <div class="grid grid-2">
+          <div class="card">
+            <h3><code>.claude/rules/java.md</code></h3>
+            <pre><code># Java Rules
+
+- Use Java 21.
+- Prefer constructor injection.
+- Keep business logic in domain/application layers.
+- Do not introduce Lombok unless already used.
+- Do not represent domain concepts as Map&lt;String,Object&gt;.
+- Never log PAN, CVV, tokens, secrets, or full payment payloads.
+
+Expected domain objects:
+- PaymentAuthorization
+- MerchantAccount
+- CardInstrument
+- AuthorizationDecision
+- IdempotencyKey</code></pre>
+          </div>
+          <div class="card">
+            <h3><code>.claude/rules/testing.md</code></h3>
+            <pre><code># Testing Rules
+
+Use:
+- JUnit 5
+- AssertJ
+- Mockito
+- Testcontainers
+
+Every feature change needs tests for:
+- Success path
+- Validation failure
+- Domain failure
+- Idempotency behavior where relevant
+
+Claude must not:
+- Delete tests
+- Weaken assertions
+- Mock the class under test
+- Replace meaningful assertions with assertNotNull</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <section id="skills">
+        <h2>9. Step 3 — Write Skills for Repeatable Workflows</h2>
+        <p>Skills give Claude a reusable procedure. This is where you intentionally grant feature-level coding autonomy.</p>
+        <pre><code>---
+name: implement-feature
+description: Implement a bounded Java Spring Boot feature with tests and validation.
+---
+
+# Implement Feature Skill
+
+Use this skill when the user asks Claude to implement a feature.
+
+## Workflow
+1. Restate the requirement.
+2. Identify impacted areas:
+   - API
+   - application service
+   - domain model
+   - repository
+   - Kafka/eventing
+   - database migration
+   - tests
+   - documentation
+3. Read relevant files.
+4. Produce a short implementation plan.
+5. Implement the smallest complete change.
+6. Add or update tests.
+7. Run targeted tests.
+8. Run broader validation if needed.
+9. Summarize files changed, behavior changed, tests run, and risks.
+
+## Constraints
+Do not:
+- Change public API behavior without explicit need.
+- Add dependencies without approval.
+- Modify existing Flyway migrations.
+- Delete tests.
+- Touch secrets or production configs.
+
+## Output Format
+Plan:
+- ...
+
+Changes:
+- ...
+
+Validation:
+- ...
+
+Risks:
+- ...</code></pre>
+      </section>
+
+      <section id="agents">
+        <h2>10. Step 4 — Write Specialist Subagents</h2>
+        <p>Use subagents for isolated, bounded expertise. The main Claude session remains the coordinator.</p>
+        <pre><code>---
+name: code-reviewer
+description: Reviews Java Spring Boot changes for correctness, maintainability, security, and test coverage.
+tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash
+---
+
+# Code Reviewer Agent
+
+You are a senior Java/Spring Boot code reviewer.
+Review only the current change set.
+
+## Review Focus
+Check:
+- Business logic correctness
+- Layering violations
+- Test coverage
+- Error handling
+- Security concerns
+- Sensitive data logging
+- Database migration safety
+- API compatibility
+- Idempotency issues
+
+## Severity Levels
+- BLOCKER: must fix before merge
+- MAJOR: should fix before merge
+- MINOR: improvement
+- QUESTION: clarification needed
+
+## Output Format
+Review Summary:
+- ...
+
+Findings:
+1. [SEVERITY] File:Line — issue
+   Recommendation: ...
+
+Merge Recommendation:
+- Approve / Approve with comments / Block</code></pre>
+      </section>
+
+      <section id="settings">
+        <h2>11. Step 5 — Configure Permissions</h2>
+        <p><code>settings.json</code> is where autonomy becomes operational. It decides what Claude can do, what requires approval, and what is blocked.</p>
+        <pre><code>{
+  "permissions": {
+    "allow": [
+      "Read(src/**)",
+      "Read(docs/**)",
+      "Read(pom.xml)",
+      "Edit(src/**)",
+      "Edit(docs/**)",
+      "Edit(openapi/**)",
+      "Bash(mvn test)",
+      "Bash(mvn -q test)",
+      "Bash(mvn -q verify)",
+      "Bash(git diff *)",
+      "Bash(git status *)"
+    ],
+    "ask": [
+      "Edit(pom.xml)",
+      "Edit(k8s/**)",
+      "Edit(helm/**)",
+      "Edit(.github/**)",
+      "Bash(docker *)",
+      "Bash(kubectl *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
+    ],
+    "deny": [
+      "Read(.env)",
+      "Read(.env.*)",
+      "Read(secrets/**)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Bash(rm -rf *)",
+      "Bash(kubectl delete *)",
+      "Bash(curl *production*)"
+    ]
+  }
+}</code></pre>
+        <div class="callout warn"><strong>Rule:</strong> Put real boundaries in settings, not only in prose. Prose guides Claude; settings constrain Claude.</div>
+      </section>
+
+      <section id="hooks">
+        <h2>12. Step 6 — Add Hooks for Deterministic Enforcement</h2>
+        <p>Hooks are best for actions that must always happen or must always be blocked.</p>
+        <pre><code>#!/usr/bin/env bash
+set -euo pipefail
+
+COMMAND="${1:-}"
+
+blocked_patterns=(
+  "rm -rf"
+  "kubectl delete"
+  "curl .*production"
+  "cat .env"
+  "cat .*pem"
+  "cat .*key"
+)
+
+for pattern in "${blocked_patterns[@]}"; do
+  if [[ "$COMMAND" =~ $pattern ]]; then
+    echo "Blocked unsafe command: $COMMAND"
+    exit 1
+  fi
+done
+
+exit 0</code></pre>
+        <div class="callout danger"><strong>Do not use hooks for subjective reasoning.</strong> Use hooks for deterministic checks. Use subagents for review judgment.</div>
+      </section>
+
+      <section id="mcp">
+        <h2>13. Step 7 — Add MCP Only When External Context Is Needed</h2>
+        <p>MCP expands Claude’s action space, so it must be introduced carefully.</p>
+        <table>
+          <thead><tr><th>MCP use case</th><th>Allowed autonomy</th><th>Risk</th></tr></thead>
+          <tbody>
+            <tr><td>GitHub issue/PR reading</td><td>Read-only first</td><td>Accidental PR comments or branch changes</td></tr>
+            <tr><td>Jira ticket lookup</td><td>Read requirements only</td><td>Using stale or vague ticket info</td></tr>
+            <tr><td>Database schema inspection</td><td>Read-only schema</td><td>Data exposure or destructive queries</td></tr>
+            <tr><td>Observability</td><td>Read metrics/logs with masking</td><td>Sensitive production information</td></tr>
+          </tbody>
+        </table>
+        <div class="callout"><strong>Default principle:</strong> local repository knowledge first, MCP only when live external state is required.</div>
+      </section>
+
+      <section id="rag">
+        <h2>14. Step 8 — Add RAG / Knowledge Routing</h2>
+        <p><code>RAG.md</code> is not a special Claude-native file. It is a practical knowledge-routing file that tells Claude where authoritative context lives.</p>
+        <pre><code># RAG Guide for Claude Code
+
+## Authoritative Documents
+
+| Task | Read first |
+|---|---|
+| Payment authorization rules | docs/domain/payment-authorization-domain.md |
+| Error code behavior | docs/domain/error-codes.md |
+| Service architecture | docs/architecture/service-architecture.md |
+| Layering rules | docs/architecture/layered-architecture.md |
+| Outbox publishing | docs/adr/ADR-001-transactional-outbox.md |
+| Idempotency | docs/adr/ADR-002-idempotency.md |
+| Observability | docs/architecture/observability.md |
+
+## Rules
+- Treat ADRs as authoritative unless the user explicitly asks to change architecture.
+- Do not update ADRs silently.
+- Propose ADR updates when implementation conflicts with existing decisions.
+
+## Outdated Documents
+Do not use:
+- docs/archive/legacy-payment-service.md
+- docs/archive/old-risk-engine.md</code></pre>
+      </section>
+
+      <section id="workflow">
+        <h2>15. End-to-End Feature Workflow</h2>
+        <p>Example user prompt:</p>
+        <pre><code>Use the implement-feature skill.
+
+Feature:
+Add idempotency support to payment authorization requests.
+
+Requirements:
+- Accept Idempotency-Key header.
+- If the same merchantId + idempotency key is received again, return the original authorization response.
+- Do not create a duplicate authorization.
+- Persist idempotency key with the authorization record.
+- Add Flyway migration if needed.
+- Add unit and integration tests.
+- Update OpenAPI.
+- Follow docs/adr/ADR-002-idempotency.md.</code></pre>
+        <div class="timeline">
+          <div class="step"><div class="body"><strong>Claude reads <code>CLAUDE.md</code></strong><br/><span class="muted">Loads project identity, stack, autonomy policy, and imports.</span></div></div>
+          <div class="step"><div class="body"><strong>Claude loads the skill</strong><br/><span class="muted">Uses <code>implement-feature/SKILL.md</code> as the workflow.</span></div></div>
+          <div class="step"><div class="body"><strong>Claude reads authoritative docs</strong><br/><span class="muted">Uses <code>RAG.md</code> to find idempotency ADR and domain rules.</span></div></div>
+          <div class="step"><div class="body"><strong>Claude inspects code</strong><br/><span class="muted">Finds controller, service, repository, tests, and OpenAPI files.</span></div></div>
+          <div class="step"><div class="body"><strong>Claude plans and edits</strong><br/><span class="muted">Adds smallest safe implementation, migration, tests, and API update.</span></div></div>
+          <div class="step"><div class="body"><strong>Claude validates</strong><br/><span class="muted">Runs targeted and broader Maven tests where permitted.</span></div></div>
+          <div class="step"><div class="body"><strong>Claude delegates review if needed</strong><br/><span class="muted">Uses code-reviewer/security-reviewer subagents for isolated feedback.</span></div></div>
+          <div class="step"><div class="body"><strong>Claude summarizes</strong><br/><span class="muted">Reports files changed, tests run, behavior changed, risks, and follow-ups.</span></div></div>
+        </div>
+      </section>
+
+      <section id="anti-patterns">
+        <h2>16. Autonomy Overlap Anti-patterns</h2>
+        <div class="grid grid-2">
+          <div class="card"><h3>Bad: Workflow in every file</h3><p class="muted">Putting implementation procedures in <code>CLAUDE.md</code>, skills, agents, and hooks creates conflicting autonomy.</p><p><strong>Fix:</strong> global policy in <code>CLAUDE.md</code>, workflow in skills.</p></div>
+          <div class="card"><h3>Bad: Hooks as reviewers</h3><p class="muted">Hooks should not decide whether architecture is elegant or business logic is correct.</p><p><strong>Fix:</strong> hooks enforce deterministic checks; subagents review.</p></div>
+          <div class="card"><h3>Bad: MCP everywhere</h3><p class="muted">Connecting every external tool increases risk, cost, and context noise.</p><p><strong>Fix:</strong> local docs first; MCP only for live external state.</p></div>
+          <div class="card"><h3>Bad: Giant <code>CLAUDE.md</code></h3><p class="muted">A huge memory file makes Claude slower and less precise.</p><p><strong>Fix:</strong> keep <code>CLAUDE.md</code> lean; route details through rules, skills, and docs.</p></div>
+        </div>
+      </section>
+
+      <section id="checklist">
+        <h2>17. Implementation Checklist</h2>
+        <div class="grid grid-2">
+          <div class="card">
+            <h3>Build the setup</h3>
+            <ul>
+              <li>Create concise <code>CLAUDE.md</code>.</li>
+              <li>Add scoped rules for Java, Spring, testing, security, database, and API contracts.</li>
+              <li>Create skills for implement-feature, fix-bug, add-tests, and review-change.</li>
+              <li>Create subagents for code review, security review, testing, and DB migration review.</li>
+              <li>Add permission boundaries in <code>.claude/settings.json</code>.</li>
+              <li>Add hooks for unsafe commands and mandatory validation.</li>
+              <li>Add <code>docs/rag/RAG.md</code> for knowledge routing.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Validate the setup</h3>
+            <ul>
+              <li>Ask Claude to explain the autonomy boundaries.</li>
+              <li>Ask Claude to implement a small feature.</li>
+              <li>Check whether it asks before dependency/API changes.</li>
+              <li>Check whether it refuses secrets/destructive commands.</li>
+              <li>Check whether tests are added and actually run.</li>
+              <li>Check whether the final summary is evidence-based.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout">
+          <strong>Final mental model:</strong> <code>CLAUDE.md</code> defines identity and policy; rules define standards; skills define workflows; subagents define specialist delegation; settings define permissions; hooks enforce deterministic checks; MCP expands external capability; RAG routes knowledge.
+        </div>
+      </section>
+
+      <section id="sources">
+        <h2>Sources</h2>
+        <p class="muted">These references were used to align the tutorial with current Claude Code concepts and terminology.</p>
+        <ul>
+          <li>Claude Code Docs — Extend Claude Code / feature overview: <a href="https://code.claude.com/docs/en/features-overview">https://code.claude.com/docs/en/features-overview</a></li>
+          <li>Anthropic Blog — Steering Claude Code with skills, hooks, rules, subagents: <a href="https://claude.com/blog/steering-claude-code-skills-hooks-rules-subagents-and-more">https://claude.com/blog/steering-claude-code-skills-hooks-rules-subagents-and-more</a></li>
+          <li>Claude Code Docs — Subagents: <a href="https://code.claude.com/docs/en/sub-agents">https://code.claude.com/docs/en/sub-agents</a></li>
+          <li>Claude Help Center — Claude Code cheatsheet: <a href="https://support.claude.com/en/articles/14553413-claude-code-cheatsheet">https://support.claude.com/en/articles/14553413-claude-code-cheatsheet</a></li>
+          <li>Claude Help Center — Claude Code user FAQ: <a href="https://support.claude.com/en/articles/14554922-claude-code-user-faq">https://support.claude.com/en/articles/14554922-claude-code-user-faq</a></li>
+        </ul>
+      </section>
+
+      <div class="footer">
+        Created for learning Claude Code Agentic Coding with a production-grade Java/Spring Boot context system.
+      </div>
+    </main>
+  </div>
+</body>
+</html>
