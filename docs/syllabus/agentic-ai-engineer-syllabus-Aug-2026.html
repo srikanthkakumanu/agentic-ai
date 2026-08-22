@@ -1,0 +1,2069 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07101f">
+<meta name="color-scheme" content="dark">
+<title>Production Agentic AI + Agentic Software Engineering — Premium Syllabus</title>
+<style>
+:root {
+  --bg:#060b16;
+  --bg2:#0b1222;
+  --glass:rgba(15,24,42,.72);
+  --glass-strong:rgba(16,26,47,.9);
+  --text:#f5f7ff;
+  --text-2:#c5d0e3;
+  --muted:#8fa1bb;
+  --line:rgba(255,255,255,.09);
+  --purple:#9b8cff;
+  --blue:#65a6ff;
+  --cyan:#4fe2d3;
+  --green:#7ae6a2;
+  --gold:#ffd278;
+  --pink:#ff8fce;
+  --shadow:0 24px 80px rgba(0,0,0,.35);
+  --shadow-soft:0 12px 36px rgba(0,0,0,.22);
+  --radius:24px;
+  --radius-sm:16px;
+  --sidebar:310px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{
+  margin:0;color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(155,140,255,.18), transparent 26%),
+    radial-gradient(circle at 85% 6%, rgba(79,226,211,.13), transparent 23%),
+    radial-gradient(circle at 72% 52%, rgba(101,166,255,.09), transparent 26%),
+    linear-gradient(180deg,#050a14 0%,#08101d 38%,#060b16 100%);
+  line-height:1.72;
+  min-height:100vh;
+}
+body:before{
+  content:""; position:fixed; inset:0; pointer-events:none; opacity:.18;
+  background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+  background-size:42px 42px; mask-image:linear-gradient(to bottom,black,transparent 78%);
+}
+a{color:#b9c8ff;text-decoration:none}
+a:hover{color:white}
+button,input{font:inherit}
+.app{display:grid;grid-template-columns:var(--sidebar) minmax(0,1fr);min-height:100vh}
+.sidebar{
+  position:sticky;top:0;height:100vh;overflow:auto;padding:22px 18px 30px;
+  border-right:1px solid var(--line);background:rgba(5,11,22,.76);backdrop-filter:blur(18px);z-index:20;
+}
+.logo{
+  padding:16px 16px 18px;border-radius:20px;background:linear-gradient(135deg,rgba(155,140,255,.12),rgba(79,226,211,.06));
+  border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow-soft);
+}
+.logo-mark{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:-.02em}
+.logo-mark i{width:34px;height:34px;display:grid;place-items:center;border-radius:11px;font-style:normal;background:linear-gradient(135deg,var(--purple),var(--cyan));color:#07101f;box-shadow:0 8px 24px rgba(126,122,255,.35)}
+.logo small{display:block;color:var(--muted);margin-top:8px;line-height:1.45}
+.search{margin:18px 0 12px;position:relative}
+.search input{
+  width:100%;border:1px solid var(--line);outline:none;border-radius:14px;padding:12px 14px 12px 38px;
+  color:var(--text);background:rgba(255,255,255,.045)
+}
+.search:before{content:"⌕";position:absolute;left:13px;top:7px;color:var(--muted);font-size:21px}
+.side-label{font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:#7f91aa;margin:20px 10px 8px}
+.nav-phase{
+  display:grid;grid-template-columns:34px 1fr;gap:9px;align-items:start;padding:9px 10px;margin:2px 0;border-radius:12px;color:#aab8cc;transition:.18s ease
+}
+.nav-phase span{display:grid;place-items:center;height:26px;border:1px solid var(--line);border-radius:8px;font-size:10px;color:#8397b3;background:rgba(255,255,255,.025)}
+.nav-phase b{font-size:12px;line-height:1.35;font-weight:650}
+.nav-phase:hover,.nav-phase.active{background:rgba(155,140,255,.1);color:white;transform:translateX(2px)}
+.main{min-width:0}
+.topbar{
+  position:sticky;top:0;z-index:15;height:58px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;background:rgba(7,13,25,.62);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)
+}
+.topbar .crumb{font-size:12px;color:var(--muted)}
+.actions{display:flex;gap:8px}
+.icon-btn{
+  border:1px solid var(--line);background:rgba(255,255,255,.04);color:#cad4e6;border-radius:11px;padding:8px 10px;cursor:pointer
+}
+.hero{
+  max-width:1240px;margin:0 auto;padding:78px 56px 50px;position:relative
+}
+.hero:after{
+  content:"";position:absolute;width:340px;height:340px;right:60px;top:35px;border-radius:50%;
+  background:radial-gradient(circle,rgba(155,140,255,.18),rgba(79,226,211,.06) 42%,transparent 68%);filter:blur(2px);pointer-events:none
+}
+.kicker{
+  display:inline-flex;align-items:center;gap:9px;border:1px solid rgba(79,226,211,.22);background:rgba(79,226,211,.07);
+  padding:8px 12px;border-radius:999px;color:#9ff2e6;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase
+}
+.kicker:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 20px var(--cyan)}
+.hero h1{
+  margin:22px 0 18px;max-width:970px;font-size:clamp(42px,6vw,84px);line-height:.98;letter-spacing:-.055em;
+  background:linear-gradient(90deg,#fff 0%,#d9dfff 33%,#a7c7ff 64%,#8ff1df 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent
+}
+.hero p{max-width:800px;color:#b5c3d8;font-size:18px}
+.hero-grid{display:grid;grid-template-columns:1.5fr .5fr;gap:16px;margin-top:32px}
+.path-panel{
+  padding:22px;border-radius:22px;background:linear-gradient(135deg,rgba(155,140,255,.08),rgba(79,226,211,.045));
+  border:1px solid var(--line);box-shadow:var(--shadow-soft)
+}
+.path-row{display:grid;grid-template-columns:64px 1fr;gap:14px;padding:13px 0;border-bottom:1px solid var(--line)}
+.path-row:last-child{border-bottom:0}
+.path-tag{width:52px;height:32px;display:grid;place-items:center;border-radius:10px;font-weight:900;font-size:11px}
+.p1{background:rgba(255,210,120,.12);color:var(--gold);border:1px solid rgba(255,210,120,.2)}
+.p2{background:rgba(122,230,162,.12);color:var(--green);border:1px solid rgba(122,230,162,.2)}
+.path-row b{display:block;margin-bottom:3px}
+.path-row span{color:var(--muted);font-size:13px}
+.metric-panel{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.metric{padding:18px;border-radius:18px;background:rgba(255,255,255,.035);border:1px solid var(--line)}
+.metric strong{display:block;font-size:25px;letter-spacing:-.03em}
+.metric small{color:var(--muted)}
+.phase-strip{
+  max-width:1240px;margin:0 auto;padding:0 56px 20px;display:flex;gap:7px;overflow:auto;scrollbar-width:none
+}
+.phase-strip a{
+  flex:0 0 auto;width:34px;height:34px;display:grid;place-items:center;border-radius:10px;border:1px solid var(--line);
+  color:#899ab3;background:rgba(255,255,255,.025);font-size:11px;font-weight:800
+}
+.phase-strip a:hover{color:#fff;background:rgba(155,140,255,.12)}
+.content{max-width:1240px;margin:0 auto;padding:0 56px 100px}
+.section-heading{scroll-margin-top:82px;position:relative}
+.level-1{
+  margin:72px 0 20px;padding:28px 0 0;border-top:1px solid var(--line);
+  font-size:clamp(30px,3vw,44px);line-height:1.15;letter-spacing:-.035em
+}
+.level-1 .phase-index{
+  display:block;width:max-content;margin-bottom:10px;padding:6px 9px;border-radius:999px;
+  color:#a7b9ff;background:rgba(155,140,255,.09);border:1px solid rgba(155,140,255,.18);
+  font-size:10px;letter-spacing:.12em;text-transform:uppercase
+}
+.level-2{margin:34px 0 14px;font-size:24px;letter-spacing:-.02em;color:#eef3ff}
+.level-3{margin:26px 0 12px;font-size:19px;color:#f5f7ff}
+.anchor{position:absolute;left:-24px;opacity:0;color:#6077aa;font-weight:500}
+.section-heading:hover .anchor{opacity:1}
+p,li{color:var(--text-2)}
+strong{color:#fff}
+code{
+  background:rgba(155,140,255,.10);border:1px solid rgba(155,140,255,.14);padding:.13em .42em;border-radius:7px;color:#d6d9ff
+}
+pre{
+  margin:20px 0;overflow:auto;padding:20px 22px;border-radius:18px;background:#030812;border:1px solid var(--line);
+  box-shadow:inset 0 1px rgba(255,255,255,.03),var(--shadow-soft)
+}
+pre code{background:none;border:none;padding:0;color:#dce8ff}
+ul,ol{padding-left:25px}
+li::marker{color:#8198dd}
+.callout{
+  margin:22px 0;padding:20px 22px;border-radius:18px;border:1px solid rgba(101,166,255,.18);
+  border-left:3px solid var(--blue);background:linear-gradient(90deg,rgba(101,166,255,.075),rgba(155,140,255,.035));
+}
+.meta-strip{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 22px}
+.meta-pill{display:inline-flex;align-items:center;padding:7px 10px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.03em}
+.meta-pill.path{border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.045)}
+.meta-pill.depth{color:#e1cdff;background:rgba(155,140,255,.09);border:1px solid rgba(155,140,255,.2)}
+.assignment-card{
+  margin:28px 0 34px;padding:24px 24px 20px;border-radius:22px;
+  background:linear-gradient(135deg,rgba(79,226,211,.09),rgba(101,166,255,.07) 55%,rgba(155,140,255,.06));
+  border:1px solid rgba(79,226,211,.22);box-shadow:var(--shadow-soft);position:relative;overflow:hidden
+}
+.assignment-card:after{
+  content:"";position:absolute;width:160px;height:160px;right:-55px;top:-65px;border-radius:50%;
+  background:radial-gradient(circle,rgba(79,226,211,.16),transparent 70%)
+}
+.assignment-card h3{margin-top:0;color:#bdf8ec}
+.table-shell{
+  overflow:auto;margin:22px 0 28px;border-radius:18px;border:1px solid var(--line);background:rgba(10,18,31,.72);box-shadow:var(--shadow-soft)
+}
+table{border-collapse:collapse;width:100%;min-width:720px}
+th,td{padding:13px 15px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{position:sticky;top:0;background:#10192b;color:#fff;font-size:11px;text-transform:uppercase;letter-spacing:.07em}
+td{color:#bdc9da}
+tr:hover td{background:rgba(155,140,255,.025)}
+tr:last-child td{border-bottom:0}
+hr{border:0;border-top:1px solid var(--line);margin:56px 0}
+.mark-hit{outline:1px solid rgba(255,210,120,.4);background:rgba(255,210,120,.04)!important;border-radius:12px}
+.footer{
+  margin-top:80px;padding:26px;border-radius:22px;border:1px solid var(--line);
+  background:linear-gradient(135deg,rgba(155,140,255,.08),rgba(79,226,211,.05));color:#b8c6da
+}
+.mobile-menu{display:none}
+@media(max-width:1050px){
+  :root{--sidebar:0px}
+  .app{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .mobile-menu{display:inline-flex}
+  .hero,.phase-strip,.content{padding-left:24px;padding-right:24px}
+  .hero{padding-top:58px}
+  .hero-grid{grid-template-columns:1fr}
+  .topbar{padding:0 18px}
+}
+@media(max-width:640px){
+  .hero h1{font-size:46px}
+  .metric-panel{grid-template-columns:1fr 1fr}
+  .level-1{font-size:32px}
+  .level-2{font-size:22px}
+  .content{padding-bottom:64px}
+}
+@media print{
+  body{background:white;color:#111}
+  body:before,.sidebar,.topbar,.phase-strip{display:none!important}
+  .app{display:block}
+  .hero,.content{max-width:none;padding:24px 32px}
+  .hero h1{background:none;color:#111;-webkit-text-fill-color:#111}
+  p,li,td{color:#222}
+  h1,h2,h3,strong,th{color:#000}
+  .path-panel,.metric,.assignment-card,.callout,.table-shell,.footer{box-shadow:none;background:#fff;border:1px solid #ccc}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-mark"><i>AI</i> Agentic Engineering</div>
+      <small>Production Agentic AI + AI-Native Software Engineering</small>
+    </div>
+    <div class="search"><input id="searchBox" type="search" placeholder="Search syllabus…"></div>
+    <div class="side-label">Learning path</div>
+    <nav id="sideNav"><a href="#brain-phase-0--mental-models-two-paths-one-engineering-discipline" class="nav-phase"><span>00</span><b>🧠 Phase 0 — Mental Models: Two Paths, One Engineering Discipline</b></a>
+<a href="#snake-phase-1--pythonjava-ai-engineering-foundation--llm-fundamentals" class="nav-phase"><span>01</span><b>🐍 Phase 1 — Python/Java AI Engineering Foundation + LLM Fundamentals</b></a>
+<a href="#electric_plug-phase-2--direct-model-apis-structured-outputs--tool-calling" class="nav-phase"><span>02</span><b>🔌 Phase 2 — Direct Model APIs, Structured Outputs &amp;amp; Tool Calling</b></a>
+<a href="#jigsaw-phase-3--prompt-engineering-context-engineering--composition-patterns" class="nav-phase"><span>03</span><b>🧩 Phase 3 — Prompt Engineering, Context Engineering &amp;amp; Composition Patterns</b></a>
+<a href="#robot-phase-4--agent-internals--reasoningworkflow-patterns" class="nav-phase"><span>04</span><b>🤖 Phase 4 — Agent Internals &amp;amp; Reasoning/Workflow Patterns</b></a>
+<a href="#yellow_circle-phase-5--claude-code-fundamentals--layered-context" class="nav-phase"><span>05</span><b>🟡 Phase 5 — Claude Code Fundamentals &amp;amp; Layered Context</b></a>
+<a href="#books-phase-6--retrieval-engineering-loading-splitting-chunking--basic-rag" class="nav-phase"><span>06</span><b>📚 Phase 6 — Retrieval Engineering: Loading, Splitting, Chunking &amp;amp; Basic RAG</b></a>
+<a href="#spider_web-phase-7--advanced-graph--agentic-rag" class="nav-phase"><span>07</span><b>🕸️ Phase 7 — Advanced, Graph &amp;amp; Agentic RAG</b></a>
+<a href="#brain-phase-8--state-memory--long-running-agent-context" class="nav-phase"><span>08</span><b>🧠 Phase 8 — State, Memory &amp;amp; Long-Running Agent Context</b></a>
+<a href="#twisted_rightwards_arrows-phase-9--langchain--langgraph-orchestration" class="nav-phase"><span>09</span><b>🔀 Phase 9 — LangChain &amp;amp; LangGraph Orchestration</b></a>
+<a href="#toolbox-phase-10--claude-code-skills-rules-commands--subagents" class="nav-phase"><span>10</span><b>🧰 Phase 10 — Claude Code Skills, Rules, Commands &amp;amp; Subagents</b></a>
+<a href="#busts_in_silhouette-phase-11--multi-agent-architecture--vendor-agent-sdks" class="nav-phase"><span>11</span><b>👥 Phase 11 — Multi-Agent Architecture &amp;amp; Vendor Agent SDKs</b></a>
+<a href="#link-phase-12--mcp-build-consume-secure--govern" class="nav-phase"><span>12</span><b>🔗 Phase 12 — MCP: Build, Consume, Secure &amp;amp; Govern</b></a>
+<a href="#building_construction-phase-13--agentic-engineering-plan--execute--verify" class="nav-phase"><span>13</span><b>🏗️ Phase 13 — Agentic Engineering: Plan → Execute → Verify</b></a>
+<a href="#shield-phase-14--harness-engineering-hooks-permissions-sandboxes--guardrails" class="nav-phase"><span>14</span><b>🛡️ Phase 14 — Harness Engineering: Hooks, Permissions, Sandboxes &amp;amp; Guardrails</b></a>
+<a href="#jigsaw-phase-15--plugins-reusable-agent-capabilities--distribution" class="nav-phase"><span>15</span><b>🧩 Phase 15 — Plugins, Reusable Agent Capabilities &amp;amp; Distribution</b></a>
+<a href="#cloud-phase-16--cloud-agent-platforms--deployment" class="nav-phase"><span>16</span><b>☁️ Phase 16 — Cloud Agent Platforms &amp;amp; Deployment</b></a>
+<a href="#chart_with_upwards_trend-phase-17--agentops-evals-observability-security--reliability" class="nav-phase"><span>17</span><b>📈 Phase 17 — AgentOps: Evals, Observability, Security &amp;amp; Reliability</b></a>
+<a href="#arrows_counterclockwise-phase-18--ai-native-sdlc-cicd-testing-code-review--governance" class="nav-phase"><span>18</span><b>🔄 Phase 18 — AI-Native SDLC: CI/CD, Testing, Code Review &amp;amp; Governance</b></a>
+<a href="#coffee-phase-19--javaspring-enterprise-agentic-ai-track" class="nav-phase"><span>19</span><b>☕ Phase 19 — Java/Spring Enterprise Agentic AI Track</b></a>
+<a href="#trophy-phase-20--integrated-production-capstone" class="nav-phase"><span>20</span><b>🏆 Phase 20 — Integrated Production Capstone</b></a>
+<a href="#phase-21--claude-code-assessment--live-engineering-playbook" class="nav-phase"><span>21</span><b>Phase 21 — Claude Code Assessment &amp;amp; Live Engineering Playbook</b></a></nav>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="crumb">August 2026 · Integrated Production Syllabus</div>
+      <div class="actions">
+        <button class="icon-btn mobile-menu" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Top</button>
+        <button class="icon-btn" onclick="document.body.classList.toggle('compact')">Focus</button>
+        <button class="icon-btn" onclick="window.print()">Print</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="kicker">Two paths · One production track</div>
+      <h1>Build AI systems.<br>Engineer with AI.</h1>
+      <p>A modern, production-oriented curriculum that combines Agentic AI engineering with Claude Code–style agentic software engineering, harness design, MCP, RAG, LangGraph, AgentOps, cloud deployment, and enterprise Java.</p>
+
+      <div class="hero-grid">
+        <div class="path-panel">
+          <div class="path-row"><div class="path-tag p1">P1</div><div><b>Agentic Coding / Engineering / Harness</b><span>Context, skills, subagents, hooks, plugins, verification and controlled coding-agent autonomy.</span></div></div>
+          <div class="path-row"><div class="path-tag p2">P2</div><div><b>Agentic AI / LLM Application Engineering</b><span>LLM APIs, prompting, RAG, memory, orchestration, MCP, cloud, evaluation, security and production operations.</span></div></div>
+        </div>
+        <div class="metric-panel">
+          <div class="metric"><strong>21</strong><small>Integrated phases</small></div>
+          <div class="metric"><strong>2</strong><small>Complementary paths</small></div>
+          <div class="metric"><strong>Deep</strong><small>Production depth</small></div>
+          <div class="metric"><strong>1</strong><small>Capstone system</small></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="phase-strip" aria-label="Phase shortcuts"><a href="#brain-phase-0--mental-models-two-paths-one-engineering-discipline" title="🧠 Phase 0 — Mental Models: Two Paths, One Engineering Discipline">00</a>
+<a href="#snake-phase-1--pythonjava-ai-engineering-foundation--llm-fundamentals" title="🐍 Phase 1 — Python/Java AI Engineering Foundation + LLM Fundamentals">01</a>
+<a href="#electric_plug-phase-2--direct-model-apis-structured-outputs--tool-calling" title="🔌 Phase 2 — Direct Model APIs, Structured Outputs &amp;amp; Tool Calling">02</a>
+<a href="#jigsaw-phase-3--prompt-engineering-context-engineering--composition-patterns" title="🧩 Phase 3 — Prompt Engineering, Context Engineering &amp;amp; Composition Patterns">03</a>
+<a href="#robot-phase-4--agent-internals--reasoningworkflow-patterns" title="🤖 Phase 4 — Agent Internals &amp;amp; Reasoning/Workflow Patterns">04</a>
+<a href="#yellow_circle-phase-5--claude-code-fundamentals--layered-context" title="🟡 Phase 5 — Claude Code Fundamentals &amp;amp; Layered Context">05</a>
+<a href="#books-phase-6--retrieval-engineering-loading-splitting-chunking--basic-rag" title="📚 Phase 6 — Retrieval Engineering: Loading, Splitting, Chunking &amp;amp; Basic RAG">06</a>
+<a href="#spider_web-phase-7--advanced-graph--agentic-rag" title="🕸️ Phase 7 — Advanced, Graph &amp;amp; Agentic RAG">07</a>
+<a href="#brain-phase-8--state-memory--long-running-agent-context" title="🧠 Phase 8 — State, Memory &amp;amp; Long-Running Agent Context">08</a>
+<a href="#twisted_rightwards_arrows-phase-9--langchain--langgraph-orchestration" title="🔀 Phase 9 — LangChain &amp;amp; LangGraph Orchestration">09</a>
+<a href="#toolbox-phase-10--claude-code-skills-rules-commands--subagents" title="🧰 Phase 10 — Claude Code Skills, Rules, Commands &amp;amp; Subagents">10</a>
+<a href="#busts_in_silhouette-phase-11--multi-agent-architecture--vendor-agent-sdks" title="👥 Phase 11 — Multi-Agent Architecture &amp;amp; Vendor Agent SDKs">11</a>
+<a href="#link-phase-12--mcp-build-consume-secure--govern" title="🔗 Phase 12 — MCP: Build, Consume, Secure &amp;amp; Govern">12</a>
+<a href="#building_construction-phase-13--agentic-engineering-plan--execute--verify" title="🏗️ Phase 13 — Agentic Engineering: Plan → Execute → Verify">13</a>
+<a href="#shield-phase-14--harness-engineering-hooks-permissions-sandboxes--guardrails" title="🛡️ Phase 14 — Harness Engineering: Hooks, Permissions, Sandboxes &amp;amp; Guardrails">14</a>
+<a href="#jigsaw-phase-15--plugins-reusable-agent-capabilities--distribution" title="🧩 Phase 15 — Plugins, Reusable Agent Capabilities &amp;amp; Distribution">15</a>
+<a href="#cloud-phase-16--cloud-agent-platforms--deployment" title="☁️ Phase 16 — Cloud Agent Platforms &amp;amp; Deployment">16</a>
+<a href="#chart_with_upwards_trend-phase-17--agentops-evals-observability-security--reliability" title="📈 Phase 17 — AgentOps: Evals, Observability, Security &amp;amp; Reliability">17</a>
+<a href="#arrows_counterclockwise-phase-18--ai-native-sdlc-cicd-testing-code-review--governance" title="🔄 Phase 18 — AI-Native SDLC: CI/CD, Testing, Code Review &amp;amp; Governance">18</a>
+<a href="#coffee-phase-19--javaspring-enterprise-agentic-ai-track" title="☕ Phase 19 — Java/Spring Enterprise Agentic AI Track">19</a>
+<a href="#trophy-phase-20--integrated-production-capstone" title="🏆 Phase 20 — Integrated Production Capstone">20</a>
+<a href="#phase-21--claude-code-assessment--live-engineering-playbook" title="Phase 21 — Claude Code Assessment &amp;amp; Live Engineering Playbook">21</a></div>
+
+    <article class="content" id="content">
+      <h1 id="compass-production-agentic-ai--agentic-software-engineering" class="section-heading level-1"><a class="anchor" href="#compass-production-agentic-ai--agentic-software-engineering" aria-label="Link to 🧭 Production Agentic AI + Agentic Software Engineering">#</a>🧭 Production Agentic AI + Agentic Software Engineering</h1>
+<h2 id="rocket-integrated-learning-syllabus--august-2026-edition" class="section-heading level-2"><a class="anchor" href="#rocket-integrated-learning-syllabus--august-2026-edition" aria-label="Link to 🚀 Integrated Learning Syllabus — August 2026 Edition">#</a>🚀 Integrated Learning Syllabus — August 2026 Edition</h2>
+<blockquote class="callout">
+<p><strong>Two complementary paths. One production-grade engineering track.</strong><br />
+Build reliable AI/agent systems <strong>and</strong> engineer the AI-native development environment used to deliver them.</p>
+</blockquote>
+<blockquote class="callout">
+<p><strong>Purpose:</strong> A single, ordered curriculum combining two complementary paths:</p>
+<ul>
+<li><strong>Path 1 — Agentic Coding / Agentic Engineering / Harness Engineering:</strong> Claude Code and equivalent coding-agent workflows; layered context, <code>CLAUDE.md</code>, rules, skills, subagents, commands, hooks, MCP, plugins, deterministic guardrails, and reusable engineering harnesses.</li>
+<li><strong>Path 2 — Agentic AI / LLM Application Engineering:</strong> direct LLM APIs, structured outputs, prompt/context engineering, agent patterns, RAG, memory, LangChain/LangGraph, vendor agent SDKs, MCP/A2A, cloud agent platforms, evaluation, observability, security, and production operations.</li>
+</ul>
+<p><strong>Recommended emphasis:</strong> Learn <strong>Path 2 as the engineering foundation</strong>, while using Path 1 throughout as the development workflow. Approximate initial depth allocation: <strong>75% Path 2 / 25% Path 1</strong>, moving toward <strong>60% / 40%</strong> after production-agent fundamentals are established.</p>
+<p><strong>Primary stack:</strong> Python + Java/Spring, OpenAI/Anthropic SDKs, LangChain/LangGraph, Spring AI, MCP, PostgreSQL/pgvector, AWS, Docker/Kubernetes, OpenTelemetry.</p>
+<p><strong>Outcome:</strong> Be able both to <strong>build production AI/agent systems</strong> and to <strong>engineer the coding-agent environment used to build and maintain them</strong>.</p>
+</blockquote>
+<hr />
+<h2 id="bookmark_tabs-table-of-contents" class="section-heading level-2"><a class="anchor" href="#bookmark_tabs-table-of-contents" aria-label="Link to 📑 Table of Contents">#</a>📑 Table of Contents</h2>
+<ul>
+<li><a href="#️-learning-order-at-a-glance">🗺️ Learning Order at a Glance</a></li>
+<li><a href="#-phase-0--mental-models-two-paths-one-engineering-discipline">🧠 Phase 0 — Mental Models</a></li>
+<li><a href="#-phase-1--pythonjava-ai-engineering-foundation--llm-fundamentals">🐍 Phase 1 — Python/Java + LLM Fundamentals</a></li>
+<li><a href="#-phase-2--direct-model-apis-structured-outputs--tool-calling">🔌 Phase 2 — Direct Model APIs &amp; Tool Calling</a></li>
+<li><a href="#-phase-3--prompt-engineering-context-engineering--composition-patterns">🧩 Phase 3 — Prompt &amp; Context Engineering</a></li>
+<li><a href="#-phase-4--agent-internals--reasoningworkflow-patterns">🤖 Phase 4 — Agent Internals</a></li>
+<li><a href="#-phase-5--claude-code-fundamentals--layered-context">🟡 Phase 5 — Claude Code Fundamentals</a></li>
+<li><a href="#-phase-6--retrieval-engineering-loading-splitting-chunking--basic-rag">📚 Phase 6 — Retrieval Engineering</a></li>
+<li><a href="#️-phase-7--advanced-graph--agentic-rag">🕸️ Phase 7 — Advanced / Graph / Agentic RAG</a></li>
+<li><a href="#-phase-8--state-memory--long-running-agent-context">🧠 Phase 8 — State &amp; Memory</a></li>
+<li><a href="#-phase-9--langchain--langgraph-orchestration">🔀 Phase 9 — LangChain &amp; LangGraph</a></li>
+<li><a href="#-phase-10--claude-code-skills-rules-commands--subagents">🧰 Phase 10 — Claude Skills, Rules &amp; Subagents</a></li>
+<li><a href="#-phase-11--multi-agent-architecture--vendor-agent-sdks">👥 Phase 11 — Multi-Agent &amp; Vendor SDKs</a></li>
+<li><a href="#-phase-12--mcp-build-consume-secure--govern">🔗 Phase 12 — MCP</a></li>
+<li><a href="#️-phase-13--agentic-engineering-plan--execute--verify">🏗️ Phase 13 — Agentic Engineering</a></li>
+<li><a href="#️-phase-14--harness-engineering-hooks-permissions-sandboxes--guardrails">🛡️ Phase 14 — Harness Engineering</a></li>
+<li><a href="#-phase-15--plugins-reusable-agent-capabilities--distribution">🧩 Phase 15 — Plugins</a></li>
+<li><a href="#️-phase-16--cloud-agent-platforms--deployment">☁️ Phase 16 — Cloud</a></li>
+<li><a href="#-phase-17--agentops-evals-observability-security--reliability">📈 Phase 17 — AgentOps</a></li>
+<li><a href="#-phase-18--ai-native-sdlc-cicd-testing-code-review--governance">🔄 Phase 18 — AI-Native SDLC</a></li>
+<li><a href="#-phase-19--javaspring-enterprise-agentic-ai-track">☕ Phase 19 — Java/Spring Track</a></li>
+<li><a href="#-phase-20--integrated-production-capstone">🏆 Phase 20 — Integrated Capstone</a></li>
+<li><a href="#-competency-matrix">🎯 Competency Matrix</a></li>
+<li><a href="#-completion-criteria">✅ Completion Criteria</a></li>
+</ul>
+<hr />
+<h2 id="label-legend" class="section-heading level-2"><a class="anchor" href="#label-legend" aria-label="Link to 🏷️ Legend">#</a>🏷️ Legend</h2>
+<div class="table-shell"><table>
+<thead>
+<tr class="header">
+<th>Badge</th>
+<th>Track</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>🟡 <strong>P1</strong></td>
+<td>Agentic Coding / Engineering / Harness</td>
+<td>Engineer <strong>with</strong> coding agents</td>
+</tr>
+<tr class="even">
+<td>🟢 <strong>P2</strong></td>
+<td>Agentic AI / LLM Application Engineering</td>
+<td>Engineer <strong>AI/agent systems</strong></td>
+</tr>
+<tr class="odd">
+<td>🟣 <strong>P1+P2</strong></td>
+<td>Integrated</td>
+<td>Shared capability across both paths</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote class="callout">
+<p><strong>Depth scale:</strong> <strong>Deep</strong> = build, explain, troubleshoot and defend trade-offs · <strong>Working</strong> = implement confidently · <strong>Aware</strong> = compare and choose appropriately</p>
+</blockquote>
+<div class="table-shell"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Path</th>
+<th style="text-align: left;">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>P1</strong></td>
+<td style="text-align: left;">Agentic Coding / Agentic Engineering / Harness Engineering</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>P2</strong></td>
+<td style="text-align: left;">Agentic AI / LLM Application Engineering</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>P1+P2</strong></td>
+<td style="text-align: left;">Shared or deliberately integrated competency</td>
+</tr>
+</tbody>
+</table></div>
+<div class="table-shell"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Depth</th>
+<th style="text-align: left;">Expectation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Deep</strong></td>
+<td style="text-align: left;">Build independently, explain internals/trade-offs, troubleshoot production failures</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Working</strong></td>
+<td style="text-align: left;">Implement confidently with documentation; understand architecture and limitations</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Aware</strong></td>
+<td style="text-align: left;">Recognize, compare, and know when it is appropriate</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h1 id="world_map-learning-order-at-a-glance" class="section-heading level-1"><a class="anchor" href="#world_map-learning-order-at-a-glance" aria-label="Link to 🗺️ Learning Order at a Glance">#</a>🗺️ Learning Order at a Glance</h1>
+<div class="table-shell"><table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Order</th>
+<th style="text-align: left;">Phase</th>
+<th style="text-align: left;">Primary Path</th>
+<th style="text-align: left;">Depth</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">Mental Models: Two Paths, One Engineering Discipline</td>
+<td style="text-align: left;">P1+P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">Python/Java AI Engineering Foundation + LLM Fundamentals</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">Direct Model APIs, Structured Outputs &amp; Tool Calling</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">Prompt Engineering, Context Engineering &amp; Composition Patterns</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">Agent Internals &amp; Reasoning/Workflow Patterns</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">Claude Code Fundamentals &amp; Layered Context</td>
+<td style="text-align: left;">P1</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">Retrieval Engineering: Loading, Splitting, Chunking &amp; Basic RAG</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">7</td>
+<td style="text-align: left;">Advanced, Graph &amp; Agentic RAG</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">8</td>
+<td style="text-align: left;">State, Memory &amp; Long-Running Agent Context</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9</td>
+<td style="text-align: left;">LangChain &amp; LangGraph Orchestration</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10</td>
+<td style="text-align: left;">Claude Code Skills, Rules, Commands &amp; Subagents</td>
+<td style="text-align: left;">P1</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">11</td>
+<td style="text-align: left;">Multi-Agent Architecture &amp; Vendor Agent SDKs</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">12</td>
+<td style="text-align: left;">MCP: Build, Consume, Secure &amp; Govern</td>
+<td style="text-align: left;">P1+P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">13</td>
+<td style="text-align: left;">Agentic Engineering: Plan → Execute → Verify</td>
+<td style="text-align: left;">P1</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">Harness Engineering: Hooks, Permissions, Sandboxes &amp; Guardrails</td>
+<td style="text-align: left;">P1</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">15</td>
+<td style="text-align: left;">Plugins, Reusable Agent Capabilities &amp; Distribution</td>
+<td style="text-align: left;">P1</td>
+<td style="text-align: left;">Working</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">16</td>
+<td style="text-align: left;">Cloud Agent Platforms &amp; Deployment</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">17</td>
+<td style="text-align: left;">AgentOps: Evals, Observability, Security &amp; Reliability</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">18</td>
+<td style="text-align: left;">AI-Native SDLC: CI/CD, Testing, Code Review &amp; Governance</td>
+<td style="text-align: left;">P1+P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">19</td>
+<td style="text-align: left;">Java/Spring Enterprise Agentic AI Track</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">Integrated Production Capstone</td>
+<td style="text-align: left;">P1+P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<hr />
+<h1 id="brain-phase-0--mental-models-two-paths-one-engineering-discipline" class="section-heading level-1"><span class="phase-index">Phase 0</span><a class="anchor" href="#brain-phase-0--mental-models-two-paths-one-engineering-discipline" aria-label="Link to 🧠 Phase 0 — Mental Models: Two Paths, One Engineering Discipline">#</a>🧠 Phase 0 — Mental Models: Two Paths, One Engineering Discipline</h1>
+
+    <div class="meta-strip">
+      <span class="meta-pill path 🟣">🟣 Path P1+P2</span>
+      <span class="meta-pill depth">🎯 Deep</span>
+    </div>
+<h2 id="01-distinguish-the-two-paths" class="section-heading level-2"><a class="anchor" href="#01-distinguish-the-two-paths" aria-label="Link to 0.1 Distinguish the two paths">#</a>0.1 Distinguish the two paths</h2>
+<ul>
+<li><strong>Building with an agent</strong> vs <strong>building an agent</strong>.</li>
+<li>Coding agent as engineering collaborator vs LLM/agent as a runtime component of your product.</li>
+<li>Why <code>CLAUDE.md</code>, skills, hooks, and coding subagents do not replace RAG, runtime memory, model APIs, evals, or application-agent orchestration.</li>
+<li>Why application-agent frameworks do not replace a well-engineered coding harness.</li>
+</ul>
+<h2 id="02-agentic-coding" class="section-heading level-2"><a class="anchor" href="#02-agentic-coding" aria-label="Link to 0.2 Agentic Coding">#</a>0.2 Agentic Coding</h2>
+<ul>
+<li>One coding agent operating over repository context.</li>
+<li>Read → reason/plan → edit → execute → inspect → iterate.</li>
+<li>Human review of diffs and side effects.</li>
+<li>Appropriate autonomy boundaries.</li>
+<li>Task scoping and acceptance criteria.</li>
+</ul>
+<h2 id="03-agentic-engineering" class="section-heading level-2"><a class="anchor" href="#03-agentic-engineering" aria-label="Link to 0.3 Agentic Engineering">#</a>0.3 Agentic Engineering</h2>
+<ul>
+<li>Plan → Execute → Verify.</li>
+<li>Specialized roles: planner, implementer, tester, reviewer, security reviewer.</li>
+<li>Separation of concerns between agents.</li>
+<li>Context isolation.</li>
+<li>Human checkpoints at consequential boundaries.</li>
+</ul>
+<h2 id="04-harness-engineering" class="section-heading level-2"><a class="anchor" href="#04-harness-engineering" aria-label="Link to 0.4 Harness Engineering">#</a>0.4 Harness Engineering</h2>
+<ul>
+<li>Engineer the environment rather than merely improve prompts.</li>
+<li>Context, tools, permissions, hooks, sandboxes, tests, feedback loops, observability.</li>
+<li>Deterministic enforcement vs probabilistic instructions.</li>
+<li>Principle: if a rule <strong>must</strong> hold, enforce it outside the model where practical.</li>
+</ul>
+<h2 id="05-product-agentic-ai" class="section-heading level-2"><a class="anchor" href="#05-product-agentic-ai" aria-label="Link to 0.5 Product Agentic AI">#</a>0.5 Product Agentic AI</h2>
+<ul>
+<li>Agent = model + instructions/context + tools + state/memory + control loop + goal + guardrails.</li>
+<li>Agent vs deterministic workflow.</li>
+<li>Autonomy spectrum.</li>
+<li>When <strong>not</strong> to use an agent.</li>
+</ul>
+<section class="assignment-card"><h3 id="test_tube-project-assignment--architecture-classification-exercise" class="section-heading level-3"><a class="anchor" href="#test_tube-project-assignment--architecture-classification-exercise" aria-label="Link to 🧪 Project Assignment — Architecture Classification Exercise">#</a>🧪 Project Assignment — Architecture Classification Exercise</h3>
+<p>Take 15 requirements from a realistic payments platform. Classify each as: 1. conventional software, 2. deterministic AI workflow, 3. application agent, 4. coding-agent task, 5. harness concern.</p>
+<p>For every classification, document why additional autonomy is or is not justified.</p>
+<hr />
+<hr />
+</section><h1 id="snake-phase-1--pythonjava-ai-engineering-foundation--llm-fundamentals" class="section-heading level-1"><span class="phase-index">Phase 1</span><a class="anchor" href="#snake-phase-1--pythonjava-ai-engineering-foundation--llm-fundamentals" aria-label="Link to 🐍 Phase 1 — Python/Java AI Engineering Foundation + LLM Fundamentals">#</a>🐍 Phase 1 — Python/Java AI Engineering Foundation + LLM Fundamentals</h1>
+
+    <div class="meta-strip">
+      <span class="meta-pill path 🟢">🟢 Path P2</span>
+      <span class="meta-pill depth">🎯 Deep</span>
+    </div>
+<h2 id="11-python-for-enterprise-engineers" class="section-heading level-2"><a class="anchor" href="#11-python-for-enterprise-engineers" aria-label="Link to 1.1 Python for enterprise engineers">#</a>1.1 Python for enterprise engineers</h2>
+<ul>
+<li>Python 3.12/3.13.</li>
+<li>Type hints, protocols, dataclasses, generators.</li>
+<li><code>async</code>/<code>await</code>, concurrency and I/O.</li>
+<li>Context managers and decorators.</li>
+<li><code>uv</code>, Ruff, pytest.</li>
+<li>Pydantic v2.</li>
+<li>FastAPI.</li>
+<li>Map concepts to Java records, generics, Bean Validation, Jackson and <code>CompletableFuture</code>.</li>
+</ul>
+<h2 id="12-java-continuity" class="section-heading level-2"><a class="anchor" href="#12-java-continuity" aria-label="Link to 1.2 Java continuity">#</a>1.2 Java continuity</h2>
+<ul>
+<li>Modern Java 21+.</li>
+<li>Spring Boot.</li>
+<li>HTTP clients and reactive/asynchronous integration.</li>
+<li>Jackson/schema validation.</li>
+<li>Resilience4j.</li>
+<li>Why Python should be learned without abandoning Java enterprise leverage.</li>
+</ul>
+<h2 id="13-llm-fundamentals" class="section-heading level-2"><a class="anchor" href="#13-llm-fundamentals" aria-label="Link to 1.3 LLM fundamentals">#</a>1.3 LLM fundamentals</h2>
+<ul>
+<li>Tokens and tokenization.</li>
+<li>Context windows.</li>
+<li>Transformer/attention intuition.</li>
+<li>Inference vs training.</li>
+<li>Temperature/top-p and deterministic output needs.</li>
+<li>Hallucination and uncertainty.</li>
+<li>Reasoning models vs general chat/instruction models.</li>
+<li>Closed vs open-weight models.</li>
+<li>Cost/latency/quality trade-offs.</li>
+</ul>
+<h2 id="14-embeddings-fundamentals" class="section-heading level-2"><a class="anchor" href="#14-embeddings-fundamentals" aria-label="Link to 1.4 Embeddings fundamentals">#</a>1.4 Embeddings fundamentals</h2>
+<ul>
+<li>Vector representations.</li>
+<li>Cosine similarity/dot product.</li>
+<li>Embedding dimensionality.</li>
+<li>Semantic similarity vs lexical similarity.</li>
+<li>Embedding model selection.</li>
+</ul>
+<section class="assignment-card"><h3 id="test_tube-additional-project-assignment--smart-ticket-classifier-api" class="section-heading level-3"><a class="anchor" href="#test_tube-additional-project-assignment--smart-ticket-classifier-api" aria-label="Link to 🧪 Additional Project Assignment — Smart Ticket Classifier API">#</a>🧪 Additional Project Assignment — Smart Ticket Classifier API</h3>
+<p>Build a <strong>FastAPI</strong> service that classifies free-text support tickets into structured JSON fields such as category, priority, sentiment, and destination team using direct OpenAI/Anthropic SDK calls plus Pydantic validation. Add streaming, retry with exponential backoff, per-request token/cost logging, pytest coverage, and Docker packaging.</p>
+</section><section class="assignment-card"><h3 id="test_tube-project-assignment--multi-model-playground" class="section-heading level-3"><a class="anchor" href="#test_tube-project-assignment--multi-model-playground" aria-label="Link to 🧪 Project Assignment — Multi-Model Playground">#</a>🧪 Project Assignment — Multi-Model Playground</h3>
+<p>Build a FastAPI service that calls at least two model providers, records latency/token usage/cost, validates responses with Pydantic, and exposes a common provider-neutral interface. Add pytest tests and Docker packaging.</p>
+<hr />
+<hr />
+</section><h1 id="electric_plug-phase-2--direct-model-apis-structured-outputs--tool-calling" class="section-heading level-1"><span class="phase-index">Phase 2</span><a class="anchor" href="#electric_plug-phase-2--direct-model-apis-structured-outputs--tool-calling" aria-label="Link to 🔌 Phase 2 — Direct Model APIs, Structured Outputs &amp;amp; Tool Calling">#</a>🔌 Phase 2 — Direct Model APIs, Structured Outputs &amp; Tool Calling</h1>
+
+    <div class="meta-strip">
+      <span class="meta-pill path 🟢">🟢 Path P2</span>
+      <span class="meta-pill depth">🎯 Deep</span>
+    </div>
+<h2 id="21-learn-direct-sdks-before-frameworks" class="section-heading level-2"><a class="anchor" href="#21-learn-direct-sdks-before-frameworks" aria-label="Link to 2.1 Learn direct SDKs before frameworks">#</a>2.1 Learn direct SDKs before frameworks</h2>
+<ul>
+<li>OpenAI SDK.</li>
+<li>Anthropic SDK.</li>
+<li>Gemini API awareness.</li>
+<li>Request/response lifecycle.</li>
+<li>System/developer/user instruction roles where supported.</li>
+<li>Streaming.</li>
+<li>Retries and backoff.</li>
+<li>Timeouts.</li>
+<li>Rate limits.</li>
+<li>Token accounting.</li>
+<li>Error taxonomy.</li>
+</ul>
+<h2 id="22-structured-generation" class="section-heading level-2"><a class="anchor" href="#22-structured-generation" aria-label="Link to 2.2 Structured generation">#</a>2.2 Structured generation</h2>
+<ul>
+<li>JSON output.</li>
+<li>Schema-constrained generation.</li>
+<li>Pydantic models.</li>
+<li>Enum and nested schemas.</li>
+<li>Optional vs required fields.</li>
+<li>Validation and repair strategies.</li>
+<li>Structured outputs as an API contract.</li>
+</ul>
+<h2 id="23-toolfunction-calling" class="section-heading level-2"><a class="anchor" href="#23-toolfunction-calling" aria-label="Link to 2.3 Tool/function calling">#</a>2.3 Tool/function calling</h2>
+<ul>
+<li>Tool definitions and schemas.</li>
+<li>Tool selection.</li>
+<li>Arguments.</li>
+<li>Parallel tool calls.</li>
+<li>Tool result messages.</li>
+<li>Multiple-turn tool loops.</li>
+<li>Tool error handling.</li>
+<li>Tool descriptions as routing signals.</li>
+<li>Idempotency for tools with side effects.</li>
+</ul>
+<h2 id="24-provider-abstraction" class="section-heading level-2"><a class="anchor" href="#24-provider-abstraction" aria-label="Link to 2.4 Provider abstraction">#</a>2.4 Provider abstraction</h2>
+<ul>
+<li>When an internal abstraction is worthwhile.</li>
+<li>LiteLLM or equivalent gateway/abstraction concepts.</li>
+<li>Avoiding lowest-common-denominator abstractions.</li>
+<li>Model routing and fallback.</li>
+</ul>
+<section class="assignment-card"><h3 id="test_tube-project-assignment--payment-dispute-assistant-core" class="section-heading level-3"><a class="anchor" href="#test_tube-project-assignment--payment-dispute-assistant-core" aria-label="Link to 🧪 Project Assignment — Payment Dispute Assistant Core">#</a>🧪 Project Assignment — Payment Dispute Assistant Core</h3>
+<p>Without LangChain or LangGraph, build a service that: - accepts a payment dispute, - returns structured classification, - calls customer/transaction mock tools, - handles tool failures, - streams progress, - logs token/cost/latency, - supports OpenAI and Anthropic behind the same application interface.</p>
+<hr />
+<hr />
+</section><h1 id="jigsaw-phase-3--prompt-engineering-context-engineering--composition-patterns" class="section-heading level-1"><span class="phase-index">Phase 3</span><a class="anchor" href="#jigsaw-phase-3--prompt-engineering-context-engineering--composition-patterns" aria-label="Link to 🧩 Phase 3 — Prompt Engineering, Context Engineering &amp;amp; Composition Patterns">#</a>🧩 Phase 3 — Prompt Engineering, Context Engineering &amp; Composition Patterns</h1>
+
+    <div class="meta-strip">
+      <span class="meta-pill path 🟢">🟢 Path P2</span>
+      <span class="meta-pill depth">🎯 Deep</span>
+    </div>
+<h2 id="31-production-prompt-engineering" class="section-heading level-2"><a class="anchor" href="#31-production-prompt-engineering" aria-label="Link to 3.1 Production prompt engineering">#</a>3.1 Production prompt engineering</h2>
+<ul>
+<li>Instruction hierarchy.</li>
+<li>Role/task/context/constraints/output contract.</li>
+<li>Few-shot prompting.</li>
+<li>Delimiters and XML-style structure.</li>
+<li>Prompt templates.</li>
+<li>Prompt versioning.</li>
+<li>Prompt-as-code.</li>
+<li>Regression tests.</li>
+</ul>
+<h2 id="32-reasoning-aware-prompting" class="section-heading level-2"><a class="anchor" href="#32-reasoning-aware-prompting" aria-label="Link to 3.2 Reasoning-aware prompting">#</a>3.2 Reasoning-aware prompting</h2>
+<ul>
+<li>Do not depend on exposing hidden chain-of-thought.</li>
+<li>Request concise rationale/evidence when needed.</li>
+<li>Decomposition.</li>
+<li>Self-checks.</li>
+<li>Critique/revision.</li>
+<li>Model-native reasoning controls.</li>
+</ul>
+<h2 id="33-prompt-composition-patterns" class="section-heading level-2"><a class="anchor" href="#33-prompt-composition-patterns" aria-label="Link to 3.3 Prompt composition patterns">#</a>3.3 Prompt composition patterns</h2>
+<ul>
+<li>Prompt chaining.</li>
+<li>Routing.</li>
+<li>Parallelization.</li>
+<li>Map-reduce style decomposition.</li>
+<li>Orchestrator-workers.</li>
+<li>Evaluator-optimizer.</li>
+<li>Planner-executor.</li>
+<li>Generator-critic.</li>
+<li>Reflection/retry.</li>
+</ul>
+<h2 id="34-context-engineering" class="section-heading level-2"><a class="anchor" href="#34-context-engineering" aria-label="Link to 3.4 Context engineering">#</a>3.4 Context engineering</h2>
+<ul>
+<li>Context selection rather than context dumping.</li>
+<li>Static vs dynamic context.</li>
+<li>Retrieved context.</li>
+<li>Tool results.</li>
+<li>Conversation history.</li>
+<li>Summarization.</li>
+<li>Context compaction.</li>
+<li>Context isolation between agents.</li>
+<li>Token budgeting.</li>
+<li>Lost-in-the-middle risks.</li>
+<li>Relevance vs completeness.</li>
+</ul>
+<section class="assignment-card"><h3 id="test_tube-project-assignment--prompt--context-benchmark" class="section-heading level-3"><a class="anchor" href="#test_tube-project-assignment--prompt--context-benchmark" aria-label="Link to 🧪 Project Assignment — Prompt &amp;amp; Context Benchmark">#</a>🧪 Project Assignment — Prompt &amp; Context Benchmark</h3>
+<p>Create 30 representative support/payment tasks. Implement at least four prompt/context strategies. Compare schema validity, task success, latency, tokens, and cost. Store prompts and evaluation cases in Git.</p>
+<hr />
+<hr />
+</section><h1 id="robot-phase-4--agent-internals--reasoningworkflow-patterns" class="section-heading level-1"><span class="phase-index">Phase 4</span><a class="anchor" href="#robot-phase-4--agent-internals--reasoningworkflow-patterns" aria-label="Link to 🤖 Phase 4 — Agent Internals &amp;amp; Reasoning/Workflow Patterns">#</a>🤖 Phase 4 — Agent Internals &amp; Reasoning/Workflow Patterns</h1>
+
+    <div class="meta-strip">
+      <span class="meta-pill path 🟢">🟢 Path P2</span>
+      <span class="meta-pill depth">🎯 Deep</span>
+    </div>
+<h2 id="41-build-the-mental-model" class="section-heading level-2"><a class="anchor" href="#41-build-the-mental-model" aria-label="Link to 4.1 Build the mental model">#</a>4.1 Build the mental model</h2>
+<ul>
+<li>Goal.</li>
+<li>Model.</li>
+<li>Instructions.</li>
+<li>Tools.</li>
+<li>State.</li>
+<li>Memory.</li>
+<li>Control loop.</li>
+<li>Stop conditions.</li>
+<li>Guardrails.</li>
+<li>Evaluation.</li>
+</ul>
+<h2 id="42-core-patterns" class="section-heading level-2"><a class="anchor" href="#42-core-patterns" aria-label="Link to 4.2 Core patterns">#</a>4.2 Core patterns</h2>
+<ul>
+<li>ReAct.</li>
+<li>Plan-and-Execute.</li>
+<li>Routing.</li>
+<li>Parallel fan-out/fan-in.</li>
+<li>Orchestrator-workers.</li>
+<li>Evaluator-optimizer.</li>
+<li>Reflection/self-critique.</li>
+<li>Tree/search approaches: when worth the cost.</li>
+<li>Human-in-the-loop.</li>
+</ul>
+<h2 id="43-control-loop-engineering" class="section-heading level-2"><a class="anchor" href="#43-control-loop-engineering" aria-label="Link to 4.3 Control-loop engineering">#</a>4.3 Control-loop engineering</h2>
+<ul>
+<li>Maximum iterations.</li>
+<li>Termination criteria.</li>
+<li>Budget limits.</li>
+<li>Retry policy.</li>
+<li>Tool failures.</li>
+<li>Partial success.</li>
+<li>State transition validation.</li>
+<li>Deterministic vs model-selected routing.</li>
+</ul>
+<h2 id="44-workflow-vs-agent" class="section-heading level-2"><a class="anchor" href="#44-workflow-vs-agent" aria-label="Link to 4.4 Workflow vs agent">#</a>4.4 Workflow vs agent</h2>
+<ul>
+<li>Fixed DAG.</li>
+<li>State machine.</li>
+<li>Dynamic graph.</li>
+<li>Autonomous loop.</li>
+<li>Escalation to humans.</li>
+<li>Choosing minimum necessary autonomy.</li>
+</ul>
+<section class="assignment-card"><h3 id="test_tube-project-assignment--framework-free-react-research-agent" class="section-heading level-3"><a class="anchor" href="#test_tube-project-assignment--framework-free-react-research-agent" aria-label="Link to 🧪 Project Assignment — Framework-Free ReAct Research Agent">#</a>🧪 Project Assignment — Framework-Free ReAct Research Agent</h3>
+<p>Using only a model SDK, implement: - calculator, - web/search adapter, - document/file tool, - ReAct-style tool loop, - iteration limit, - structured event log, - retry/error handling, - final critique/evaluation step.</p>
+<p>Write an architecture note explaining what LangGraph would later provide for you.</p>
+</section><section class="assignment-card"><h3 id="test_tube-additional-project-assignment--react-agent-with-search--file-output" class="section-heading level-3"><a class="anchor" href="#test_tube-additional-project-assignment--react-agent-with-search--file-output" aria-label="Link to 🧪 Additional Project Assignment — ReAct Agent with Search + File Output">#</a>🧪 Additional Project Assignment — ReAct Agent with Search + File Output</h3>
+<p>Build a second framework-free ReAct agent using three concrete tools: calculator, a web-search adapter such as Tavily, and a file-writer tool. Add max-iteration protection, explicit action/observation logging, a final critique/reflection pass, and tests for malformed tool arguments and tool failures.</p>
+<hr />
+<hr />
+</section><h1 id="yellow_circle-phase-5--claude-code-fundamentals--layered-context" class="section-heading level-1"><span class="phase-index">Phase 5</span><a class="anchor" href="#yellow_circle-phase-5--claude-code-fundamentals--layered-context" aria-label="Link to 🟡 Phase 5 — Claude Code Fundamentals &amp;amp; Layered Context">#</a>🟡 Phase 5 — Claude Code Fundamentals &amp; Layered Context</h1>
+
+    <div class="meta-strip">
+      <span class="meta-pill path 🟡">🟡 Path P1</span>
+      <span class="meta-pill depth">🎯 Deep</span>
+    </div>
+<h2 id="51-claude-code-operating-model" class="section-heading level-2"><a class="anchor" href="#51-claude-code-operating-model" aria-label="Link to 5.1 Claude Code operating model">#</a>5.1 Claude Code operating model</h2>
+<ul>
+<li>Repository-aware coding agent.</li>
+<li>CLI and IDE/VS Code usage.</li>
+<li>Interactive vs headless/scripted execution.</li>
+<li>Planning and review.</li>
+<li>Permission boundaries.</li>
+<li>Diff review.</li>
+<li>Session lifecycle.</li>
+</ul>
+<h2 id="52-layered-context-system" class="section-heading level-2"><a class="anchor" href="#52-layered-context-system" aria-label="Link to 5.2 Layered context system">#</a>5.2 Layered context system</h2>
+<p>Learn the responsibility and scope of: - global/user instructions, - project <code>CLAUDE.md</code>, - nested <code>CLAUDE.md</code>, - local/personal context where supported, - <code>.claude/rules/*.md</code>, - skills, - subagent definitions, - session/work notes. - <code>CLAUDE.local.md</code> for gitignored developer-local overrides where supported, such as local ports, seed data, or personal test shortcuts. Keep durable team rules out of this file.</p>
+<h2 id="53-claudemd" class="section-heading level-2"><a class="anchor" href="#53-claudemd" aria-label="Link to 5.3 CLAUDE.md">#</a>5.3 <code>CLAUDE.md</code></h2>
+<p>Include durable project-wide facts: - architecture, - build/test/run commands, - repository map, - coding conventions, - validation commands, - security boundaries, - architectural invariants, - explicit “do not” constraints.</p>
+<p>Avoid: - task-specific prompts, - huge reference manuals, - secrets, - volatile session state, - instructions better enforced by hooks/tests.</p>
+<h2 id="54-context-hygiene" class="section-heading level-2"><a class="anchor" href="#54-context-hygiene" aria-label="Link to 5.4 Context hygiene">#</a>5.4 Context hygiene</h2>
+<ul>
+<li>Small durable context.</li>
+<li>Progressive disclosure.</li>
+<li>Localize rules.</li>
+<li>Avoid duplication.</li>
+<li>Single source of truth.</li>
+<li>Context drift.</li>
+<li>Instruction conflicts.</li>
+</ul>
+<section class="assignment-card"><h3 id="test_tube-project-assignment--production-repository-bootstrap" class="section-heading level-3"><a class="anchor" href="#test_tube-project-assignment--production-repository-bootstrap" aria-label="Link to 🧪 Project Assignment — Production Repository Bootstrap">#</a>🧪 Project Assignment — Production Repository Bootstrap</h3>
+<p>Take an existing Java/Spring microservice repository and create a production-quality Claude Code context hierarchy. Ask Claude Code to implement one API feature and compare: 1. no repository instructions, 2. oversized monolithic instructions, 3. properly layered context.</p>
+<p>Record errors, unnecessary changes, tokens, and review effort.</p>
+<hr />
+<hr />
+</section><h1 id="books-phase-6--retrieval-engineering-loading-splitting-chunking--basic-rag" class="section-heading level-1"><span class="phase-index">Phase 6</span><a class="anchor" href="#books-phase-6--retrieval-engineering-loading-splitting-chunking--basic-rag" aria-label="Link to 📚 Phase 6 — Retrieval Engineering: Loading, Splitting, Chunking &amp;amp; Basic RAG">#</a>📚 Phase 6 — Retrieval Engineering: Loading, Splitting, Chunking &amp; Basic RAG</h1>
+
+    <div class="meta-strip">
+      <span class="meta-pill path 🟢">🟢 Path P2</span>
+      <span class="meta-pill depth">🎯 Deep</span>
+    </div>
+<h2 id="61-document-ingestion" class="section-heading level-2"><a class="anchor" href="#61-document-ingestion" aria-label="Link to 6.1 Document ingestion">#</a>6.1 Document ingestion</h2>
+<ul>
+<li>PDF/HTML/Markdown/Office/document loaders.</li>
+<li>Parsing quality.</li>
+<li>Metadata extraction.</li>
+<li>Document normalization.</li>
+<li>Tables and structured content.</li>
+<li>OCR only when necessary.</li>
+</ul>
+<h2 id="62-splitting-and-chunking" class="section-heading level-2"><a class="anchor" href="#62-splitting-and-chunking" aria-label="Link to 6.2 Splitting and chunking">#</a>6.2 Splitting and chunking</h2>
+<ul>
+<li>Fixed-size.</li>
+<li>Recursive.</li>
+<li>Sentence/paragraph.</li>
+<li>Semantic.</li>
+<li>Heading/document-structure aware.</li>
+<li>Parent-child.</li>
+<li>Sliding/window approaches.</li>
+<li>Chunk overlap.</li>
+<li>Chunk size vs retrieval precision.</li>
+<li>Preserve provenance.</li>
+</ul>
+<h2 id="63-vector-storage" class="section-heading level-2"><a class="anchor" href="#63-vector-storage" aria-label="Link to 6.3 Vector storage">#</a>6.3 Vector storage</h2>
+<ul>
+<li>PostgreSQL + pgvector.</li>
+<li>Qdrant.</li>
+<li>Pinecone awareness.</li>
+<li>Chroma for prototyping.</li>
+<li>Index design.</li>
+<li>Metadata filtering.</li>
+<li>Multi-tenancy and access control.</li>
+</ul>
+<h2 id="64-basic-rag-pipeline" class="section-heading level-2"><a class="anchor" href="#64-basic-rag-pipeline" aria-label="Link to 6.4 Basic RAG pipeline">#</a>6.4 Basic RAG pipeline</h2>
+<p><code>load → normalize → split → embed → index → retrieve → construct context → generate → cite</code></p>
+<ul>
+<li>top-k.</li>
+<li>similarity thresholds.</li>
+<li>grounding.</li>
+<li>citations.</li>
+<li>abstention.</li>
+<li>retrieval failure modes.</li>
+</ul>
+<h2 id="65-langchainllamaindex-ingestion-layer" class="section-heading level-2"><a class="anchor" href="#65-langchainllamaindex-ingestion-layer" aria-label="Link to 6.5 LangChain/LlamaIndex ingestion layer">#</a>6.5 LangChain/LlamaIndex ingestion layer</h2>
+<ul>
+<li>Learn abstractions after implementing the pipeline once yourself.</li>
+<li>Loaders.</li>
+<li>Splitters.</li>
+<li>Embeddings.</li>
+<li>Vector stores.</li>
+<li>Retrievers.</li>
+</ul>
+<section class="assignment-card"><h3 id="test_tube-project-assignment--regulation-rag-v1" class="section-heading level-3"><a class="anchor" href="#test_tube-project-assignment--regulation-rag-v1" aria-label="Link to 🧪 Project Assignment — Regulation RAG v1">#</a>🧪 Project Assignment — Regulation RAG v1</h3>
+<p>Ingest a corpus of payment/regulatory documents. Implement two chunking strategies and compare retrieval quality. Store vectors in pgvector, return source citations, enforce metadata filtering, and build a small retrieval evaluation dataset.</p>
+<hr />
+<hr />
+</section><h1 id="spider_web-phase-7--advanced-graph--agentic-rag" class="section-heading level-1"><span class="phase-index">Phase 7</span><a class="anchor" href="#spider_web-phase-7--advanced-graph--agentic-rag" aria-label="Link to 🕸️ Phase 7 — Advanced, Graph &amp;amp; Agentic RAG">#</a>🕸️ Phase 7 — Advanced, Graph &amp; Agentic RAG</h1>
+
+    <div class="meta-strip">
+      <span class="meta-pill path 🟢">🟢 Path P2</span>
+      <span class="meta-pill depth">🎯 Deep</span>
+    </div>
+<h2 id="71-advanced-retrieval" class="section-heading level-2"><a class="anchor" href="#71-advanced-retrieval" aria-label="Link to 7.1 Advanced retrieval">#</a>7.1 Advanced retrieval</h2>
+<ul>
+<li>Dense + sparse/BM25.</li>
+<li>Hybrid search.</li>
+<li>Reciprocal Rank Fusion.</li>
+<li>Cross-encoder re-ranking.</li>
+<li>Query expansion.</li>
+<li>Multi-query.</li>
+<li>HyDE.</li>
+<li>Query decomposition.</li>
+<li>Parent-document retrieval.</li>
+<li>Contextual retrieval.</li>
+<li>Metadata/security filtering.</li>
+</ul>
+<h2 id="72-graph-rag" class="section-heading level-2"><a class="anchor" href="#72-graph-rag" aria-label="Link to 7.2 Graph RAG">#</a>7.2 Graph RAG</h2>
+<ul>
+<li>Entity extraction.</li>
+<li>Relationship extraction.</li>
+<li>Knowledge graphs.</li>
+<li>Neo4j.</li>
+<li>Graph traversal.</li>
+<li>Multi-hop retrieval.</li>
+<li>Vector + graph hybrid.</li>
+<li>Corpus/global summarization approaches.</li>
+</ul>
+<h2 id="73-agentic-rag" class="section-heading level-2"><a class="anchor" href="#73-agentic-rag" aria-label="Link to 7.3 Agentic RAG">#</a>7.3 Agentic RAG</h2>
+<ul>
+<li>Agent decides whether retrieval is necessary.</li>
+<li>Router selects corpus/tool.</li>
+<li>Retrieval grader.</li>
+<li>Query rewrite.</li>
+<li>Retry.</li>
+<li>Web/tool fallback.</li>
+<li>Corrective RAG.</li>
+<li>Self-RAG concepts.</li>
+<li>Multi-index routing.</li>
+</ul>
+<h2 id="74-rag-evaluation" class="section-heading level-2"><a class="anchor" href="#74-rag-evaluation" aria-label="Link to 7.4 RAG evaluation">#</a>7.4 RAG evaluation</h2>
+<ul>
+<li>Faithfulness.</li>
+<li>Answer relevancy.</li>
+<li>Context precision.</li>
+<li>Context recall.</li>
+<li>Retrieval hit rate/MRR/nDCG awareness.</li>
+<li>RAGAS and alternative eval tooling.</li>
+</ul>
+<section class="assignment-card"><h3 id="test_tube-project-assignment--regulation-rag-v2" class="section-heading level-3"><a class="anchor" href="#test_tube-project-assignment--regulation-rag-v2" aria-label="Link to 🧪 Project Assignment — Regulation RAG v2">#</a>🧪 Project Assignment — Regulation RAG v2</h3>
+<p>Upgrade Phase 6 to hybrid retrieval + re-ranking + agentic retrieval grading. Add a small Neo4j graph for regulation/article/obligation relationships. Produce before/after evaluation results and a failure-analysis report.</p>
+</section><section class="assignment-card"><h3 id="test_tube-additional-project-assignment--regulatory-knowledge-assistant" class="section-heading level-3"><a class="anchor" href="#test_tube-additional-project-assignment--regulatory-knowledge-assistant" aria-label="Link to 🧪 Additional Project Assignment — Regulatory Knowledge Assistant">#</a>🧪 Additional Project Assignment — Regulatory Knowledge Assistant</h3>
+<p>Ingest PSD2/PCI-DSS-style payment-regulation documents using LangChain plus pgvector, add hybrid dense+BM25 retrieval, re-ranking, an agentic grade → rewrite → retry/fallback loop, and a small Neo4j entity graph for multi-hop questions. Evaluate retrieval and generation separately with RAGAS-style metrics.</p>
+<hr />
+<hr />
+</section><h1 id="brain-phase-8--state-memory--long-running-agent-context" class="section-heading level-1"><span class="phase-index">Phase 8</span><a class="anchor" href="#brain-phase-8--state-memory--long-running-agent-context" aria-label="Link to 🧠 Phase 8 — State, Memory &amp;amp; Long-Running Agent Context">#</a>🧠 Phase 8 — State, Memory &amp; Long-Running Agent Context</h1>
+
+    <div class="meta-strip">
+      <span class="meta-pill path 🟢">🟢 Path P2</span>
+      <span class="meta-pill depth">🎯 Deep</span>
+    </div>
+<h2 id="81-do-not-confuse-context-with-memory" class="section-heading level-2"><a class="anchor" href="#81-do-not-confuse-context-with-memory" aria-label="Link to 8.1 Do not confuse context with memory">#</a>8.1 Do not confuse context with memory</h2>
+<ul>
+<li>Prompt/context window.</li>
+<li>Runtime state.</li>
+<li>Checkpoint state.</li>
+<li>Conversation memory.</li>
+<li>Long-term semantic memory.</li>
+<li>Episodic memory.</li>
+<li>User/profile memory.</li>
+<li>External source of truth.</li>
+</ul>
+<h2 id="82-short-term-memory" class="section-heading level-2"><a class="anchor" href="#82-short-term-memory" aria-label="Link to 8.2 Short-term memory">#</a>8.2 Short-term memory</h2>
+<ul>
+<li>Thread/session state.</li>
+<li>Message history.</li>
+<li>Summarization.</li>
+<li>Sliding history.</li>
+<li>Token-aware compaction.</li>
+</ul>
+<h2 id="83-long-term-memory" class="section-heading level-2"><a class="anchor" href="#83-long-term-memory" aria-label="Link to 8.3 Long-term memory">#</a>8.3 Long-term memory</h2>
+<ul>
+<li>Explicit writes.</li>
+<li>Semantic retrieval.</li>
+<li>Facts/preferences.</li>
+<li>Episodic records.</li>
+<li>Memory consolidation.</li>
+<li>TTL/retention.</li>
+<li>Conflict resolution.</li>
+<li>Forget/update semantics.</li>
+</ul>
+<h2 id="84-durable-execution" class="section-heading level-2"><a class="anchor" href="#84-durable-execution" aria-label="Link to 8.4 Durable execution">#</a>8.4 Durable execution</h2>
+<ul>
+<li>Checkpointing.</li>
+<li>Resume after crash.</li>
+<li>Exactly-once illusion vs idempotency.</li>
+<li>Side-effect tracking.</li>
+<li>Replay.</li>
+<li>State versioning.</li>
+</ul>
+<h2 id="85-memory-security" class="section-heading level-2"><a class="anchor" href="#85-memory-security" aria-label="Link to 8.5 Memory security">#</a>8.5 Memory security</h2>
+<ul>
+<li>Tenant isolation.</li>
+<li>PII.</li>
+<li>Consent.</li>
+<li>Retention/deletion.</li>
+<li>Poisoning.</li>
+<li>Incorrect memories.</li>
+<li>Auditability.</li>
+</ul>
+<section class="assignment-card"><h3 id="test_tube-project-assignment--durable-customer-service-agent" class="section-heading level-3"><a class="anchor" href="#test_tube-project-assignment--durable-customer-service-agent" aria-label="Link to 🧪 Project Assignment — Durable Customer-Service Agent">#</a>🧪 Project Assignment — Durable Customer-Service Agent</h3>
+<p>Create a multi-session assistant with: - short-term thread state, - long-term explicit memory, - Postgres persistence, - summarization, - crash/restart recovery, - memory update/delete, - tenant isolation tests.</p>
+<hr />
+<hr />
+</section><h1 id="twisted_rightwards_arrows-phase-9--langchain--langgraph-orchestration" class="section-heading level-1"><span class="phase-index">Phase 9</span><a class="anchor" href="#twisted_rightwards_arrows-phase-9--langchain--langgraph-orchestration" aria-label="Link to 🔀 Phase 9 — LangChain &amp;amp; LangGraph Orchestration">#</a>🔀 Phase 9 — LangChain &amp; LangGraph Orchestration</h1>
+
+    <div class="meta-strip">
+      <span class="meta-pill path 🟢">🟢 Path P2</span>
+      <span class="meta-pill depth">🎯 Deep</span>
+    </div>
+<h2 id="91-langchain" class="section-heading level-2"><a class="anchor" href="#91-langchain" aria-label="Link to 9.1 LangChain">#</a>9.1 LangChain</h2>
+<p><strong>Depth: Working-to-Deep</strong> - Model abstraction. - Messages. - Prompt templates. - Tools. - Retrievers. - Structured output. - Middleware concepts. - Runnables/composition as applicable. - Use selectively; do not hide fundamentals behind framework abstractions.</p>
+<h2 id="92-langgraph" class="section-heading level-2"><a class="anchor" href="#92-langgraph" aria-label="Link to 9.2 LangGraph">#</a>9.2 LangGraph</h2>
+<p><strong>Depth: Deep</strong> - Typed state. - Nodes. - Edges. - Conditional edges. - Cycles. - Command/routing concepts. - Streaming. - Checkpointers. - Durable execution. - Interrupts. - Human approval. - State inspection/replay. - Long-running workflows.</p>
+<h2 id="93-design-principles" class="section-heading level-2"><a class="anchor" href="#93-design-principles" aria-label="Link to 9.3 Design principles">#</a>9.3 Design principles</h2>
+<ul>
+<li>Graph only where state/control flow merits it.</li>
+<li>Deterministic edges where business policy is deterministic.</li>
+<li>Model routing only where semantic judgment is necessary.</li>
+<li>Explicit side-effect boundaries.</li>
+<li>Idempotent nodes.</li>
+<li>Failure/retry semantics.</li>
+</ul>
+<section class="assignment-card"><h3 id="test_tube-project-assignment--langgraph-migration" class="section-heading level-3"><a class="anchor" href="#test_tube-project-assignment--langgraph-migration" aria-label="Link to 🧪 Project Assignment — LangGraph Migration">#</a>🧪 Project Assignment — LangGraph Migration</h3>
+<p>Rebuild the framework-free Phase 4 agent using LangGraph. Add checkpointing, HITL, conditional routing and durable restart. Compare code complexity, control, observability, and failure recovery against the framework-free version.</p>
+<hr />
+<hr />
+</section><h1 id="toolbox-phase-10--claude-code-skills-rules-commands--subagents" class="section-heading level-1"><span class="phase-index">Phase 10</span><a class="anchor" href="#toolbox-phase-10--claude-code-skills-rules-commands--subagents" aria-label="Link to 🧰 Phase 10 — Claude Code Skills, Rules, Commands &amp;amp; Subagents">#</a>🧰 Phase 10 — Claude Code Skills, Rules, Commands &amp; Subagents</h1>
+
+    <div class="meta-strip">
+      <span class="meta-pill path 🟡">🟡 Path P1</span>
+      <span class="meta-pill depth">🎯 Deep</span>
+    </div>
+<h2 id="101-rules" class="section-heading level-2"><a class="anchor" href="#101-rules" aria-label="Link to 10.1 Rules">#</a>10.1 Rules</h2>
+<ul>
+<li><code>.claude/rules/*.md</code>.</li>
+<li>Domain/directory-scoped conventions.</li>
+<li>Architecture rules.</li>
+<li>Testing rules.</li>
+<li>Security rules.</li>
+<li>Avoid repeating root project memory.</li>
+</ul>
+<h2 id="102-skills" class="section-heading level-2"><a class="anchor" href="#102-skills" aria-label="Link to 10.2 Skills">#</a>10.2 Skills</h2>
+<ul>
+<li><code>.claude/skills/&lt;skill&gt;/SKILL.md</code>.</li>
+<li>Frontmatter/metadata.</li>
+<li>Trigger-oriented descriptions.</li>
+<li>Progressive disclosure.</li>
+<li>Optional scripts/templates/reference material.</li>
+<li>Skill vs rule vs subagent vs MCP.</li>
+<li>Reusable domain expertise.</li>
+</ul>
+<p>Example skill domains: - Kafka capacity review. - Spring Boot API review. - payment idempotency review. - threat modeling. - migration readiness. - ADR generation.</p>
+<h2 id="103-commands" class="section-heading level-2"><a class="anchor" href="#103-commands" aria-label="Link to 10.3 Commands">#</a>10.3 Commands</h2>
+<ul>
+<li>Reusable explicit workflows.</li>
+<li>Parameterized task invocation.</li>
+<li>When a command should invoke a skill or subagent.</li>
+<li>Keep commands task-oriented rather than storing project knowledge.</li>
+</ul>
+<h2 id="104-subagents" class="section-heading level-2"><a class="anchor" href="#104-subagents" aria-label="Link to 10.4 Subagents">#</a>10.4 Subagents</h2>
+<ul>
+<li><code>.claude/agents/*.md</code>.</li>
+<li>Role.</li>
+<li>Goal.</li>
+<li>Scope.</li>
+<li>Allowed tools.</li>
+<li>Inputs/outputs.</li>
+<li>Model choice.</li>
+<li>Context isolation.</li>
+<li>Reviewer/tester/security/architecture roles.</li>
+<li>Preventing role overlap.</li>
+</ul>
+<h2 id="105-worksession-notes" class="section-heading level-2"><a class="anchor" href="#105-worksession-notes" aria-label="Link to 10.5 Work/session notes">#</a>10.5 Work/session notes</h2>
+<ul>
+<li>Plans and session continuity.</li>
+<li>Decisions made.</li>
+<li>Remaining work.</li>
+<li>Verification status.</li>
+<li>Do not convert transient notes into permanent global instructions.</li>
+</ul>
+<section class="assignment-card"><h3 id="test_tube-project-assignment--claude-code-engineering-toolkit" class="section-heading level-3"><a class="anchor" href="#test_tube-project-assignment--claude-code-engineering-toolkit" aria-label="Link to 🧪 Project Assignment — Claude Code Engineering Toolkit">#</a>🧪 Project Assignment — Claude Code Engineering Toolkit</h3>
+<p>For the same Java service, build: - architecture rules, - API-review skill, - Kafka-review skill, - implementation command, - test subagent, - code-review subagent, - security subagent.</p>
+<p>Run one feature through the toolkit and measure human review effort and defects found.</p>
+<hr />
+<hr />
+</section><h1 id="busts_in_silhouette-phase-11--multi-agent-architecture--vendor-agent-sdks" class="section-heading level-1"><span class="phase-index">Phase 11</span><a class="anchor" href="#busts_in_silhouette-phase-11--multi-agent-architecture--vendor-agent-sdks" aria-label="Link to 👥 Phase 11 — Multi-Agent Architecture &amp;amp; Vendor Agent SDKs">#</a>👥 Phase 11 — Multi-Agent Architecture &amp; Vendor Agent SDKs</h1>
+
+    <div class="meta-strip">
+      <span class="meta-pill path 🟢">🟢 Path P2</span>
+      <span class="meta-pill depth">🎯 Deep</span>
+    </div>
+<h2 id="111-multi-agent-topologies" class="section-heading level-2"><a class="anchor" href="#111-multi-agent-topologies" aria-label="Link to 11.1 Multi-agent topologies">#</a>11.1 Multi-agent topologies</h2>
+<ul>
+<li>Supervisor.</li>
+<li>Hierarchical.</li>
+<li>Router + specialists.</li>
+<li>Handoffs.</li>
+<li>Network/swarm concepts.</li>
+<li>Blackboard/shared-state patterns.</li>
+<li>Parallel specialists.</li>
+</ul>
+<h2 id="112-context-boundaries" class="section-heading level-2"><a class="anchor" href="#112-context-boundaries" aria-label="Link to 11.2 Context boundaries">#</a>11.2 Context boundaries</h2>
+<ul>
+<li>Give each agent only necessary context.</li>
+<li>Shared vs private state.</li>
+<li>Handoff contracts.</li>
+<li>Structured inter-agent messages.</li>
+<li>Avoid “multi-agent because it looks sophisticated.”</li>
+</ul>
+<h2 id="113-vendor-sdks" class="section-heading level-2"><a class="anchor" href="#113-vendor-sdks" aria-label="Link to 11.3 Vendor SDKs">#</a>11.3 Vendor SDKs</h2>
+<p>Learn at least: - <strong>OpenAI Agents SDK — Deep</strong> - <strong>Claude Agent SDK — Deep</strong> - <strong>Google ADK — Working</strong> - CrewAI — Aware/Working - Pydantic AI — Aware/Working</p>
+<h2 id="114-framework-selection" class="section-heading level-2"><a class="anchor" href="#114-framework-selection" aria-label="Link to 11.4 Framework selection">#</a>11.4 Framework selection</h2>
+<p>Compare: - explicit graph orchestration, - handoff-centric SDKs, - role-based agent teams, - model-native tool loops, - deterministic workflow engines.</p>
+<section class="assignment-card"><h3 id="test_tube-project-assignment--multi-agent-fraud-triage" class="section-heading level-3"><a class="anchor" href="#test_tube-project-assignment--multi-agent-fraud-triage" aria-label="Link to 🧪 Project Assignment — Multi-Agent Fraud Triage">#</a>🧪 Project Assignment — Multi-Agent Fraud Triage</h3>
+<p>Build transaction-analysis, customer-history, regulation, and report agents. Require human approval before irreversible account actions. Implement one version in LangGraph and a smaller version in one vendor SDK. Write a trade-off ADR.</p>
+</section><section class="assignment-card"><h3 id="test_tube-additional-project-assignment--two-agent-vendor-sdk-rebuild" class="section-heading level-3"><a class="anchor" href="#test_tube-additional-project-assignment--two-agent-vendor-sdk-rebuild" aria-label="Link to 🧪 Additional Project Assignment — Two-Agent Vendor-SDK Rebuild">#</a>🧪 Additional Project Assignment — Two-Agent Vendor-SDK Rebuild</h3>
+<p>Rebuild a deliberately smaller version of the fraud-triage workflow with one vendor-native agent SDK. Keep only two agents and compare handoff semantics, tracing, guardrails, state management, and developer ergonomics against the LangGraph version.</p>
+<hr />
+<hr />
+</section><h1 id="link-phase-12--mcp-build-consume-secure--govern" class="section-heading level-1"><span class="phase-index">Phase 12</span><a class="anchor" href="#link-phase-12--mcp-build-consume-secure--govern" aria-label="Link to 🔗 Phase 12 — MCP: Build, Consume, Secure &amp;amp; Govern">#</a>🔗 Phase 12 — MCP: Build, Consume, Secure &amp; Govern</h1>
+
+    <div class="meta-strip">
+      <span class="meta-pill path 🟣">🟣 Path P1+P2</span>
+      <span class="meta-pill depth">🎯 Deep</span>
+    </div>
+<h2 id="121-mcp-fundamentals" class="section-heading level-2"><a class="anchor" href="#121-mcp-fundamentals" aria-label="Link to 12.1 MCP fundamentals">#</a>12.1 MCP fundamentals</h2>
+<ul>
+<li>Host.</li>
+<li>Client.</li>
+<li>Server.</li>
+<li>Tools.</li>
+<li>Resources.</li>
+<li>Prompts.</li>
+<li>Capability negotiation.</li>
+<li>Local vs remote servers.</li>
+<li>stdio.</li>
+<li>Streamable HTTP.</li>
+<li>Sessions.</li>
+</ul>
+<h2 id="122-build-mcp-servers" class="section-heading level-2"><a class="anchor" href="#122-build-mcp-servers" aria-label="Link to 12.2 Build MCP servers">#</a>12.2 Build MCP servers</h2>
+<ul>
+<li>Python official MCP SDK/FastMCP.</li>
+<li>TypeScript SDK awareness.</li>
+<li>Java/Spring AI MCP.</li>
+<li>Wrap REST APIs.</li>
+<li>Wrap RAG.</li>
+<li>Wrap databases safely.</li>
+<li>Long-running operations.</li>
+<li>Errors and structured results.</li>
+</ul>
+<h2 id="123-electric_plug-consume-mcp" class="section-heading level-2"><a class="anchor" href="#123-electric_plug-consume-mcp" aria-label="Link to 12.3 🔌 Consume MCP">#</a>12.3 🔌 Consume MCP</h2>
+<p>From: - Claude Code. - Claude Agent SDK. - OpenAI agent tooling where supported. - LangGraph adapters. - custom clients.</p>
+<h2 id="124-closed_lock_with_key-mcp-security" class="section-heading level-2"><a class="anchor" href="#124-closed_lock_with_key-mcp-security" aria-label="Link to 12.4 🔐 MCP security">#</a>12.4 🔐 MCP security</h2>
+<ul>
+<li>Authentication/OAuth.</li>
+<li>Least privilege.</li>
+<li>Tool allowlists.</li>
+<li>Tool poisoning.</li>
+<li>Prompt injection through tool metadata/results.</li>
+<li>Confused deputy.</li>
+<li>Secret management.</li>
+<li>Egress controls.</li>
+<li>Audit logs.</li>
+<li>Approval for side effects.</li>
+</ul>
+<h2 id="125-mcp-architecture" class="section-heading level-2"><a class="anchor" href="#125-mcp-architecture" aria-label="Link to 12.5 MCP architecture">#</a>12.5 MCP architecture</h2>
+<ul>
+<li>One MCP server per domain capability rather than blindly per microservice.</li>
+<li>Gateway/aggregation when governance, discovery, auth or policy warrants it.</li>
+<li>Avoid exposing internal service topology directly to agents.</li>
+<li>Stable capability-oriented contracts.</li>
+</ul>
+<h2 id="126-mcp-in-both-paths" class="section-heading level-2"><a class="anchor" href="#126-mcp-in-both-paths" aria-label="Link to 12.6 MCP in both paths">#</a>12.6 MCP in both paths</h2>
+<p><strong>P1:</strong> expands the coding agent’s external tool surface.<br />
+<strong>P2:</strong> provides a protocol boundary between application agents and enterprise capabilities.</p>
+<h2 id="127-a2a-and-protocol-boundaries" class="section-heading level-2"><a class="anchor" href="#127-a2a-and-protocol-boundaries" aria-label="Link to 12.7 A2A and protocol boundaries">#</a>12.7 A2A and protocol boundaries</h2>
+<ul>
+<li>Understand the conceptual split: <strong>MCP = agent/client ↔︎ tools/resources</strong>, while <strong>A2A = agent ↔︎ agent</strong> interoperability.</li>
+<li>Agent Cards/capability discovery.</li>
+<li>Tasks, messages, status and long-running task lifecycle concepts.</li>
+<li>Use A2A when independently owned agents/services need an explicit cross-team or cross-vendor protocol boundary; do not use it merely to connect internal functions in one process.</li>
+</ul>
+<section class="assignment-card"><h3 id="test_tube-project-assignment--enterprise-mcp-capability-layer" class="section-heading level-3"><a class="anchor" href="#test_tube-project-assignment--enterprise-mcp-capability-layer" aria-label="Link to 🧪 Project Assignment — Enterprise MCP Capability Layer">#</a>🧪 Project Assignment — Enterprise MCP Capability Layer</h3>
+<p>Build: 1. Python MCP server exposing Regulation RAG. 2. Spring Boot MCP server exposing a mock payments capability. 3. OAuth/authorization policy. 4. Claude Code client configuration. 5. LangGraph/application-agent consumption. 6. Threat model and audit logging.</p>
+</section><section class="assignment-card"><h3 id="test_tube-additional-project-assignment--enterprise-mcp-gateway--a2a-bonus" class="section-heading level-3"><a class="anchor" href="#test_tube-additional-project-assignment--enterprise-mcp-gateway--a2a-bonus" aria-label="Link to 🧪 Additional Project Assignment — Enterprise MCP Gateway + A2A Bonus">#</a>🧪 Additional Project Assignment — Enterprise MCP Gateway + A2A Bonus</h3>
+<p>Build two MCP servers: a Python/FastMCP server exposing your regulatory RAG capability and a Spring AI MCP server wrapping a mock banking API over authenticated remote transport. Connect both to the application-agent workflow. As an optional extension, expose the fraud-triage supervisor as an A2A-capable agent with an Agent Card and long-running task status.</p>
+<hr />
+<hr />
+</section><h1 id="building_construction-phase-13--agentic-engineering-plan--execute--verify" class="section-heading level-1"><span class="phase-index">Phase 13</span><a class="anchor" href="#building_construction-phase-13--agentic-engineering-plan--execute--verify" aria-label="Link to 🏗️ Phase 13 — Agentic Engineering: Plan → Execute → Verify">#</a>🏗️ Phase 13 — Agentic Engineering: Plan → Execute → Verify</h1>
+
+    <div class="meta-strip">
+      <span class="meta-pill path 🟡">🟡 Path P1</span>
+      <span class="meta-pill depth">🎯 Deep</span>
+    </div>
+<h2 id="131-planning" class="section-heading level-2"><a class="anchor" href="#131-planning" aria-label="Link to 13.1 Planning">#</a>13.1 Planning</h2>
+<ul>
+<li>Requirement interpretation.</li>
+<li>Repository reconnaissance.</li>
+<li>Impact analysis.</li>
+<li>Explicit plan.</li>
+<li>Files/components expected to change.</li>
+<li>Test strategy.</li>
+<li>Risk assessment.</li>
+<li>Human plan approval for non-trivial work.</li>
+</ul>
+<h2 id="132-execution" class="section-heading level-2"><a class="anchor" href="#132-execution" aria-label="Link to 13.2 Execution">#</a>13.2 Execution</h2>
+<ul>
+<li>Delegate bounded work.</li>
+<li>Independent implementation/test/documentation tasks.</li>
+<li>Context isolation.</li>
+<li>Parallelization only when dependencies permit it.</li>
+<li>Preserve architectural invariants.</li>
+</ul>
+<h2 id="133-verification" class="section-heading level-2"><a class="anchor" href="#133-verification" aria-label="Link to 13.3 Verification">#</a>13.3 Verification</h2>
+<ul>
+<li>Tests.</li>
+<li>Static analysis.</li>
+<li>security checks.</li>
+<li>reviewer subagent.</li>
+<li>architectural review.</li>
+<li>acceptance criteria.</li>
+<li>diff inspection.</li>
+<li>evidence, not “looks good.”</li>
+</ul>
+<h2 id="134-specialized-agents" class="section-heading level-2"><a class="anchor" href="#134-specialized-agents" aria-label="Link to 13.4 Specialized agents">#</a>13.4 Specialized agents</h2>
+<ul>
+<li>Planner.</li>
+<li>Implementer.</li>
+<li>Tester.</li>
+<li>Reviewer.</li>
+<li>Security reviewer.</li>
+<li>Performance reviewer.</li>
+<li>Migration reviewer.</li>
+</ul>
+<h2 id="135-failure-patterns" class="section-heading level-2"><a class="anchor" href="#135-failure-patterns" aria-label="Link to 13.5 Failure patterns">#</a>13.5 Failure patterns</h2>
+<ul>
+<li>Agents editing the same files.</li>
+<li>Unclear ownership.</li>
+<li>reviewers sharing implementation bias/context.</li>
+<li>excessive agent count.</li>
+<li>circular delegation.</li>
+<li>no deterministic verification.</li>
+<li>autonomous merge/deployment without policy controls.</li>
+</ul>
+<section class="assignment-card"><h3 id="test_tube-project-assignment--multi-agent-feature-delivery" class="section-heading level-3"><a class="anchor" href="#test_tube-project-assignment--multi-agent-feature-delivery" aria-label="Link to 🧪 Project Assignment — Multi-Agent Feature Delivery">#</a>🧪 Project Assignment — Multi-Agent Feature Delivery</h3>
+<p>Implement a realistic payment-refund feature using separate planning, implementation, test, security and review roles. Produce a final verification packet containing plan, diffs, test evidence, security findings and unresolved risks.</p>
+<hr />
+<hr />
+</section><h1 id="shield-phase-14--harness-engineering-hooks-permissions-sandboxes--guardrails" class="section-heading level-1"><span class="phase-index">Phase 14</span><a class="anchor" href="#shield-phase-14--harness-engineering-hooks-permissions-sandboxes--guardrails" aria-label="Link to 🛡️ Phase 14 — Harness Engineering: Hooks, Permissions, Sandboxes &amp;amp; Guardrails">#</a>🛡️ Phase 14 — Harness Engineering: Hooks, Permissions, Sandboxes &amp; Guardrails</h1>
+
+    <div class="meta-strip">
+      <span class="meta-pill path 🟡">🟡 Path P1</span>
+      <span class="meta-pill depth">🎯 Deep</span>
+    </div>
+<h2 id="141-hook-hooks" class="section-heading level-2"><a class="anchor" href="#141-hook-hooks" aria-label="Link to 14.1 🪝 Hooks">#</a>14.1 🪝 Hooks</h2>
+<ul>
+<li>Pre-tool checks.</li>
+<li>Post-tool checks.</li>
+<li>session lifecycle hooks where available.</li>
+<li>Deterministic formatting.</li>
+<li>test execution.</li>
+<li>blocking forbidden writes.</li>
+<li>secret scanning.</li>
+<li>architecture checks.</li>
+</ul>
+<h2 id="142-closed_lock_with_key-permissions" class="section-heading level-2"><a class="anchor" href="#142-closed_lock_with_key-permissions" aria-label="Link to 14.2 🔐 Permissions">#</a>14.2 🔐 Permissions</h2>
+<ul>
+<li>Read vs write.</li>
+<li>Shell command policies.</li>
+<li>Network access.</li>
+<li>filesystem scope.</li>
+<li>allowed/denied tools.</li>
+<li>human approval boundaries.</li>
+</ul>
+<h2 id="143-package-sandboxing" class="section-heading level-2"><a class="anchor" href="#143-package-sandboxing" aria-label="Link to 14.3 📦 Sandboxing">#</a>14.3 📦 Sandboxing</h2>
+<ul>
+<li>Container/devcontainer.</li>
+<li>disposable environments.</li>
+<li>restricted credentials.</li>
+<li>network egress policy.</li>
+<li>safe command execution.</li>
+</ul>
+<h2 id="144-feedback-loops" class="section-heading level-2"><a class="anchor" href="#144-feedback-loops" aria-label="Link to 14.4 Feedback loops">#</a>14.4 Feedback loops</h2>
+<ul>
+<li>Compile.</li>
+<li>Unit test.</li>
+<li>Integration test.</li>
+<li>lint.</li>
+<li>static analysis.</li>
+<li>architecture tests.</li>
+<li>security scan.</li>
+<li>evals for AI behavior.</li>
+</ul>
+<h2 id="145-harness-observability" class="section-heading level-2"><a class="anchor" href="#145-harness-observability" aria-label="Link to 14.5 Harness observability">#</a>14.5 Harness observability</h2>
+<ul>
+<li>Agent action logs.</li>
+<li>tool-call logs.</li>
+<li>test outcomes.</li>
+<li>retry loops.</li>
+<li>failure classifications.</li>
+<li>cost/time where measurable.</li>
+</ul>
+<h2 id="146-deterministic-vs-probabilistic-enforcement" class="section-heading level-2"><a class="anchor" href="#146-deterministic-vs-probabilistic-enforcement" aria-label="Link to 14.6 Deterministic vs probabilistic enforcement">#</a>14.6 Deterministic vs probabilistic enforcement</h2>
+<p>Put in code/harness when possible: - “never edit <code>.env</code>.” - “tests must pass.” - “generated migration must be reversible.” - “PII must not be logged.” - “no production deployment without approval.”</p>
+<section class="assignment-card"><h3 id="test_tube-project-assignment--self-checking-engineering-harness" class="section-heading level-3"><a class="anchor" href="#test_tube-project-assignment--self-checking-engineering-harness" aria-label="Link to 🧪 Project Assignment — Self-Checking Engineering Harness">#</a>🧪 Project Assignment — Self-Checking Engineering Harness</h3>
+<p>Create hooks/scripts/policies that: - prevent secret/config writes, - auto-format changed files, - run relevant tests, - enforce architecture boundaries, - run dependency/security checks, - prevent completion when required checks fail.</p>
+<p>Demonstrate at least five intentionally bad agent changes being blocked.</p>
+</section><section class="assignment-card"><h3 id="test_tube-additional-project-assignment--env-write-block-harness-lab" class="section-heading level-3"><a class="anchor" href="#test_tube-additional-project-assignment--env-write-block-harness-lab" aria-label="Link to 🧪 Additional Project Assignment — .env Write-Block Harness Lab">#</a>🧪 Additional Project Assignment — <code>.env</code> Write-Block Harness Lab</h3>
+<p>Implement a <code>PreToolUse</code> hook in <code>.claude/settings.json</code> that rejects writes to <code>.env*</code>/secret files. Test the hook independently with representative JSON tool input and a non-zero exit/result for blocked operations. Then demonstrate the same protection during a real Claude Code session.</p>
+<hr />
+<hr />
+</section><h1 id="jigsaw-phase-15--plugins-reusable-agent-capabilities--distribution" class="section-heading level-1"><span class="phase-index">Phase 15</span><a class="anchor" href="#jigsaw-phase-15--plugins-reusable-agent-capabilities--distribution" aria-label="Link to 🧩 Phase 15 — Plugins, Reusable Agent Capabilities &amp;amp; Distribution">#</a>🧩 Phase 15 — Plugins, Reusable Agent Capabilities &amp; Distribution</h1>
+
+    <div class="meta-strip">
+      <span class="meta-pill path 🟡">🟡 Path P1</span>
+      <span class="meta-pill depth">🎯 Working</span>
+    </div>
+<h2 id="151-plugin-model" class="section-heading level-2"><a class="anchor" href="#151-plugin-model" aria-label="Link to 15.1 Plugin model">#</a>15.1 Plugin model</h2>
+<ul>
+<li>Package reusable skills.</li>
+<li>Subagents.</li>
+<li>commands.</li>
+<li>hooks.</li>
+<li>MCP servers/configuration.</li>
+<li><code>.claude-plugin/plugin.json</code> or the current plugin manifest format.</li>
+<li>versioning.</li>
+</ul>
+<h2 id="152-design-for-reuse" class="section-heading level-2"><a class="anchor" href="#152-design-for-reuse" aria-label="Link to 15.2 Design for reuse">#</a>15.2 Design for reuse</h2>
+<ul>
+<li>Generic capability vs project-specific knowledge.</li>
+<li>Configuration.</li>
+<li>semantic versioning.</li>
+<li>backward compatibility.</li>
+<li>documentation.</li>
+<li>tests.</li>
+<li>secure defaults.</li>
+</ul>
+<h2 id="153-organizational-distribution" class="section-heading level-2"><a class="anchor" href="#153-organizational-distribution" aria-label="Link to 15.3 Organizational distribution">#</a>15.3 Organizational distribution</h2>
+<ul>
+<li>Team standards.</li>
+<li>internal marketplace/catalog.</li>
+<li>approved MCP servers.</li>
+<li>centrally maintained security hooks.</li>
+<li>shared review agents.</li>
+<li>upgrade governance.</li>
+</ul>
+<section class="assignment-card"><h3 id="test_tube-project-assignment--enterprise-engineering-plugin" class="section-heading level-3"><a class="anchor" href="#test_tube-project-assignment--enterprise-engineering-plugin" aria-label="Link to 🧪 Project Assignment — Enterprise Engineering Plugin">#</a>🧪 Project Assignment — Enterprise Engineering Plugin</h3>
+<p>Package the Phase 10 and 14 capabilities as a reusable internal plugin/toolkit for Spring Boot teams. Install it into a second repository without copying project-specific instructions.</p>
+</section><section class="assignment-card"><h3 id="test_tube-additional-project-assignment--clean-checkout-plugin-verification" class="section-heading level-3"><a class="anchor" href="#test_tube-additional-project-assignment--clean-checkout-plugin-verification" aria-label="Link to 🧪 Additional Project Assignment — Clean-Checkout Plugin Verification">#</a>🧪 Additional Project Assignment — Clean-Checkout Plugin Verification</h3>
+<p>Bundle the policy reviewer/test writer, at least one reusable skill, one hook, and an MCP capability into a single plugin/toolkit. Install it from a clean checkout and verify that the agents, MCP capability, hooks, and skill are discoverable without manual file copying.</p>
+<hr />
+<hr />
+</section><h1 id="cloud-phase-16--cloud-agent-platforms--deployment" class="section-heading level-1"><span class="phase-index">Phase 16</span><a class="anchor" href="#cloud-phase-16--cloud-agent-platforms--deployment" aria-label="Link to ☁️ Phase 16 — Cloud Agent Platforms &amp;amp; Deployment">#</a>☁️ Phase 16 — Cloud Agent Platforms &amp; Deployment</h1>
+
+    <div class="meta-strip">
+      <span class="meta-pill path 🟢">🟢 Path P2</span>
+      <span class="meta-pill depth">🎯 Deep</span>
+    </div>
+<h2 id="161-aws" class="section-heading level-2"><a class="anchor" href="#161-aws" aria-label="Link to 16.1 AWS">#</a>16.1 AWS</h2>
+<ul>
+<li>Amazon Bedrock model access.</li>
+<li>Knowledge Bases.</li>
+<li>Guardrails.</li>
+<li>Bedrock AgentCore capabilities such as Runtime, Gateway, Memory, Identity, code/browser tooling, and observability where appropriate.</li>
+<li>Strands Agents SDK awareness and comparison with LangGraph/vendor SDK approaches.</li>
+<li>Identity.</li>
+<li>memory.</li>
+<li>gateways/tools.</li>
+<li>observability.</li>
+<li>VPC/private networking.</li>
+<li>IAM.</li>
+<li>cost controls.</li>
+</ul>
+<h2 id="162-microsoftazure" class="section-heading level-2"><a class="anchor" href="#162-microsoftazure" aria-label="Link to 16.2 Microsoft/Azure">#</a>16.2 Microsoft/Azure</h2>
+<p><strong>Depth: Working</strong></p>
+<ul>
+<li>Microsoft Foundry / Foundry Agent Service.</li>
+<li>Microsoft Agent Framework awareness, including its relationship to prior AutoGen/Semantic Kernel ecosystems.</li>
+<li>Azure AI Search.</li>
+<li>Entra/enterprise agent identity and governance concepts.</li>
+<li>OpenTelemetry integration.</li>
+</ul>
+<h2 id="163-google-cloud" class="section-heading level-2"><a class="anchor" href="#163-google-cloud" aria-label="Link to 16.3 Google Cloud">#</a>16.3 Google Cloud</h2>
+<p><strong>Depth: Aware/Working</strong> - Vertex AI agent services. - ADK. - Gemini integration. - managed deployment.</p>
+<h2 id="164-deployment-patterns" class="section-heading level-2"><a class="anchor" href="#164-deployment-patterns" aria-label="Link to 16.4 Deployment patterns">#</a>16.4 Deployment patterns</h2>
+<ul>
+<li>Containers.</li>
+<li>Kubernetes.</li>
+<li>Serverless.</li>
+<li>Long-running workers.</li>
+<li>SSE/WebSockets.</li>
+<li>queues/events.</li>
+<li>asynchronous jobs.</li>
+<li>session affinity/state externalization.</li>
+</ul>
+<section class="assignment-card"><h3 id="test_tube-project-assignment--cloud-deployment" class="section-heading level-3"><a class="anchor" href="#test_tube-project-assignment--cloud-deployment" aria-label="Link to 🧪 Project Assignment — Cloud Deployment">#</a>🧪 Project Assignment — Cloud Deployment</h3>
+<p>Deploy the fraud-triage system with managed identity, private enterprise tools, persisted state, guardrails and observability. Document scaling, failure domains and estimated cost drivers.</p>
+</section><section class="assignment-card"><h3 id="test_tube-additional-project-assignment--deploy-fraud-triage-to-aws-agentcore" class="section-heading level-3"><a class="anchor" href="#test_tube-additional-project-assignment--deploy-fraud-triage-to-aws-agentcore" aria-label="Link to 🧪 Additional Project Assignment — Deploy Fraud Triage to AWS AgentCore">#</a>🧪 Additional Project Assignment — Deploy Fraud Triage to AWS AgentCore</h3>
+<p>Deploy the fraud-triage workflow using Bedrock/AgentCore capabilities: MCP-backed enterprise tools through a managed gateway where appropriate, managed identity, durable memory, Bedrock Guardrails, and CloudWatch/OpenTelemetry observability. Rebuild one small specialist with Strands Agents SDK and document the trade-offs.</p>
+<hr />
+<hr />
+</section><h1 id="chart_with_upwards_trend-phase-17--agentops-evals-observability-security--reliability" class="section-heading level-1"><span class="phase-index">Phase 17</span><a class="anchor" href="#chart_with_upwards_trend-phase-17--agentops-evals-observability-security--reliability" aria-label="Link to 📈 Phase 17 — AgentOps: Evals, Observability, Security &amp;amp; Reliability">#</a>📈 Phase 17 — AgentOps: Evals, Observability, Security &amp; Reliability</h1>
+
+    <div class="meta-strip">
+      <span class="meta-pill path 🟢">🟢 Path P2</span>
+      <span class="meta-pill depth">🎯 Deep</span>
+    </div>
+<h2 id="171-test_tube-evaluation" class="section-heading level-2"><a class="anchor" href="#171-test_tube-evaluation" aria-label="Link to 17.1 🧪 Evaluation">#</a>17.1 🧪 Evaluation</h2>
+<ul>
+<li>Golden datasets.</li>
+<li>Unit-style prompt/model tests.</li>
+<li>Structured-output validity.</li>
+<li>LLM-as-judge with calibration.</li>
+<li>Human review.</li>
+<li>A/B tests.</li>
+<li>regression suites.</li>
+<li>trajectory evaluation.</li>
+<li>tool-selection correctness.</li>
+<li>task completion.</li>
+<li>cost/latency budgets.</li>
+</ul>
+<p>Tools to know: - LangSmith. - RAGAS. - DeepEval. - promptfoo. - Langfuse. - Arize Phoenix awareness.</p>
+<h2 id="172-telescope-observability" class="section-heading level-2"><a class="anchor" href="#172-telescope-observability" aria-label="Link to 17.2 🔭 Observability">#</a>17.2 🔭 Observability</h2>
+<ul>
+<li>LLM spans.</li>
+<li>tool spans.</li>
+<li>retrieval spans.</li>
+<li>agent graph transitions.</li>
+<li>token/cost attribution.</li>
+<li>p50/p95/p99 latency.</li>
+<li>tool failure rates.</li>
+<li>retry counts.</li>
+<li>model fallback.</li>
+<li>OpenTelemetry GenAI conventions.</li>
+</ul>
+<h2 id="173-shield-security" class="section-heading level-2"><a class="anchor" href="#173-shield-security" aria-label="Link to 17.3 🛡️ Security">#</a>17.3 🛡️ Security</h2>
+<ul>
+<li>OWASP Top 10 for LLM/GenAI applications as a threat-modeling baseline.</li>
+<li>Prompt injection.</li>
+<li>indirect prompt injection.</li>
+<li>insecure output handling.</li>
+<li>excessive agency.</li>
+<li>sensitive information disclosure.</li>
+<li>tool abuse.</li>
+<li>data exfiltration.</li>
+<li>poisoned retrieval.</li>
+<li>poisoned MCP tools.</li>
+<li>supply-chain risk.</li>
+</ul>
+<h2 id="174-gear-reliability" class="section-heading level-2"><a class="anchor" href="#174-gear-reliability" aria-label="Link to 17.4 ⚙️ Reliability">#</a>17.4 ⚙️ Reliability</h2>
+<ul>
+<li>Timeouts.</li>
+<li>circuit breakers.</li>
+<li>retry with jitter.</li>
+<li>rate limiting.</li>
+<li>bulkheads.</li>
+<li>idempotency.</li>
+<li>compensation.</li>
+<li>durable checkpoints.</li>
+<li>graceful degradation.</li>
+<li>model fallback.</li>
+<li>semantic caching where appropriate.</li>
+</ul>
+<h2 id="175-classical_building-governance" class="section-heading level-2"><a class="anchor" href="#175-classical_building-governance" aria-label="Link to 17.5 🏛️ Governance">#</a>17.5 🏛️ Governance</h2>
+<ul>
+<li>Prompt/model/version registry.</li>
+<li>evaluation gates.</li>
+<li>auditability.</li>
+<li>EU AI Act awareness, especially risk classification, transparency, human oversight and governance implications for European deployments.</li>
+<li>Guardrail framework awareness: NeMo Guardrails, Guardrails AI, and managed cloud/vendor guardrails.</li>
+<li>data residency.</li>
+<li>retention.</li>
+<li>human oversight.</li>
+</ul>
+<section class="assignment-card"><h3 id="test_tube-project-assignment--harden-and-ship" class="section-heading level-3"><a class="anchor" href="#test_tube-project-assignment--harden-and-ship" aria-label="Link to 🧪 Project Assignment — Harden and Ship">#</a>🧪 Project Assignment — Harden and Ship</h3>
+<p>Create 40+ eval cases including injection, retrieval failure, malformed tool output and timeout scenarios. Gate CI on eval thresholds, export traces through OpenTelemetry, create reliability dashboards, and publish a failure-mode analysis.</p>
+</section><section class="assignment-card"><h3 id="test_tube-additional-project-assignment--langsmithlangfuse-hardening-lab" class="section-heading level-3"><a class="anchor" href="#test_tube-additional-project-assignment--langsmithlangfuse-hardening-lab" aria-label="Link to 🧪 Additional Project Assignment — LangSmith/Langfuse Hardening Lab">#</a>🧪 Additional Project Assignment — LangSmith/Langfuse Hardening Lab</h3>
+<p>Create an evaluation dataset with normal, prompt-injection, and tool-failure cases; add trajectory/task-completion evaluation to CI; export OpenTelemetry GenAI traces to Langfuse or an equivalent backend; add an input guardrail layer; and chart cost-per-task, p95 latency, and eval-score trend.</p>
+<hr />
+<hr />
+</section><h1 id="arrows_counterclockwise-phase-18--ai-native-sdlc-cicd-testing-code-review--governance" class="section-heading level-1"><span class="phase-index">Phase 18</span><a class="anchor" href="#arrows_counterclockwise-phase-18--ai-native-sdlc-cicd-testing-code-review--governance" aria-label="Link to 🔄 Phase 18 — AI-Native SDLC: CI/CD, Testing, Code Review &amp;amp; Governance">#</a>🔄 Phase 18 — AI-Native SDLC: CI/CD, Testing, Code Review &amp; Governance</h1>
+
+    <div class="meta-strip">
+      <span class="meta-pill path 🟣">🟣 Path P1+P2</span>
+      <span class="meta-pill depth">🎯 Deep</span>
+    </div>
+<h2 id="181-ai-assisted-development-lifecycle" class="section-heading level-2"><a class="anchor" href="#181-ai-assisted-development-lifecycle" aria-label="Link to 18.1 AI-assisted development lifecycle">#</a>18.1 AI-assisted development lifecycle</h2>
+<p><code>Requirement → Plan → Context → Implement → Test → Review → Security → Eval → Deploy → Observe</code></p>
+<h2 id="182-testing-layers" class="section-heading level-2"><a class="anchor" href="#182-testing-layers" aria-label="Link to 18.2 Testing layers">#</a>18.2 Testing layers</h2>
+<ul>
+<li>Unit tests for deterministic code.</li>
+<li>Contract tests for tools/MCP.</li>
+<li>Retrieval tests.</li>
+<li>prompt regression.</li>
+<li>agent trajectory tests.</li>
+<li>security/adversarial tests.</li>
+<li>end-to-end business tests.</li>
+</ul>
+<h2 id="183-cicd" class="section-heading level-2"><a class="anchor" href="#183-cicd" aria-label="Link to 18.3 CI/CD">#</a>18.3 CI/CD</h2>
+<ul>
+<li>Build/test/lint.</li>
+<li>architecture checks.</li>
+<li>dependency scanning.</li>
+<li>prompt/eval regression.</li>
+<li>model change validation.</li>
+<li>deployment approval.</li>
+<li>canary model/prompt releases.</li>
+</ul>
+<h2 id="184-code-review-with-coding-agents" class="section-heading level-2"><a class="anchor" href="#184-code-review-with-coding-agents" aria-label="Link to 18.4 Code review with coding agents">#</a>18.4 Code review with coding agents</h2>
+<ul>
+<li>Agent-generated code is not exempt from normal review.</li>
+<li>Verify requirements and architectural fit.</li>
+<li>Security and dependency scrutiny.</li>
+<li>Detect plausible but nonexistent APIs.</li>
+<li>Require evidence for tests.</li>
+<li>Small reviewable diffs.</li>
+<li>Human accountability remains explicit.</li>
+</ul>
+<h2 id="185-governance-of-coding-agent-autonomy" class="section-heading level-2"><a class="anchor" href="#185-governance-of-coding-agent-autonomy" aria-label="Link to 18.5 Governance of coding-agent autonomy">#</a>18.5 Governance of coding-agent autonomy</h2>
+<p>Define autonomy levels: 1. read/explain, 2. propose plan, 3. edit with approval, 4. execute tests/tools, 5. open PR, 6. autonomous bounded workflow, 7. deployment/production action — heavily controlled.</p>
+<section class="assignment-card"><h3 id="test_tube-project-assignment--ai-native-delivery-pipeline" class="section-heading level-3"><a class="anchor" href="#test_tube-project-assignment--ai-native-delivery-pipeline" aria-label="Link to 🧪 Project Assignment — AI-Native Delivery Pipeline">#</a>🧪 Project Assignment — AI-Native Delivery Pipeline</h3>
+<p>Create a GitHub Actions pipeline that runs conventional tests plus AI evals, MCP contract tests, security checks and architecture tests. Use Claude Code to implement a change, but make the harness independently prove whether the change is acceptable.</p>
+<hr />
+<hr />
+</section><h1 id="coffee-phase-19--javaspring-enterprise-agentic-ai-track" class="section-heading level-1"><span class="phase-index">Phase 19</span><a class="anchor" href="#coffee-phase-19--javaspring-enterprise-agentic-ai-track" aria-label="Link to ☕ Phase 19 — Java/Spring Enterprise Agentic AI Track">#</a>☕ Phase 19 — Java/Spring Enterprise Agentic AI Track</h1>
+
+    <div class="meta-strip">
+      <span class="meta-pill path 🟢">🟢 Path P2</span>
+      <span class="meta-pill depth">🎯 Deep</span>
+    </div>
+<h2 id="191-spring-ai" class="section-heading level-2"><a class="anchor" href="#191-spring-ai" aria-label="Link to 19.1 Spring AI">#</a>19.1 Spring AI</h2>
+<ul>
+<li>Chat/model clients.</li>
+<li>structured outputs.</li>
+<li>tool calling.</li>
+<li>advisors.</li>
+<li>RAG.</li>
+<li>vector-store abstraction.</li>
+<li>MCP client/server.</li>
+<li>observability integration.</li>
+</ul>
+<h2 id="192-langchain4j" class="section-heading level-2"><a class="anchor" href="#192-langchain4j" aria-label="Link to 19.2 LangChain4j">#</a>19.2 LangChain4j</h2>
+<ul>
+<li>AI services.</li>
+<li>tools.</li>
+<li>RAG.</li>
+<li>memory.</li>
+<li>model providers.</li>
+<li>enterprise Java integration.</li>
+</ul>
+<h2 id="193-langgraph4j--java-orchestration-awareness" class="section-heading level-2"><a class="anchor" href="#193-langgraph4j--java-orchestration-awareness" aria-label="Link to 19.3 LangGraph4j / Java orchestration awareness">#</a>19.3 LangGraph4j / Java orchestration awareness</h2>
+<ul>
+<li>Graph/state concepts in Java.</li>
+<li>When to keep orchestration in Python vs Java.</li>
+<li>Interoperability through HTTP/events/MCP.</li>
+</ul>
+<h2 id="194-enterprise-integration" class="section-heading level-2"><a class="anchor" href="#194-enterprise-integration" aria-label="Link to 19.4 Enterprise integration">#</a>19.4 Enterprise integration</h2>
+<ul>
+<li>Existing Spring microservices.</li>
+<li>OAuth/OIDC.</li>
+<li>API gateway.</li>
+<li>Kafka.</li>
+<li>transaction boundaries.</li>
+<li>Resilience4j.</li>
+<li>OpenTelemetry.</li>
+<li>Kubernetes.</li>
+<li>secrets/IAM.</li>
+</ul>
+<h2 id="195-positioning" class="section-heading level-2"><a class="anchor" href="#195-positioning" aria-label="Link to 19.5 Positioning">#</a>19.5 Positioning</h2>
+<p>Be able to demonstrate: &gt; “I can introduce Agentic AI into an existing Java/Spring enterprise estate without requiring a wholesale Python rewrite.”</p>
+<section class="assignment-card"><h3 id="test_tube-project-assignment--java-agentic-payments-service" class="section-heading level-3"><a class="anchor" href="#test_tube-project-assignment--java-agentic-payments-service" aria-label="Link to 🧪 Project Assignment — Java Agentic Payments Service">#</a>🧪 Project Assignment — Java Agentic Payments Service</h3>
+<p>Build a Spring Boot service using Spring AI that exposes tools, consumes an MCP server, uses RAG, produces structured output, emits OpenTelemetry traces, and integrates with an existing Python/LangGraph supervisor.</p>
+<hr />
+<hr />
+</section><h1 id="trophy-phase-20--integrated-production-capstone" class="section-heading level-1"><span class="phase-index">Phase 20</span><a class="anchor" href="#trophy-phase-20--integrated-production-capstone" aria-label="Link to 🏆 Phase 20 — Integrated Production Capstone">#</a>🏆 Phase 20 — Integrated Production Capstone</h1>
+
+    <div class="meta-strip">
+      <span class="meta-pill path 🟣">🟣 Path P1+P2</span>
+      <span class="meta-pill depth">🎯 Deep</span>
+    </div>
+<p>Choose <strong>one</strong> capstone and build it deeply. The objective is not another demo; it is evidence that you can engineer both the <strong>runtime agent system</strong> and the <strong>AI-native engineering environment</strong> used to deliver it.</p>
+<h2 id="option-a--agentic-payment-operations-copilot" class="section-heading level-2"><a class="anchor" href="#option-a--agentic-payment-operations-copilot" aria-label="Link to Option A — Agentic Payment Operations Copilot">#</a>Option A — Agentic Payment Operations Copilot</h2>
+<p>Capabilities: - Failed-payment investigation. - Transaction/customer tools. - Regulation RAG. - Multi-agent orchestration. - Human-approved refunds/account actions. - MCP capability layer. - Durable state/memory. - Full eval suite. - Cloud deployment. - Java/Spring enterprise integration.</p>
+<h2 id="option-b--engineering-intelligence--delivery-agent" class="section-heading level-2"><a class="anchor" href="#option-b--engineering-intelligence--delivery-agent" aria-label="Link to Option B — Engineering Intelligence &amp;amp; Delivery Agent">#</a>Option B — Engineering Intelligence &amp; Delivery Agent</h2>
+<p>Capabilities: - Repository/PR/CI ingestion. - DORA and engineering-health tools. - RAG over architecture/runbooks. - Root-cause analysis of delivery degradation. - Planner/reviewer/security agents. - MCP interfaces to engineering systems. - HITL before repository/CI changes.</p>
+<h2 id="mandatory-path-1-deliverables" class="section-heading level-2"><a class="anchor" href="#mandatory-path-1-deliverables" aria-label="Link to Mandatory Path 1 deliverables">#</a>Mandatory Path 1 deliverables</h2>
+<ul>
+<li><code>CLAUDE.md</code>.</li>
+<li>scoped rules.</li>
+<li>at least 3 production-quality skills.</li>
+<li>at least 3 specialized subagents.</li>
+<li>reusable commands/workflows.</li>
+<li>deterministic hooks.</li>
+<li>MCP configuration.</li>
+<li>secure permission model.</li>
+<li>reusable plugin/toolkit.</li>
+<li>Plan → Execute → Verify workflow.</li>
+<li>session/work continuity strategy.</li>
+</ul>
+<h2 id="mandatory-path-2-deliverables" class="section-heading level-2"><a class="anchor" href="#mandatory-path-2-deliverables" aria-label="Link to Mandatory Path 2 deliverables">#</a>Mandatory Path 2 deliverables</h2>
+<ul>
+<li>direct model SDK integration.</li>
+<li>structured outputs.</li>
+<li>tool calling.</li>
+<li>RAG with retrieval evaluation.</li>
+<li>LangGraph orchestration.</li>
+<li>state + durable checkpointing.</li>
+<li>long-term memory where justified.</li>
+<li>MCP server(s).</li>
+<li>multi-agent workflow where justified.</li>
+<li>HITL.</li>
+<li>evaluation dataset.</li>
+<li>OpenTelemetry tracing.</li>
+<li>security/adversarial tests.</li>
+<li>cloud deployment.</li>
+<li>cost/latency/reliability metrics.</li>
+</ul>
+<h2 id="mandatory-architecture-documents" class="section-heading level-2"><a class="anchor" href="#mandatory-architecture-documents" aria-label="Link to Mandatory architecture documents">#</a>Mandatory architecture documents</h2>
+<ol type="1">
+<li>Context architecture.</li>
+<li>Agent topology.</li>
+<li>RAG architecture.</li>
+<li>MCP capability architecture.</li>
+<li>Security/threat model.</li>
+<li>Memory/state model.</li>
+<li>Deployment architecture.</li>
+<li>Eval strategy.</li>
+<li>Reliability model.</li>
+<li>Agent autonomy/governance matrix.</li>
+</ol>
+<h2 id="portfolio-evidence" class="section-heading level-2"><a class="anchor" href="#portfolio-evidence" aria-label="Link to Portfolio evidence">#</a>Portfolio evidence</h2>
+<ul>
+<li>Architecture diagram.</li>
+<li>README with business problem.</li>
+<li>3–5 minute demo.</li>
+<li>Evaluation results.</li>
+<li>Failure cases and fixes.</li>
+<li>Cost/latency measurements.</li>
+<li>ADRs explaining major trade-offs.</li>
+<li>Screenshots/traces of observability.</li>
+<li>Example Claude Code Plan → Execute → Verify delivery.</li>
+</ul>
+<hr />
+<hr />
+<h1 id="phase-21--claude-code-assessment--live-engineering-playbook" class="section-heading level-1"><span class="phase-index">Phase 21</span><a class="anchor" href="#phase-21--claude-code-assessment--live-engineering-playbook" aria-label="Link to Phase 21 — Claude Code Assessment &amp;amp; Live Engineering Playbook">#</a>Phase 21 — Claude Code Assessment &amp; Live Engineering Playbook</h1>
+
+    <div class="meta-strip">
+      <span class="meta-pill path 🟡">🟡 Path P1</span>
+      <span class="meta-pill depth">🎯 Working</span>
+    </div>
+<p>This is an interview/assessment-specific practice phase. It is not a substitute for production knowledge; it trains you to demonstrate that knowledge while directing a coding agent.</p>
+<h2 id="211-before-the-assessment" class="section-heading level-2"><a class="anchor" href="#211-before-the-assessment" aria-label="Link to 21.1 Before the assessment">#</a>21.1 Before the assessment</h2>
+<ul>
+<li>Confirm Claude Code and credentials work before the session.</li>
+<li>Keep a minimal, reusable <code>CLAUDE.md</code> skeleton ready.</li>
+<li>Have a scratch repository initialized and complete one full test round-trip beforehand.</li>
+<li>Avoid spending assessment time debugging tooling setup.</li>
+</ul>
+<h2 id="212-during-the-assessment" class="section-heading level-2"><a class="anchor" href="#212-during-the-assessment" aria-label="Link to 21.2 During the assessment">#</a>21.2 During the assessment</h2>
+<ul>
+<li>Restate the requirement and constraints.</li>
+<li>Sketch architecture before coding.</li>
+<li>Establish project context deliberately.</li>
+<li>Use planning mode for non-trivial work and explain why.</li>
+<li>Delegate only genuinely separable concerns to subagents.</li>
+<li>Run tests and inspect diffs; do not accept generated code merely because it compiles.</li>
+<li>Narrate production concerns: idempotency, observability, rollback, security, reliability, and maintainability.</li>
+<li>Keep <code>NOTES.md</code> or equivalent evidence of plan, execution, and verification.</li>
+</ul>
+<section class="assignment-card"><h3 id="studio_microphone-rehearsal-assignment--live-round-trip-dry-run" class="section-heading level-3"><a class="anchor" href="#studio_microphone-rehearsal-assignment--live-round-trip-dry-run" aria-label="Link to 🎙️ Rehearsal Assignment — Live Round-Trip Dry Run">#</a>🎙️ Rehearsal Assignment — Live Round-Trip Dry Run</h3>
+<p>In a scratch repository, complete a timed 15–20 minute exercise: initialize context, write/refine <code>CLAUDE.md</code>, narrate a planning decision, delegate one isolated task to a subagent, run a real test, inspect the diff, challenge at least one questionable change if present, and close with a concise <code>NOTES.md</code> verification entry.</p>
+<hr />
+</section><h1 id="date-recommended-weekly-study-pattern" class="section-heading level-1"><a class="anchor" href="#date-recommended-weekly-study-pattern" aria-label="Link to 📅 Recommended Weekly Study Pattern">#</a>📅 Recommended Weekly Study Pattern</h1>
+<p>Do <strong>not</strong> study Path 1 and Path 2 as two isolated courses.</p>
+<p>Use this loop:</p>
+<ol type="1">
+<li><strong>Learn the Path 2 concept manually.</strong></li>
+<li><strong>Implement it without a heavy framework when feasible.</strong></li>
+<li><strong>Implement/rebuild it with the appropriate framework.</strong></li>
+<li><strong>Use Claude Code as the engineering agent while building it.</strong></li>
+<li><strong>Add the Path 1 context/skill/subagent/harness capability that makes the work repeatable.</strong></li>
+<li><strong>Evaluate both the application agent and the coding workflow.</strong></li>
+</ol>
+<p>Example:</p>
+<p><code>Tool calling → framework-free agent → LangGraph agent → expose tool via MCP → connect MCP to Claude Code → create skill/subagent → enforce tests with hooks → add evals</code></p>
+<p>This prevents two common failure modes: - knowing Claude Code configuration without understanding production Agentic AI internals; - knowing LangChain/LangGraph APIs while still using coding agents as ungoverned chat assistants.</p>
+<hr />
+<h1 id="dart-competency-matrix" class="section-heading level-1"><a class="anchor" href="#dart-competency-matrix" aria-label="Link to 🎯 Competency Matrix">#</a>🎯 Competency Matrix</h1>
+<div class="table-shell"><table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Competency</th>
+<th style="text-align: left;">Path</th>
+<th style="text-align: left;">Depth</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Python</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Java/Spring</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">LLM fundamentals</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">OpenAI SDK</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Anthropic SDK</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Structured outputs</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Tool/function calling</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Prompt engineering</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Context engineering</td>
+<td style="text-align: left;">P1+P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Agent patterns</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Loading/splitting/chunking</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Embeddings/vector retrieval</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Basic/advanced RAG</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Graph RAG</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Working-to-Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Agentic RAG</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">State/memory</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">LangChain</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Working-to-Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">LangGraph</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Multi-agent systems</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">OpenAI Agents SDK</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Claude Agent SDK</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Google ADK</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Working</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Claude Code</td>
+<td style="text-align: left;">P1</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>CLAUDE.md</code> hierarchy</td>
+<td style="text-align: left;">P1</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Rules</td>
+<td style="text-align: left;">P1</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Skills</td>
+<td style="text-align: left;">P1</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Commands</td>
+<td style="text-align: left;">P1</td>
+<td style="text-align: left;">Working-to-Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Subagents</td>
+<td style="text-align: left;">P1</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hooks</td>
+<td style="text-align: left;">P1</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Permissions/sandboxing</td>
+<td style="text-align: left;">P1</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Plugins</td>
+<td style="text-align: left;">P1</td>
+<td style="text-align: left;">Working</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MCP client</td>
+<td style="text-align: left;">P1+P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">MCP server</td>
+<td style="text-align: left;">P1+P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MCP security</td>
+<td style="text-align: left;">P1+P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">A2A</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Working</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Agentic Engineering</td>
+<td style="text-align: left;">P1</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Harness Engineering</td>
+<td style="text-align: left;">P1</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Cloud agent platforms</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Working-to-Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Evals</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Observability/OpenTelemetry</td>
+<td style="text-align: left;">P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Agent security</td>
+<td style="text-align: left;">P1+P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AI-native CI/CD</td>
+<td style="text-align: left;">P1+P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Autonomy governance</td>
+<td style="text-align: left;">P1+P2</td>
+<td style="text-align: left;">Deep</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h1 id="1st_place_medal-what-to-learn-first--final-priority" class="section-heading level-1"><a class="anchor" href="#1st_place_medal-what-to-learn-first--final-priority" aria-label="Link to 🥇 What to Learn First — Final Priority">#</a>🥇 What to Learn First — Final Priority</h1>
+<h2 id="1st_place_medal-tier-1--foundation-do-not-skip" class="section-heading level-2"><a class="anchor" href="#1st_place_medal-tier-1--foundation-do-not-skip" aria-label="Link to 🥇 Tier 1 — Foundation: do not skip">#</a>🥇 Tier 1 — Foundation: do not skip</h2>
+<ol type="1">
+<li>Python/Pydantic/FastAPI.</li>
+<li>LLM fundamentals.</li>
+<li>Direct OpenAI/Anthropic SDK usage.</li>
+<li>Structured outputs.</li>
+<li>Tool calling.</li>
+<li>Prompt/context engineering.</li>
+<li>Framework-free agent loop.</li>
+<li>Embeddings, chunking and RAG.</li>
+</ol>
+<h2 id="2nd_place_medal-tier-2--production-agent-engineering" class="section-heading level-2"><a class="anchor" href="#2nd_place_medal-tier-2--production-agent-engineering" aria-label="Link to 🥈 Tier 2 — Production Agent Engineering">#</a>🥈 Tier 2 — Production Agent Engineering</h2>
+<ol start="9" type="1">
+<li>Advanced/Agentic RAG.</li>
+<li>State and memory.</li>
+<li>LangGraph.</li>
+<li>MCP.</li>
+<li>Evaluation and observability.</li>
+<li>Security and guardrails.</li>
+<li>Production reliability.</li>
+</ol>
+<h2 id="3rd_place_medal-tier-3--deep-agentic-software-engineering" class="section-heading level-2"><a class="anchor" href="#3rd_place_medal-tier-3--deep-agentic-software-engineering" aria-label="Link to 🥉 Tier 3 — Deep Agentic Software Engineering">#</a>🥉 Tier 3 — Deep Agentic Software Engineering</h2>
+<ol start="16" type="1">
+<li>Claude Code layered context.</li>
+<li>Rules and skills.</li>
+<li>Subagents and commands.</li>
+<li>Agentic Engineering.</li>
+<li>Hooks, permissions and harness engineering.</li>
+<li>Plugins/reusable organizational capabilities.</li>
+</ol>
+<h2 id="rocket-tier-4--synthesis" class="section-heading level-2"><a class="anchor" href="#rocket-tier-4--synthesis" aria-label="Link to 🚀 Tier 4 — Synthesis">#</a>🚀 Tier 4 — Synthesis</h2>
+<ol start="22" type="1">
+<li>Multi-agent/vendor SDKs.</li>
+<li>Cloud agent platforms.</li>
+<li>Java/Spring AI integration.</li>
+<li>AI-native SDLC.</li>
+<li>Integrated production capstone.</li>
+</ol>
+<hr />
+<h1 id="white_check_mark-completion-criteria" class="section-heading level-1"><a class="anchor" href="#white_check_mark-completion-criteria" aria-label="Link to ✅ Completion Criteria">#</a>✅ Completion Criteria</h1>
+<p>You are ready to claim production-oriented competence only when you can answer <strong>yes</strong> to all of these:</p>
+<ul>
+<li>Can I build a tool-using agent without LangChain/LangGraph?</li>
+<li>Can I explain why a workflow should be deterministic or agentic?</li>
+<li>Can I design and evaluate chunking/retrieval rather than simply call a vector store?</li>
+<li>Can I measure RAG retrieval and generation quality separately?</li>
+<li>Can I design state, checkpointing and memory deliberately?</li>
+<li>Can I build and secure an MCP server?</li>
+<li>Can I explain MCP’s role in both coding-agent and application-agent architectures?</li>
+<li>Can I design LangGraph state/edges/retries/HITL rather than copy a tutorial graph?</li>
+<li>Can I instrument model/tool/retrieval calls and diagnose a failed agent trajectory?</li>
+<li>Can I create a small, maintainable <code>CLAUDE.md</code> instead of dumping all knowledge into it?</li>
+<li>Can I decide whether knowledge belongs in a rule, skill, subagent, MCP server, hook, or application RAG system?</li>
+<li>Can I enforce critical coding-agent constraints deterministically?</li>
+<li>Can I run Plan → Execute → Verify with specialized agents and clear ownership?</li>
+<li>Can I constrain coding-agent autonomy based on action risk?</li>
+<li>Can I integrate Agentic AI into a Java/Spring enterprise estate?</li>
+<li>Can I demonstrate one deployed system with evals, security, observability and measurable reliability?</li>
+</ul>
+<p>If all are <strong>yes</strong>, the two learning paths have converged into the target capability:</p>
+<blockquote class="callout">
+<p><strong>Production Agentic AI Engineering + AI-Native Software Engineering</strong></p>
+</blockquote>
+<hr />
+<h2 id="star2-target-end-state" class="section-heading level-2"><a class="anchor" href="#star2-target-end-state" aria-label="Link to 🌟 Target End-State">#</a>🌟 Target End-State</h2>
+<blockquote class="callout">
+<p><strong>Production Agentic AI Engineering + AI-Native Software Engineering</strong></p>
+<p>You should be able to <strong>design, build, evaluate, secure, operate, and explain production AI agents</strong> while also creating a <strong>controlled, context-rich, verifiable coding-agent environment</strong> for developing those systems.</p>
+</blockquote>
+<p><strong>Edition:</strong> August 2026<br />
+<strong>Primary learning principle:</strong> <em>Understand the mechanism → build it manually → adopt the framework → automate it with a governed coding-agent harness.</em></p>
+
+      <div class="footer">
+        <strong>Target end-state:</strong> Production Agentic AI Engineering + AI-Native Software Engineering — with enough depth to design, build, evaluate, secure, operate, and defend the architecture in senior engineering interviews.
+      </div>
+    </article>
+  </main>
+</div>
+
+<script>
+const searchBox = document.getElementById('searchBox');
+const content = document.getElementById('content');
+const navLinks = [...document.querySelectorAll('.nav-phase')];
+
+searchBox?.addEventListener('input', e => {
+  const q = e.target.value.trim().toLowerCase();
+  document.querySelectorAll('.mark-hit').forEach(x => x.classList.remove('mark-hit'));
+  if (!q) return;
+  const blocks = [...content.querySelectorAll('h1,h2,h3,p,li,td,blockquote,.assignment-card')];
+  const hits = blocks.filter(el => el.innerText.toLowerCase().includes(q));
+  hits.slice(0,30).forEach(el => el.classList.add('mark-hit'));
+  if (hits[0]) hits[0].scrollIntoView({behavior:'smooth',block:'center'});
+});
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && entry.target.matches('h1[id]')) {
+      navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#'+entry.target.id));
+    }
+  });
+}, {rootMargin:'-20% 0px -70% 0px', threshold:0});
+
+document.querySelectorAll('h1[id]').forEach(h => observer.observe(h));
+
+document.querySelectorAll('.table-shell').forEach(shell => {
+  shell.setAttribute('tabindex','0');
+});
+</script>
+</body>
+</html>
